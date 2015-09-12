@@ -159,52 +159,70 @@ define(['react', 'react-bootstrap'], (React, ReactBootstrap) => {
                 DOM.table({style: {width: '100%'}}, DOM.tr({}, [
                     DOM.td({style: {width: '250px'}}),
                     DOM.td({}, [
-                        DOM.div({}, [
+                        React.createElement('center', {}, DOM.div({style: {marginTop: '20px'}}, [
                             DOM.span({className: 'race-number'}, "42"),
                             ' ',
                             DOM.span({}, "Vyacheslav Goldenshteyn")
-                        ]),
+                        ])),
                         DOM.div({
                             style: {
-                                background: 'brown',
-                                height: '40px',
-                                marginTop: '40px',
+                                background: 'silver',
+                                height: '60px',
                                 marginLeft: '5px',
-                                marginRight: '5px'
+                                marginRight: '5px',
+                                fontSize: '43px'
                             }
-                        })
+                        }, React.createElement('center', {}, DOM.span({
+                            className: 'podium-label',
+                            style: {
+                                paddingLeft: '13px',
+                                paddingRight: '13px'
+                            }
+                        }, "2")))
                     ]),
                     DOM.td({}, [
-                        DOM.div({}, [
+                        React.createElement('center', {}, DOM.div({style: {marginTop: '0px'}}, [
                             DOM.span({className: 'race-number'}, "42"),
                             ' ',
                             DOM.span({}, "Vyacheslav Goldenshteyn")
-                        ]),
+                        ])),
                         DOM.div({
                             style: {
-                                background: 'brown',
+                                background: 'gold',
                                 height: '80px',
-                                marginTop: '0px',
                                 marginLeft: '5px',
-                                marginRight: '5px'
+                                marginRight: '5px',
+                                fontSize: '58px'
                             }
-                        })
+                        }, React.createElement('center', {}, DOM.span({
+                            className: 'podium-label',
+                            style: {
+                                paddingLeft: '16px',
+                                paddingRight: '16px'
+                            }
+                        }, "1")))
                     ]),
                     DOM.td({}, [
-                        DOM.div({}, [
+                        React.createElement('center', {}, DOM.div({style: {marginTop: '40px'}}, [
                             DOM.span({className: 'race-number'}, "42"),
                             ' ',
                             DOM.span({}, "Vyacheslav Goldenshteyn")
-                        ]),
+                        ])),
                         DOM.div({
                             style: {
-                                height: '20px',
-                                background: 'brown',
-                                marginTop: '60px',
+                                height: '40px',
+                                background: '#CD7F32',
                                 marginLeft: '5px',
-                                marginRight: '5px'
+                                marginRight: '5px',
+                                fontSize: '30px'
                             }
-                        })
+                        }, React.createElement('center', {}, DOM.span({
+                            className: 'podium-label',
+                            style: {
+                                paddingLeft: '9px',
+                                paddingRight: '9px'
+                            }
+                        }, "3")))
                     ]),
                     DOM.td({style: {width: '250px'}})
                 ])),
@@ -326,7 +344,7 @@ define(['react', 'react-bootstrap'], (React, ReactBootstrap) => {
                         ' ',
                         "Configuration"
                     ]),
-                    React.createElement(ReactBootstrap.PageItem, {}, "Registration"),
+                    React.createElement(ReactBootstrap.PageItem, {href: ""}, "Registration"),
                     React.createElement(ReactBootstrap.PageItem, {}, "Competition"),
                     React.createElement(ReactBootstrap.PageItem, {next: true, disabled: true}, [
                         "Results",

@@ -20,4 +20,11 @@
 }
 
 
+.podium-label {
+    border-radius: 50%;
+    background: white;
+    border: black solid 1px;
+}
+
+
 
