@@ -8,39 +8,29 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda'], function (React, ReactBootstrap, R) {
-    var Page = (function (_React$Component) {
-        _inherits(Page, _React$Component);
+define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
+    var ConfigurationView = (function (_React$Component) {
+        _inherits(ConfigurationView, _React$Component);
 
-        function Page() {
-            _classCallCheck(this, Page);
+        function ConfigurationView() {
+            _classCallCheck(this, ConfigurationView);
 
-            _get(Object.getPrototypeOf(Page.prototype), 'constructor', this).apply(this, arguments);
+            _get(Object.getPrototypeOf(ConfigurationView.prototype), 'constructor', this).apply(this, arguments);
         }
 
-        _createClass(Page, [{
+        _createClass(ConfigurationView, [{
             key: 'render',
             value: function render() {
                 var DOM = React.DOM;
 
-                var navigation = this.props.navigation;
-                var content = this.props.content;
-
-                return DOM.div({ className: 'container' }, DOM.div({ className: 'row' }, [React.createElement(ReactBootstrap.Navbar, {
-                    brand: "Gymkhana timing",
-                    inverse: true
-                }, React.createElement(ReactBootstrap.Nav, {
-                    right: true
-                }, R.map(function (navigationItem) {
-                    return React.createElement(ReactBootstrap.NavItem, {}, navigationItem);
-                }, navigation))), content]));
+                return DOM.div({}, "Configuration");
             }
         }]);
 
-        return Page;
+        return ConfigurationView;
     })(React.Component);
 
-    return Page;
+    return ConfigurationView;
 });
 
-//# sourceMappingURL=page.js.map
+//# sourceMappingURL=configuration.js.map
