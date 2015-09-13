@@ -1,4 +1,4 @@
-require(['ramda', 'shuttle', 'moment'], (R, Shuttle, moment) => {
+define(['ramda', 'shuttle', 'moment'], (R, Shuttle, moment) => {
     class Participant {
         id;
         number;

@@ -41,14 +41,16 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
         }, {
             key: 'getShuttleProps',
             value: function getShuttleProps(props) {
+                var _this = this;
+
                 return R.filter(function (prop) {
                     return prop.value instanceof Shuttle.Ref;
-                }, R.map((function (key) {
+                }, R.map(function (key) {
                     return {
                         key: key,
-                        value: this.props[key]
+                        value: _this.props[key]
                     };
-                }).bind(this), Object.keys(props)));
+                }, Object.keys(props)));
             }
         }, {
             key: 'updateListener',
@@ -74,9 +76,9 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
             value: function shouldComponentUpdate(nextProps, nextState) {
                 var computedState = this.computeState(nextProps);
 
-                return !R.reduce(R.and, true, R.map((function (key) {
-                    return R.eqDeep(computedState[key], this.state ? this.state[key] : null);
-                }).bind(this), Object.keys(computedState))) || R.eq(nextState, this.state);
+                //return !R.reduce(R.and, true, R.map((key) {
+                //        return R.eqDeep(computedState[key], this.state ? this.state[key] : null);
+                //    }.bind(this), Object.keys(computedState))) || R.eq(nextState, this.state);
 
                 return !R.eqDeep(this.computeState(nextProps), this.state);
             }

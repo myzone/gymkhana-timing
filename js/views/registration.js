@@ -14,59 +14,136 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle-react'], function (React, ReactBootstrap, ReactRouter, R, Shuttle, ShuttleReact) {
-    var ParticipantView = (function (_Shuttle$React$Component) {
-        _inherits(ParticipantView, _Shuttle$React$Component);
+define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle-react', 'utils/commons'], function (React, ReactBootstrap, ReactRouter, R, Shuttle, ShuttleReact, Commons) {
+    var Cell = (function (_Shuttle$React$Component) {
+        _inherits(Cell, _Shuttle$React$Component);
 
-        function ParticipantView(props) {
-            _classCallCheck(this, ParticipantView);
+        function Cell(props) {
+            _classCallCheck(this, Cell);
 
-            _get(Object.getPrototypeOf(ParticipantView.prototype), 'constructor', this).call(this, props);
+            _get(Object.getPrototypeOf(Cell.prototype), 'constructor', this).call(this, props);
         }
 
-        _createClass(ParticipantView, [{
+        _createClass(Cell, [{
             key: 'render',
             value: function render() {
                 var _this = this;
 
+                return React.DOM.textarea({
+                    defaultValue: this.state.value,
+                    onChange: function onChange(event) {
+                        _this.props.value.set(event.target.value);
+                    }
+                });
+            }
+        }]);
+
+        return Cell;
+    })(Shuttle.React.Component);
+
+    var ParticipantView = (function (_Shuttle$React$Component2) {
+        _inherits(ParticipantView, _Shuttle$React$Component2);
+
+        function ParticipantView(props) {
+            var _this2 = this;
+
+            _classCallCheck(this, ParticipantView);
+
+            _get(Object.getPrototypeOf(ParticipantView.prototype), 'constructor', this).call(this, props);
+
+            var participant = this.state.participant;
+
+            this.number = Shuttle.ref(participant.number);
+            this.country = Shuttle.ref(participant.country);
+            this.name = Shuttle.ref(participant.name);
+            this.motorcycle = Shuttle.ref(participant.motorcycle);
+            this.group = Shuttle.ref(participant.group);
+            this.birthday = Shuttle.ref(participant.birthday);
+            this.team = Shuttle.ref(participant.team);
+
+            this.listener = function (_, participant) {
+                return _this2.props.participant.set(participant);
+            };
+            this.participant = Shuttle.combine([this.number, this.country, this.name, this.motorcycle, this.group, this.birthday, this.team], function (number, country, name, motorcycle, group, birthday, team) {
+                return {
+                    id: participant.id,
+                    number: number,
+                    country: country,
+                    name: name,
+                    motorcycle: motorcycle,
+                    group: group,
+                    birthday: birthday,
+                    team: team
+                };
+            });
+        }
+
+        _createClass(ParticipantView, [{
+            key: 'componentDidMount',
+            value: function componentDidMount() {
+                _get(Object.getPrototypeOf(ParticipantView.prototype), 'componentDidMount', this).call(this);
+
+                this.participant.addListener(this.listener);
+            }
+        }, {
+            key: 'componentWillUnmount',
+            value: function componentWillUnmount() {
+                _get(Object.getPrototypeOf(ParticipantView.prototype), 'componentWillUnmount', this).call(this);
+
+                this.participant.removeListener(this.listener);
+            }
+        }, {
+            key: 'render',
+            value: function render() {
                 var DOM = React.DOM;
                 var participant = this.state.participant;
                 var onDelete = this.props.onDelete;
 
                 return DOM.tr({}, [DOM.td({ style: { width: '24px' } }, React.createElement(ReactBootstrap.Button, {
-                    disabled: participant.name.get() == "",
+                    disabled: this.props.last,
                     bsSize: 'xsmall',
                     onClick: onDelete
                 }, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'trash' }))), DOM.td({}, DOM.span({ className: 'race-number' }, participant.number)), DOM.td({}, DOM.img({
                     height: '20px',
                     src: 'http://www.geonames.org/flags/x/' + participant.country + '.gif'
-                })), DOM.td({}, DOM.textarea({
-                    onChange: function onChange(event) {
-                        _this.props.participant.flatMap(function (participant) {
-                            return participant.name;
-                        }).set(event.target.value);
-                    },
-                    value: participant.name.get()
-                })), DOM.td({}, DOM.textarea({}, participant.motorcycle)), DOM.td({}, DOM.textarea({}, participant.group)), DOM.td({}, participant.birthday), DOM.td({}, DOM.textarea({}, participant.team))]);
+                })), DOM.td({}, React.createElement(Cell, { value: this.name })), DOM.td({}, DOM.textarea({ defaultValue: participant.motorcycle })), DOM.td({}, DOM.textarea({ defaultValue: participant.group })), DOM.td({}, participant.birthday), DOM.td({}, DOM.textarea({ defaultValue: participant.team }))]);
             }
         }]);
 
         return ParticipantView;
     })(Shuttle.React.Component);
 
-    var RegistrationView = (function (_Shuttle$React$Component2) {
-        _inherits(RegistrationView, _Shuttle$React$Component2);
+    var RegistrationView = (function (_Shuttle$React$Component3) {
+        _inherits(RegistrationView, _Shuttle$React$Component3);
 
         function RegistrationView(props) {
+            var _this3 = this;
+
             _classCallCheck(this, RegistrationView);
 
             _get(Object.getPrototypeOf(RegistrationView.prototype), 'constructor', this).call(this, props);
+
+            this.listener = function (_, participant) {
+                if (participant.number.length != 0 || participant.country.length != 0 || participant.name.length != 0 || participant.motorcycle.length != 0 || participant.group.length != 0 || participant.team.length != 0) {
+
+                    var last = _this3.last;
+
+                    _this3.last = Shuttle.ref({ id: Commons.guid(), number: "", country: "", name: "", motorcycle: "", group: "", birthday: "", team: "" });
+                    _this3.last.addListener(_this3.listener);
+
+                    last.removeListener(_this3.listener);
+                    _this3.props.participants.set(R.append(last, _this3.state.participants));
+                }
+            };
+
+            this.last = Shuttle.ref({ id: Commons.guid(), number: "", country: "", name: "", motorcycle: "", group: "", birthday: "", team: "" });
+            this.last.addListener(this.listener);
         }
 
         _createClass(RegistrationView, [{
             key: 'render',
             value: function render() {
-                var _this2 = this;
+                var _this4 = this;
 
                 var DOM = React.DOM;
 
@@ -80,19 +157,22 @@ define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle
                     responsive: true,
                     hover: true,
                     striped: true
-                }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "#"), DOM.th({}, "Country"), DOM.th({}, "Name"), DOM.th({}, "Motorcycle"), DOM.th({}, "Group"), DOM.th({}, "Birthday"), DOM.th({}, "Team")])), DOM.tbody({}, [R.map(function (participant) {
+                }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "#"), DOM.th({}, "Country"), DOM.th({}, "Name"), DOM.th({}, "Motorcycle"), DOM.th({}, "Group"), DOM.th({}, "Birthday"), DOM.th({}, "Team")])), DOM.tbody({}, [R.map(function (participant, i) {
                     return React.createElement(ParticipantView, {
+                        key: participant.get().id,
                         participant: participant,
                         onDelete: function onDelete() {
-                            _this2.props.application.set({ participants: R.filter(function (p) {
-                                    return p === participant;
-                                }, _this2.state.application.participants) });
+                            _this4.props.participants.set(R.filter(function (p) {
+                                return p.get().id !== participant.get().id;
+                            }, _this4.state.participants));
                         }
                     });
-                }, this.state.application.participants), DOM.tr({}, [DOM.td({ style: { width: '24px' } }, React.createElement(ReactBootstrap.Button, {
-                    disabled: true,
-                    bsSize: 'xsmall'
-                }, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'trash' }))), DOM.td({}, ""), DOM.td({}, ""), DOM.td({}, ""), DOM.td({}, ""), DOM.td({}, ""), DOM.td({}, ""), DOM.td({}, "")])])])]);
+                }, this.state.participants), React.createElement(ParticipantView, {
+                    key: this.last.get().id,
+                    participant: this.last,
+                    last: true,
+                    onDelete: function onDelete() {}
+                })])])]);
             }
         }]);
 

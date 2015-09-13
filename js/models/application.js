@@ -8,7 +8,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-require(['ramda', 'shuttle', 'moment'], function (R, Shuttle, moment) {
+define(['ramda', 'shuttle', 'moment'], function (R, Shuttle, moment) {
     var Participant = function Participant(id, number, country, name, motorcycle, group, birthday, team) {
         _classCallCheck(this, Participant);
 

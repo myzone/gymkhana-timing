@@ -10,7 +10,7 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
         componentDidMount() {
             var updateListener = this.updateListener.bind(this);
 
-            R.forEach(function (shuttleProp) {
+            R.forEach((shuttleProp) => {
                 shuttleProp.value.addListener(updateListener);
             }, this.getShuttleProps(this.props));
         }
@@ -18,20 +18,20 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
         componentWillUnmount() {
             var updateListener = this.updateListener.bind(this);
 
-            R.forEach(function (shuttleProp) {
+            R.forEach((shuttleProp) => {
                 shuttleProp.value.removeListener(updateListener);
             }, this.getShuttleProps(this.props));
         }
 
         getShuttleProps(props) {
-            return R.filter(function (prop) {
+            return R.filter((prop) => {
                 return prop.value instanceof Shuttle.Ref;
-            }, R.map(function (key) {
+            }, R.map((key) => {
                 return {
                     key: key,
                     value: this.props[key]
                 };
-            }.bind(this), Object.keys(props)))
+            }, Object.keys(props)))
         }
 
         updateListener(_1, _2) {
@@ -43,7 +43,7 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
         }
 
         computeState(props) {
-            return R.reduce(function (object, prop) {
+            return R.reduce((object, prop) => {
                 object[prop.key] = prop.value.get();
 
                 return object;
@@ -53,9 +53,9 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
         shouldComponentUpdate(nextProps, nextState) {
             var computedState = this.computeState(nextProps);
 
-            return !R.reduce(R.and, true, R.map(function (key) {
-                    return R.eqDeep(computedState[key], this.state ? this.state[key] : null);
-                }.bind(this), Object.keys(computedState))) || R.eq(nextState, this.state);
+            //return !R.reduce(R.and, true, R.map((key) {
+            //        return R.eqDeep(computedState[key], this.state ? this.state[key] : null);
+            //    }.bind(this), Object.keys(computedState))) || R.eq(nextState, this.state);
 
             return !R.eqDeep(this.computeState(nextProps), this.state);
         }
