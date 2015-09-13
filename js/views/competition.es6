@@ -4,7 +4,6 @@ define(['react', 'react-bootstrap'], (React, ReactBootstrap) => {
             const DOM = React.DOM;
 
             const eventId = this.props.params.eventId;
-
             return DOM.div({}, [
                 React.createElement(ReactBootstrap.Pager, {}, [
                     React.createElement(ReactBootstrap.PageItem, {previous: true, href: `#event/${eventId}/registration`}, [

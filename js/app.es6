@@ -44,6 +44,27 @@ require.config({
 
 require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle', 'shuttle-react'], (React, ReactBootstrap, ReactRouter, R, $, Shuttle, ShuttleReact) => {
     require(['models/application', 'views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results'], (LocalStorage, PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView) => {
+        const ASs = Shuttle.ref({
+            participants: [Shuttle.ref({
+                id: 2,
+                number: "43",
+                country: "de",
+                name: Shuttle.ref("Vyacheslavzaza11 Goldenshteyn1"),
+                motorcycle: "Honda FMX 650",
+                group: "Group 3B",
+                birthday: "5.7.1993",
+                team: "Sommmmm Team"
+            }), Shuttle.ref({
+                id: 2,
+                number: "43",
+                country: "de",
+                name: Shuttle.ref("Vyacheslav Goldenshteyn1"),
+                motorcycle: "Honda FMX 650",
+                group: "Group 3B",
+                birthday: "5.7.1993",
+                team: "Sommmmm Team"
+            })]
+        });
         const Main = React.createClass({
             mixins: [Shuttle.React.Mixin],
             render: function () {
@@ -67,6 +88,13 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
                 ]);
             }
         });
+        class ApplicationRegistrationProvider extends React.Component {
+            render() {
+                return React.createElement(RegistrationView, {params: this.props.params, application: ASs})
+            }
+
+        }
+
 
         React.render(React.createElement(Main, {}, [
             React.createElement(PageView, {}, [
@@ -76,7 +104,10 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
                     React.createElement(ReactRouter.Route, {path: 'event/:eventId', component: EventView}, [
                         React.createElement(ReactRouter.IndexRoute, {component: ConfigurationView}),
                         React.createElement(ReactRouter.Route, {path: 'configuration', component: ConfigurationView}),
-                        React.createElement(ReactRouter.Route, {path: 'registration', component: RegistrationView}),
+                        React.createElement(ReactRouter.Route, {
+                            path: 'registration',
+                            component: ApplicationRegistrationProvider
+                        }),
                         React.createElement(ReactRouter.Route, {path: 'competition', component: CompetitionView}),
                         React.createElement(ReactRouter.Route, {path: 'results', component: ResultsView})
                     ])
