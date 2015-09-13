@@ -4,24 +4,7 @@
 //������� ���������
 //��������� ������� � ���., ...
 //��������� �������+������ � �������������
-define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle-react', 'utils/commons'], (React, ReactBootstrap, ReactRouter, R, Shuttle, ShuttleReact, Commons) => {
-
-
-    class Cell extends Shuttle.React.Component {
-
-        constructor(props) {
-            super(props);
-        }
-
-        render() {
-            return React.DOM.textarea({
-                defaultValue: this.state.value,
-                onChange: (event)=> {
-                    this.props.value.set(event.target.value);
-                }
-            })
-        }
-    }
+define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle-react', 'components/text-cell', 'components/date-cell', 'utils/commons'], (React, ReactBootstrap, ReactRouter, R, Shuttle, ShuttleReact, TextCellView, DateCellView, Commons) => {
 
     class ParticipantView extends Shuttle.React.Component {
 
@@ -92,11 +75,11 @@ define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle
                     height: '20px',
                     src: `http://www.geonames.org/flags/x/${participant.country}.gif`
                 })),
-                DOM.td({}, React.createElement(Cell, {value: this.name})),
-                DOM.td({}, DOM.textarea({defaultValue: participant.motorcycle})),
-                DOM.td({}, DOM.textarea({defaultValue: participant.group})),
-                DOM.td({}, participant.birthday),
-                DOM.td({}, DOM.textarea({defaultValue: participant.team}))
+                DOM.td({}, React.createElement(TextCellView, {value: this.name})),
+                DOM.td({}, React.createElement(TextCellView, {value: this.motorcycle})),
+                DOM.td({}, React.createElement(TextCellView, {value: this.group})),
+                DOM.td({}, React.createElement(DateCellView, {value: this.birthday})),
+                DOM.td({}, React.createElement(TextCellView, {value: this.team}))
             ]);
         }
 
@@ -121,7 +104,7 @@ define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle
 
                     const last = this.last;
 
-                    this.last = Shuttle.ref({id: Commons.guid(), number: "", country: "", name: "", motorcycle: "", group: "", birthday: "", team: ""});
+                    this.last = Shuttle.ref({id: Commons.guid(), number: "", country: "", name: "", motorcycle: "", group: "", birthday: "2015-09-01", team: ""});
                     this.last.addListener(this.listener);
 
                     last.removeListener(this.listener);
@@ -129,7 +112,7 @@ define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle
                 }
             };
 
-            this.last = Shuttle.ref({id: Commons.guid(), number: "", country: "", name: "", motorcycle: "", group: "", birthday: "", team: ""});
+            this.last = Shuttle.ref({id: Commons.guid(), number: "", country: "", name: "", motorcycle: "", group: "", birthday: "2015-09-01", team: ""});
             this.last.addListener(this.listener)
         }
 
@@ -153,7 +136,7 @@ define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle
                 ]),
 
                 React.createElement(ReactBootstrap.Table, {
-                    className: 'dataEditable',
+                    className: 'data-editable',
                     responsive: true,
                     hover: true,
                     striped: true

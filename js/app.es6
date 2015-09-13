@@ -5,7 +5,7 @@ require.config({
         'moment': 'libs/moment-with-locales-2.10.2',
 
         'react': 'libs/react-0.13.1',
-        'react-bootstrap': 'libs/react-bootstrap-0.20.3',
+        'react-bootstrap': 'libs/react-bootstrap-0.25.2',
         'react-router': 'libs/react-router-1.0.0-rc1',
 
         'shuttle': 'libs/shuttle-snapshot',
@@ -26,6 +26,9 @@ require.config({
         'views/registration': 'views/registration',
         'views/competition': 'views/competition',
         'views/results': 'views/results',
+
+        'components/text-cell': 'views/components/text-cell',
+        'components/date-cell': 'views/components/date-cell',
 
         'utils/commons': 'utils/commons'
     },
@@ -50,20 +53,20 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
             participants: Shuttle.ref([Shuttle.ref({
                 id: 2,
                 number: "43",
-                country: "de",
+                country: "il",
                 name: "Vyacheslavzaza11 Goldenshteyn1",
                 motorcycle: "Honda FMX 650",
                 group: "Group 3B",
-                birthday: "5.7.1993",
+                birthday: "2015-09-01",
                 team: "Sommmmm Team"
             }), Shuttle.ref({
                 id: 3,
                 number: "43",
-                country: "de",
+                country: "il",
                 name: "Vyacheslav Goldenshteyn1",
                 motorcycle: "Honda FMX 650",
                 group: "Group 3B",
-                birthday: "5.7.1993",
+                birthday: "2015-09-01",
                 team: "Sommmmm Team"
             })])
         });

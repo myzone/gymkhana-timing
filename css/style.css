@@ -25,7 +25,7 @@
     background: white;
     border: black solid 1px;
 }
-.dataEditable textarea {
+.data-editable textarea {
     border: 0;
     display: block;
     resize: none;
@@ -37,8 +37,14 @@
     height: 20px;
     background: transparent;
 }
-.dataEditable tbody td {
+.data-editable tbody td {
     cursor: text;
+}
+
+.date-cell {
+    /*text-decoration: none;*/
+    color: #337ab7;
+    border-bottom: dashed 1px #337ab7;
 }
 
 
