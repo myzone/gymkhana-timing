@@ -23,7 +23,9 @@ define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
             value: function render() {
                 var DOM = React.DOM;
 
-                return DOM.div({}, [DOM.table({ style: { width: '100%' } }, DOM.tr({}, [DOM.td({ style: { width: '250px' } }), DOM.td({}, [React.createElement('center', {}, DOM.div({ style: { marginTop: '20px' } }, [DOM.span({ className: 'race-number' }, "42"), ' ', DOM.span({}, "Vyacheslav Goldenshteyn")])), DOM.div({
+                var eventId = this.props.params.eventId;
+
+                return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, { previous: true, href: '#event/' + eventId + '/competition' }, [React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-left' }), ' ', "Competition"]), React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/results' }, "Results")]), DOM.table({ style: { width: '100%' } }, DOM.tr({}, [DOM.td({ style: { width: '250px' } }), DOM.td({}, [React.createElement('center', {}, DOM.div({ style: { marginTop: '20px' } }, [DOM.span({ className: 'race-number' }, "42"), ' ', DOM.span({}, "Vyacheslav Goldenshteyn")])), DOM.div({
                     style: {
                         background: 'silver',
                         height: '60px',

@@ -2,10 +2,11 @@ require.config({
     paths: {
         'ramda': 'libs/ramda-0.13.min',
         'jquery': 'libs/jquery-2.1.3',
+        'moment': 'libs/moment-with-locales-2.10.2',
 
         'react': 'libs/react-0.13.1',
         'react-bootstrap': 'libs/react-bootstrap-0.20.3',
-        'react-router': 'libs/react-router-0.13.3',
+        'react-router': 'libs/react-router-1.0.0-rc1',
 
         'shuttle': 'libs/shuttle-snapshot',
         'shuttle-react': 'libs/shuttle-react-snapshot',
@@ -17,9 +18,11 @@ require.config({
         'justified': 'libs/jquery.justified-1.0.0',
         'parallax': 'libs/parallax-2.1.3',
 
-        'views/switcher': 'views/switcher',
+        'models/local-storage': 'models/application',
 
         'views/page': 'views/page',
+        'views/events': 'views/events',
+        'views/event': 'views/event',
         'views/registration': 'views/registration',
         'views/competition': 'views/competition',
         'views/results': 'views/results'
@@ -38,26 +41,9 @@ require.config({
     waitSeconds: 120
 });
 
+
 require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle', 'shuttle-react'], (React, ReactBootstrap, ReactRouter, R, $, Shuttle, ShuttleReact) => {
-    require(['views/page', 'views/configuration', 'views/registration', 'views/competition', 'views/results'], (PageView, ConfigurationView, RegistrationView, CompetitionView, ResultsView) => {
-        var application = Shuttle.ref({});
-
-        var navigation = [
-            {
-                label: React.DOM.span({}, React.createElement(ReactBootstrap.Glyphicon, {glyph: 'file'}), ' New'),
-                handler: function () {
-                }
-            }, {
-                label: React.DOM.span({}, React.createElement(ReactBootstrap.Glyphicon, {glyph: 'import'}), ' Import'),
-                handler: function () {
-                }
-            }, {
-                label: React.DOM.span({}, React.createElement(ReactBootstrap.Glyphicon, {glyph: 'export'}), ' Export'),
-                handler: function () {
-                }
-            }
-        ];
-
+    require(['models/application', 'views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results'], (LocalStorage, PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView) => {
         const Main = React.createClass({
             mixins: [Shuttle.React.Mixin],
             render: function () {
@@ -77,61 +63,26 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
                         'css/timeline.css'
                     ]),
 
-
-                    React.createElement(PageView, {
-                        key: 'main-page',
-                        navigation: navigation,
-                        content: DOM.div({}, [
-                            DOM.div({}, [
-                                React.createElement(ReactBootstrap.PageHeader, {}, "Championship of Ukraine 2015"),
-
-                                React.createElement(ReactBootstrap.Pager, {}, [
-                                    React.createElement(ReactBootstrap.PageItem, {
-                                        previous: true,
-                                        onClick: () => {
-                                            router.transitionTo('registration', {
-                                                eventId: this.props.getParams().eventId
-                                            });
-                                        }
-                                    }, [
-                                        React.createElement(ReactBootstrap.Glyphicon, {glyph: 'menu-left'}),
-                                        ' ',
-                                        "Registration"
-                                    ]),
-                                    React.createElement(ReactBootstrap.PageItem, {href: ""}, "Competition"),
-                                    React.createElement(ReactBootstrap.PageItem, {
-                                        next: true,
-                                        disabled: true,
-                                        onClick: () => {
-                                            router.transitionTo('results', {
-                                                eventId: this.props.getParams().eventId
-                                            });
-                                        }
-                                    }, [
-                                        "Results",
-                                        ' ',
-                                        React.createElement(ReactBootstrap.Glyphicon, {glyph: 'menu-right'})
-                                    ])
-                                ]),
-
-                                DOM.h1({}, 'ConfigurationView'),
-                                React.createElement(ConfigurationView, {}),
-                                DOM.h1({}, 'RegistrationView'),
-                                React.createElement(RegistrationView, {}),
-                                DOM.h1({}, 'CompetitionView'),
-                                React.createElement(CompetitionView, {}),
-                                DOM.h1({}, 'ResultsView'),
-                                React.createElement(ResultsView, {})
-                            ])
-                        ])
-                    })
+                    this.props.children
                 ]);
             }
         });
 
-        React.render(React.createElement(Main, {
-            application: application
-        }), document.getElementById('root'))
+        React.render(React.createElement(Main, {}, [
+            React.createElement(PageView, {}, [
+                React.createElement(ReactRouter.Router, {}, [
+                    React.createElement(ReactRouter.Route, {path: '/', component: EventsView}),
+
+                    React.createElement(ReactRouter.Route, {path: 'event/:eventId', component: EventView}, [
+                        React.createElement(ReactRouter.IndexRoute, {component: ConfigurationView}),
+                        React.createElement(ReactRouter.Route, {path: 'configuration', component: ConfigurationView}),
+                        React.createElement(ReactRouter.Route, {path: 'registration', component: RegistrationView}),
+                        React.createElement(ReactRouter.Route, {path: 'competition', component: CompetitionView}),
+                        React.createElement(ReactRouter.Route, {path: 'results', component: ResultsView})
+                    ])
+                ])
+            ])
+        ]), document.getElementById('root'));
     });
 });
 

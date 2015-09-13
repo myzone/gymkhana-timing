@@ -9,30 +9,28 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
-    var ConfigurationView = (function (_React$Component) {
-        _inherits(ConfigurationView, _React$Component);
+    var EventView = (function (_React$Component) {
+        _inherits(EventView, _React$Component);
 
-        function ConfigurationView() {
-            _classCallCheck(this, ConfigurationView);
+        function EventView() {
+            _classCallCheck(this, EventView);
 
-            _get(Object.getPrototypeOf(ConfigurationView.prototype), 'constructor', this).apply(this, arguments);
+            _get(Object.getPrototypeOf(EventView.prototype), 'constructor', this).apply(this, arguments);
         }
 
-        _createClass(ConfigurationView, [{
+        _createClass(EventView, [{
             key: 'render',
             value: function render() {
                 var DOM = React.DOM;
 
-                var eventId = this.props.params.eventId;
-
-                return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/configuration' }, "Configuration"), React.createElement(ReactBootstrap.PageItem, { next: true, href: '#event/' + eventId + '/registration' }, ["Registration", ' ', React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-right' })])]), "Configuration"]);
+                return DOM.div({}, [React.createElement(ReactBootstrap.PageHeader, {}, "Championship of Ukraine 2015"), this.props.children]);
             }
         }]);
 
-        return ConfigurationView;
+        return EventView;
     })(React.Component);
 
-    return ConfigurationView;
+    return EventView;
 });
 
-//# sourceMappingURL=configuration.js.map
+//# sourceMappingURL=event.js.map

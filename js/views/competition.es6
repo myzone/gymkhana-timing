@@ -3,7 +3,19 @@ define(['react', 'react-bootstrap'], (React, ReactBootstrap) => {
         render() {
             const DOM = React.DOM;
 
+            const eventId = this.props.params.eventId;
+
             return DOM.div({}, [
+                React.createElement(ReactBootstrap.Pager, {}, [
+                    React.createElement(ReactBootstrap.PageItem, {previous: true, href: `#event/${eventId}/registration`}, [
+                        React.createElement(ReactBootstrap.Glyphicon, {glyph: 'menu-left'}), ' ', "Registration"
+                    ]),
+                    React.createElement(ReactBootstrap.PageItem, {href: `#event/${eventId}/competition`}, "Competition"),
+                    React.createElement(ReactBootstrap.PageItem, {next: true, href: `#event/${eventId}/results`}, [
+                        "Results", ' ', React.createElement(ReactBootstrap.Glyphicon, {glyph: 'menu-right'})
+                    ])
+                ]),
+
                 React.createElement(ReactBootstrap.Table, {responsive: true, hover: true, striped: true}, [
                     DOM.tbody({}, [
                         DOM.tr({}, [

@@ -1,9 +1,21 @@
-define(['react', 'react-bootstrap'], (React, ReactBootstrap) => {
+define(['react', 'react-bootstrap', 'react-router'], (React, ReactBootstrap, ReactRouter) => {
     class RegistrationView extends React.Component {
         render() {
             const DOM = React.DOM;
 
+            const eventId = this.props.params.eventId;
+
             return DOM.div({}, [
+                React.createElement(ReactBootstrap.Pager, {}, [
+                    React.createElement(ReactBootstrap.PageItem, {previous: true, href: `#event/${eventId}/configuration`}, [
+                        React.createElement(ReactBootstrap.Glyphicon, {glyph: 'menu-left'}), ' ', "Configuration"
+                    ]),
+                    React.createElement(ReactBootstrap.PageItem, {href: `#event/${eventId}/registration`}, "Registration"),
+                    React.createElement(ReactBootstrap.PageItem, {next: true, href: `#event/${eventId}/competition`}, [
+                        "Competition", ' ', React.createElement(ReactBootstrap.Glyphicon, {glyph: 'menu-right'})
+                    ])
+                ]),
+
                 React.createElement(ReactBootstrap.Table, {responsive: true, hover: true, striped: true}, [
                     DOM.thead({}, DOM.tr({}, [
                         DOM.td({}, ""),

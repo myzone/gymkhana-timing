@@ -23,17 +23,7 @@ define(['react', 'react-bootstrap', 'ramda'], function (React, ReactBootstrap, R
             value: function render() {
                 var DOM = React.DOM;
 
-                var navigation = this.props.navigation;
-                var content = this.props.content;
-
-                return DOM.div({ className: 'container' }, DOM.div({ className: 'row' }, [React.createElement(ReactBootstrap.Navbar, {
-                    brand: "Gymkhana timing",
-                    inverse: true
-                }, React.createElement(ReactBootstrap.Nav, {
-                    right: true
-                }, R.map(function (navigationItem) {
-                    return React.createElement(ReactBootstrap.NavItem, {}, navigationItem);
-                }, navigation))), content]));
+                return DOM.div({ className: 'container' }, DOM.div({ className: 'row' }, [React.createElement(ReactBootstrap.Navbar, { brand: "Gymkhana timing", inverse: true }, React.createElement(ReactBootstrap.Nav, { right: true }, [React.createElement(ReactBootstrap.NavItem, {}, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'file' }), ' New'), React.createElement(ReactBootstrap.NavItem, {}, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'import' }), ' Import'), React.createElement(ReactBootstrap.NavItem, {}, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'export' }), ' Export')])), this.props.children]));
             }
         }]);
 
