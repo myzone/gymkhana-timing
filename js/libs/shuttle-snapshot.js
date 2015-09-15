@@ -78,7 +78,7 @@ define(['ramda'], function (R) {
         result.addListener = function (listener) {
             listeners.add(listener);
 
-            listener(state.value, state.value);
+            //listener(state.value, state.value);
         };
         result.removeListener = function (listener) {
             listeners.delete(listener);

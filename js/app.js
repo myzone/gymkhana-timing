@@ -39,6 +39,7 @@ require.config({
 
         'components/text-cell': 'views/components/text-cell',
         'components/date-cell': 'views/components/date-cell',
+        'components/select-cell': 'views/components/select-cell',
 
         'utils/commons': 'utils/commons'
     },
@@ -105,6 +106,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
                 key: 'render',
                 value: function render() {
                     return React.createElement(RegistrationView, {
+                        key: 'view',
                         params: this.props.params,
                         participants: application.flatMap(function (application) {
                             return application.participants;
@@ -116,10 +118,30 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
             return ApplicationRegistrationProvider;
         })(React.Component);
 
-        React.render(React.createElement(Main, {}, [React.createElement(PageView, {}, [React.createElement(ReactRouter.Router, {}, [React.createElement(ReactRouter.Route, { path: '/', component: EventsView }), React.createElement(ReactRouter.Route, { path: 'event/:eventId', component: EventView }, [React.createElement(ReactRouter.IndexRoute, { component: ConfigurationView }), React.createElement(ReactRouter.Route, { path: 'configuration', component: ConfigurationView }), React.createElement(ReactRouter.Route, {
+        React.render(React.createElement(Main, { key: 'main' }, [React.createElement(PageView, { key: 'page' }, [React.createElement(ReactRouter.Router, { key: 'router' }, [React.createElement(ReactRouter.Route, { key: 'index-route', path: '/', component: EventsView }), React.createElement(ReactRouter.Route, {
+            key: 'event-route',
+            path: 'event/:eventId',
+            component: EventView
+        }, [React.createElement(ReactRouter.IndexRoute, {
+            key: 'event-index-route',
+            component: ConfigurationView
+        }), React.createElement(ReactRouter.Route, {
+            key: 'event-configuration-route',
+            path: 'configuration',
+            component: ConfigurationView
+        }), React.createElement(ReactRouter.Route, {
+            key: 'event-registration-route',
             path: 'registration',
             component: ApplicationRegistrationProvider
-        }), React.createElement(ReactRouter.Route, { path: 'competition', component: CompetitionView }), React.createElement(ReactRouter.Route, { path: 'results', component: ResultsView })])])])]), document.getElementById('root'));
+        }), React.createElement(ReactRouter.Route, {
+            key: 'event-competition-route',
+            path: 'competition',
+            component: CompetitionView
+        }), React.createElement(ReactRouter.Route, {
+            key: 'event-results-route',
+            path: 'results',
+            component: ResultsView
+        })])])])]), document.getElementById('root'));
     });
 });
 

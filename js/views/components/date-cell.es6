@@ -5,25 +5,24 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
             super(props);
         }
 
-        //this.props.value.set(event.target.value);
-
         render() {
             return React.createElement(ReactBootstrap.OverlayTrigger, {
+                key: 'cell-overlay',
                 trigger: 'click',
-                rootClose: 'true',
+                rootClose: true,
                 placement: 'top',
-                overlay: React.createElement(ReactBootstrap.Popover, {}, [
-                    React.DOM.form({}, [
-                        React.createElement(ReactBootstrap.Input, {
-                            ref: 'input',
-                            type: "date",
-                            defaultValue: this.state.value,
-                            onChange: (event) => this.props.value.set(event.target.value)
-                        })
-                    ])
+                overlay: React.createElement(ReactBootstrap.Popover, {key: 'cell-popover'}, [
+                    React.createElement(ReactBootstrap.Input, {
+                        key: 'cell-input',
+                        ref: 'input',
+                        type: "date",
+                        defaultValue: this.state.value,
+                        onChange: (event) => this.props.value.set(event.target.value)
+                    })
                 ])
-            }, React.DOM.span({className: 'date-cell'}, this.state.value));
+            }, React.DOM.span({key: 'cell-value', className: 'date-cell'}, this.state.value));
         }
+
     }
 
     return DateCellView;

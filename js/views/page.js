@@ -23,7 +23,11 @@ define(['react', 'react-bootstrap', 'ramda'], function (React, ReactBootstrap, R
             value: function render() {
                 var DOM = React.DOM;
 
-                return DOM.div({ className: 'container' }, DOM.div({ className: 'row' }, [React.createElement(ReactBootstrap.Navbar, { brand: "Gymkhana timing", inverse: true }, React.createElement(ReactBootstrap.Nav, { right: true }, [React.createElement(ReactBootstrap.NavItem, {}, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'file' }), ' New'), React.createElement(ReactBootstrap.NavItem, {}, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'import' }), ' Import'), React.createElement(ReactBootstrap.NavItem, {}, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'export' }), ' Export')])), this.props.children]));
+                return DOM.div({ key: 'container', className: 'container' }, DOM.div({ key: 'row', className: 'row' }, [React.createElement(ReactBootstrap.Navbar, {
+                    key: 'navigation-bar',
+                    brand: "Gymkhana timing",
+                    inverse: true
+                }, React.createElement(ReactBootstrap.Nav, { key: 'navigation-bar-inner', right: true }, [React.createElement(ReactBootstrap.NavItem, { key: 'new' }, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'file' }), ' New'), React.createElement(ReactBootstrap.NavItem, { key: 'import' }, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'import' }), ' Import'), React.createElement(ReactBootstrap.NavItem, { key: 'export' }, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'export' }), ' Export')])), this.props.children]));
             }
         }]);
 

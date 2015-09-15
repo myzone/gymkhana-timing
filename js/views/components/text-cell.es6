@@ -7,10 +7,14 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
 
         render() {
             return React.DOM.textarea({
+                key: 'cell-textarea',
                 defaultValue: this.state.value,
+                className: this.props.className,
+                style: this.props.style,
                 onChange: (event) => this.props.value.set(event.target.value)
             })
         }
+
     }
 
     return TextCellView;

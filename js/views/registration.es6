@@ -4,7 +4,7 @@
 //������� ���������
 //��������� ������� � ���., ...
 //��������� �������+������ � �������������
-define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle-react', 'components/text-cell', 'components/date-cell', 'utils/commons'], (React, ReactBootstrap, ReactRouter, R, Shuttle, ShuttleReact, TextCellView, DateCellView, Commons) => {
+define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle-react', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'utils/commons'], (React, ReactBootstrap, ReactRouter, R, Shuttle, ShuttleReact, TextCellView, DateCellView, SelectCellView, Commons) => {
 
     class ParticipantView extends Shuttle.React.Component {
 
@@ -54,32 +54,50 @@ define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle
         }
 
         componentWillUnmount() {
-            super.componentWillUnmount();
-
             this.participant.removeListener(this.listener);
+
+            super.componentWillUnmount();
         }
 
         render() {
             const DOM = React.DOM;
-            const participant = this.state.participant;
             const onDelete = this.props.onDelete;
 
-            return DOM.tr({}, [
-                DOM.td({style: {width: '24px'}}, React.createElement(ReactBootstrap.Button, {
+            return DOM.tr({key: 'row'}, [
+                DOM.td({key: 'trash', style: {width: '24px'}}, React.createElement(ReactBootstrap.Button, {
+                    key: 'button',
                     disabled: this.props.last,
                     bsSize: 'xsmall',
                     onClick: onDelete
-                }, React.createElement(ReactBootstrap.Glyphicon, {glyph: 'trash'}))),
-                DOM.td({}, DOM.span({className: 'race-number'}, participant.number)),
-                DOM.td({}, DOM.img({
-                    height: '20px',
-                    src: `http://www.geonames.org/flags/x/${participant.country}.gif`
+                }, React.createElement(ReactBootstrap.Glyphicon, {key: 'glyph', glyph: 'trash'}))),
+                DOM.td({key: 'number'}, React.createElement(TextCellView, {
+                    key: 'number-cell',
+                    className: 'race-number',
+                    style: {width: '40px'},
+                    value: this.number
                 })),
-                DOM.td({}, React.createElement(TextCellView, {value: this.name})),
-                DOM.td({}, React.createElement(TextCellView, {value: this.motorcycle})),
-                DOM.td({}, React.createElement(TextCellView, {value: this.group})),
-                DOM.td({}, React.createElement(DateCellView, {value: this.birthday})),
-                DOM.td({}, React.createElement(TextCellView, {value: this.team}))
+                DOM.td({key: 'country'}, DOM.div({key: 'country-inner', style: {height: '20px'}}, React.createElement(SelectCellView, {
+                    key: 'country-cell',
+                    value: this.country,
+                    items: [
+                        "ua",
+                        "ru",
+                        "by",
+                        "pl",
+                        "md",
+                        "ro"
+                    ],
+                    renderer: (item) => DOM.img({
+                        key: 'image',
+                        width: '32px',
+                        src: `http://www.geonames.org/flags/x/${item}.gif`
+                    })
+                }))),
+                DOM.td({key: 'name'}, React.createElement(TextCellView, {key: 'name-cell', value: this.name})),
+                DOM.td({key: 'motorcycle'}, React.createElement(TextCellView, {key: 'motorcycle-cell', value: this.motorcycle})),
+                DOM.td({key: 'group'}, React.createElement(TextCellView, {key: 'group-cell', value: this.group})),
+                DOM.td({key: 'birthday'}, React.createElement(DateCellView, {key: 'birthday-cell', value: this.birthday})),
+                DOM.td({key: 'team'}, React.createElement(TextCellView, {key: 'team-cell', value: this.team}))
             ]);
         }
 
@@ -94,6 +112,20 @@ define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle
         constructor(props) {
             super(props);
 
+            const generateLast = () => {
+                this.last = Shuttle.ref({
+                    id: Commons.guid(),
+                    number: "",
+                    country: "ua",
+                    name: "",
+                    motorcycle: "",
+                    group: "",
+                    birthday: "2015-09-01",
+                    team: ""
+                });
+                this.last.addListener(this.listener);
+            };
+
             this.listener = (_, participant) => {
                 if (participant.number.length != 0
                     || participant.country.length != 0
@@ -103,17 +135,14 @@ define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle
                     || participant.team.length != 0) {
 
                     const last = this.last;
-
-                    this.last = Shuttle.ref({id: Commons.guid(), number: "", country: "", name: "", motorcycle: "", group: "", birthday: "2015-09-01", team: ""});
-                    this.last.addListener(this.listener);
+                    generateLast();
 
                     last.removeListener(this.listener);
                     this.props.participants.set(R.append(last, this.state.participants));
                 }
             };
 
-            this.last = Shuttle.ref({id: Commons.guid(), number: "", country: "", name: "", motorcycle: "", group: "", birthday: "2015-09-01", team: ""});
-            this.last.addListener(this.listener)
+            generateLast();
         }
 
         render() {
@@ -121,52 +150,60 @@ define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle
 
             const eventId = this.props.params.eventId;
 
-            return DOM.div({}, [
-                React.createElement(ReactBootstrap.Pager, {}, [
+            return DOM.div({key: 'registration-root'}, [
+                React.createElement(ReactBootstrap.Pager, {key: 'pager-root'}, [
                     React.createElement(ReactBootstrap.PageItem, {
+                        key: 'previous',
                         previous: true,
                         href: `#event/${eventId}/configuration`
                     }, [
-                        React.createElement(ReactBootstrap.Glyphicon, {glyph: 'menu-left'}), ' ', "Configuration"
+                        React.createElement(ReactBootstrap.Glyphicon, {key: 'glyph', glyph: 'menu-left'}), ' ', "Configuration"
                     ]),
-                    React.createElement(ReactBootstrap.PageItem, {href: `#event/${eventId}/registration`}, "Registration"),
-                    React.createElement(ReactBootstrap.PageItem, {next: true, href: `#event/${eventId}/competition`}, [
-                        "Competition", ' ', React.createElement(ReactBootstrap.Glyphicon, {glyph: 'menu-right'})
+                    React.createElement(ReactBootstrap.PageItem, {
+                        key: 'current',
+                        href: `#event/${eventId}/registration`
+                    }, "Registration"),
+                    React.createElement(ReactBootstrap.PageItem, {
+                        key: 'next',
+                        next: true,
+                        href: `#event/${eventId}/competition`
+                    }, [
+                        "Competition", ' ', React.createElement(ReactBootstrap.Glyphicon, {key: 'glyph', glyph: 'menu-right'})
                     ])
                 ]),
 
                 React.createElement(ReactBootstrap.Table, {
+                    key: 'table',
                     className: 'data-editable',
                     responsive: true,
                     hover: true,
                     striped: true
                 }, [
-                    DOM.thead({}, DOM.tr({}, [
-                        DOM.td({}, ""),
-                        DOM.td({}, "#"),
-                        DOM.th({}, "Country"),
-                        DOM.th({}, "Name"),
-                        DOM.th({}, "Motorcycle"),
-                        DOM.th({}, "Group"),
-                        DOM.th({}, "Birthday"),
-                        DOM.th({}, "Team")
+                    DOM.thead({key: 'table-head'}, DOM.tr({key: 'head-row'}, [
+                        DOM.td({key: 'id-header'}, ""),
+                        DOM.td({key: 'number-header'}, "#"),
+                        DOM.th({key: 'country-header'}, "Country"),
+                        DOM.th({key: 'name-header'}, "Name"),
+                        DOM.th({key: 'motorcycle-header'}, "Motorcycle"),
+                        DOM.th({key: 'group-header'}, "Group"),
+                        DOM.th({key: 'birthday-header'}, "Birthday"),
+                        DOM.th({key: 'team-header'}, "Team")
                     ])),
 
-                    DOM.tbody({}, [
-                        R.map((participant, i) => React.createElement(ParticipantView, {
-                                key: participant.get().id,
-                                participant: participant,
-                                onDelete: () => {
-                                    this.props.participants.set(R.filter((p) => p.get().id !== participant.get().id, this.state.participants))
-                                }
-                        }), this.state.participants),
-
-                        React.createElement(ParticipantView, {
+                    DOM.tbody({key: 'table-body'}, [
+                        R.append(React.createElement(ParticipantView, {
                             key: this.last.get().id,
                             participant: this.last,
                             last: true,
-                            onDelete: () => {}
-                        })
+                            onDelete: () => {
+                            }
+                        }), R.map((participant) => React.createElement(ParticipantView, {
+                            key: participant.get().id,
+                            participant: participant,
+                            onDelete: () => {
+                                this.props.participants.set(R.filter((p) => p.get().id !== participant.get().id, this.state.participants))
+                            }
+                        }), this.state.participants))
                     ])
                 ])
             ]);

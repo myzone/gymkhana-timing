@@ -23,7 +23,7 @@ define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
             value: function render() {
                 var DOM = React.DOM;
 
-                return DOM.div({}, [React.createElement(ReactBootstrap.PageHeader, {}, "Championship of Ukraine 2015"), this.props.children]);
+                return DOM.div({ key: 'event-root' }, [React.createElement(ReactBootstrap.PageHeader, { key: 'header' }, "Championship of Ukraine 2015"), DOM.div({ key: 'children' }, this.props.children)]);
             }
         }]);
 

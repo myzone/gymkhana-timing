@@ -9,42 +9,48 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/commons'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, Commons) {
-    var DateCellView = (function (_Shuttle$React$Component) {
-        _inherits(DateCellView, _Shuttle$React$Component);
+    var SelectCellView = (function (_Shuttle$React$Component) {
+        _inherits(SelectCellView, _Shuttle$React$Component);
 
-        function DateCellView(props) {
-            _classCallCheck(this, DateCellView);
+        function SelectCellView(props) {
+            _classCallCheck(this, SelectCellView);
 
-            _get(Object.getPrototypeOf(DateCellView.prototype), 'constructor', this).call(this, props);
+            _get(Object.getPrototypeOf(SelectCellView.prototype), 'constructor', this).call(this, props);
         }
 
-        _createClass(DateCellView, [{
+        _createClass(SelectCellView, [{
             key: 'render',
             value: function render() {
                 var _this = this;
+
+                var renderer = this.props.renderer;
 
                 return React.createElement(ReactBootstrap.OverlayTrigger, {
                     key: 'cell-overlay',
                     trigger: 'click',
                     rootClose: true,
                     placement: 'top',
-                    overlay: React.createElement(ReactBootstrap.Popover, { key: 'cell-popover' }, [React.createElement(ReactBootstrap.Input, {
-                        key: 'cell-input',
-                        ref: 'input',
-                        type: "date",
-                        defaultValue: this.state.value,
-                        onChange: function onChange(event) {
-                            return _this.props.value.set(event.target.value);
-                        }
-                    })])
-                }, React.DOM.span({ key: 'cell-value', className: 'date-cell' }, this.state.value));
+                    overlay: React.createElement(ReactBootstrap.Popover, {
+                        key: 'cell-popover',
+                        className: 'with-scroll',
+                        style: { height: '140px' }
+                    }, [React.createElement(ReactBootstrap.ListGroup, { key: 'cell-list' }, [R.mapIndexed(function (item, i) {
+                        return React.createElement(ReactBootstrap.ListGroupItem, {
+                            key: i,
+                            bsStyle: _this.state.value == item ? 'info' : 'default',
+                            onClick: function onClick() {
+                                return _this.props.value.set(item);
+                            }
+                        }, renderer(item));
+                    }, this.props.items)])])
+                }, renderer(this.state.value));
             }
         }]);
 
-        return DateCellView;
+        return SelectCellView;
     })(Shuttle.React.Component);
 
-    return DateCellView;
+    return SelectCellView;
 });
 
-//# sourceMappingURL=date-cell.js.map
+//# sourceMappingURL=select-cell.js.map

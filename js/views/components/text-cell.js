@@ -24,7 +24,10 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                 var _this = this;
 
                 return React.DOM.textarea({
+                    key: 'cell-textarea',
                     defaultValue: this.state.value,
+                    className: this.props.className,
+                    style: this.props.style,
                     onChange: function onChange(event) {
                         return _this.props.value.set(event.target.value);
                     }

@@ -21,9 +21,7 @@ define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
         _createClass(EventsView, [{
             key: 'render',
             value: function render() {
-                var DOM = React.DOM;
-
-                return React.createElement(ReactBootstrap.ListGroup, {}, [React.createElement(ReactBootstrap.ListGroupItem, { href: '#/event/asd1' }, "Championship of Ukraine 2013"), React.createElement(ReactBootstrap.ListGroupItem, { href: '#/event/asd2' }, "Championship of Ukraine 2014"), React.createElement(ReactBootstrap.ListGroupItem, { href: '#/event/asd3' }, "Championship of Ukraine 2015")]);
+                return React.createElement(ReactBootstrap.ListGroup, { key: 'events-list' }, [React.createElement(ReactBootstrap.ListGroupItem, { key: '0', href: '#/event/asd1' }, "Championship of Ukraine 2013"), React.createElement(ReactBootstrap.ListGroupItem, { key: '1', href: '#/event/asd2' }, "Championship of Ukraine 2014"), React.createElement(ReactBootstrap.ListGroupItem, { key: '2', href: '#/event/asd3' }, "Championship of Ukraine 2015")]);
             }
         }]);
 

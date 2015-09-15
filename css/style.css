@@ -4,7 +4,7 @@
 }
 
 .race-number {
-    font-family: Race1;
+    font-family: Race1 !important;
 }
 
 .selected-row ~ .selected-row-after > td {
@@ -45,6 +45,10 @@
     /*text-decoration: none;*/
     color: #337ab7;
     border-bottom: dashed 1px #337ab7;
+}
+
+.with-scroll {
+    overflow-y: scroll;
 }
 
 

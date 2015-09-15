@@ -3,10 +3,10 @@ define(['react', 'react-bootstrap'], (React, ReactBootstrap) => {
         render() {
             const DOM = React.DOM;
 
-            return DOM.div({}, [
-                React.createElement(ReactBootstrap.PageHeader, {}, "Championship of Ukraine 2015"),
+            return DOM.div({key: 'event-root'}, [
+                React.createElement(ReactBootstrap.PageHeader, {key: 'header'}, "Championship of Ukraine 2015"),
 
-                this.props.children
+                DOM.div({key: 'children'}, this.props.children)
             ]);
         }
     }
