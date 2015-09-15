@@ -18,6 +18,7 @@ define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle
 
         listener;
         participant;
+        validation;
 
         constructor(props) {
             super(props);
@@ -62,21 +63,30 @@ define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle
         render() {
             const DOM = React.DOM;
             const onDelete = this.props.onDelete;
+            const validationStatus = this.state.participant.number.length != 0
+                && this.state.participant.country.length != 0
+                && this.state.participant.name.length != 0
+                && this.state.participant.motorcycle.length != 0
+                && this.state.participant.group.length != 0
+                && this.state.participant.team.length != 0;
 
-            return DOM.tr({key: 'row'}, [
+            return DOM.tr({key: 'row', className: this.props.last ? "" : validationStatus ? 'list-group-item-success' : 'list-group-item-danger'}, [
                 DOM.td({key: 'trash', style: {width: '24px'}}, React.createElement(ReactBootstrap.Button, {
                     key: 'button',
                     disabled: this.props.last,
                     bsSize: 'xsmall',
                     onClick: onDelete
                 }, React.createElement(ReactBootstrap.Glyphicon, {key: 'glyph', glyph: 'trash'}))),
-                DOM.td({key: 'number'}, React.createElement(TextCellView, {
+                DOM.td({key: 'number', className: 'col-md-1'}, React.createElement(TextCellView, {
                     key: 'number-cell',
                     className: 'race-number',
-                    style: {width: '40px'},
+                    //style: {width: '40px'},
                     value: this.number
                 })),
-                DOM.td({key: 'country'}, DOM.div({key: 'country-inner', style: {height: '20px'}}, React.createElement(SelectCellView, {
+                DOM.td({key: 'country', className: 'col-md-1'}, DOM.div({
+                    key: 'country-inner',
+                    style: {height: '20px'}
+                }, React.createElement(SelectCellView, {
                     key: 'country-cell',
                     value: this.country,
                     items: [
@@ -93,11 +103,29 @@ define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle
                         src: `http://www.geonames.org/flags/x/${item}.gif`
                     })
                 }))),
-                DOM.td({key: 'name'}, React.createElement(TextCellView, {key: 'name-cell', value: this.name})),
-                DOM.td({key: 'motorcycle'}, React.createElement(TextCellView, {key: 'motorcycle-cell', value: this.motorcycle})),
-                DOM.td({key: 'group'}, React.createElement(TextCellView, {key: 'group-cell', value: this.group})),
-                DOM.td({key: 'birthday'}, React.createElement(DateCellView, {key: 'birthday-cell', value: this.birthday})),
-                DOM.td({key: 'team'}, React.createElement(TextCellView, {key: 'team-cell', value: this.team}))
+                DOM.td({key: 'name', className: 'col-md-4'}, React.createElement(TextCellView, {
+                    key: 'name-cell',
+                    value: this.name
+                })),
+                DOM.td({
+                    key: 'motorcycle',
+                    className: 'col-md-1'
+                }, React.createElement(TextCellView, {key: 'motorcycle-cell', value: this.motorcycle})),
+                DOM.td({key: 'group', className: 'col-md-1'}, React.createElement(TextCellView, {
+                    key: 'group-cell',
+                    value: this.group
+                })),
+                DOM.td({
+                    key: 'birthday',
+                    className: 'col-md-1'
+                }, React.createElement(DateCellView, {key: 'birthday-cell', value: this.birthday})),
+                DOM.td({key: 'team', className: 'col-md-2'}, React.createElement(TextCellView, {
+                    key: 'team-cell',
+                    value: this.team
+                })),
+                DOM.td({key: 'validation', className: 'col-md-1'}, this.props.last ? "" : validationStatus
+                    ? React.createElement(ReactBootstrap.Glyphicon, {glyph: 'ok'})
+                    : React.createElement(ReactBootstrap.Glyphicon, {glyph: 'remove'}))
             ]);
         }
 
@@ -157,7 +185,10 @@ define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle
                         previous: true,
                         href: `#event/${eventId}/configuration`
                     }, [
-                        React.createElement(ReactBootstrap.Glyphicon, {key: 'glyph', glyph: 'menu-left'}), ' ', "Configuration"
+                        React.createElement(ReactBootstrap.Glyphicon, {
+                            key: 'glyph',
+                            glyph: 'menu-left'
+                        }), ' ', "Configuration"
                     ]),
                     React.createElement(ReactBootstrap.PageItem, {
                         key: 'current',
@@ -168,7 +199,10 @@ define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle
                         next: true,
                         href: `#event/${eventId}/competition`
                     }, [
-                        "Competition", ' ', React.createElement(ReactBootstrap.Glyphicon, {key: 'glyph', glyph: 'menu-right'})
+                        "Competition", ' ', React.createElement(ReactBootstrap.Glyphicon, {
+                            key: 'glyph',
+                            glyph: 'menu-right'
+                        })
                     ])
                 ]),
 
