@@ -1,11 +1,4 @@
-////������ ��������� ���� ������� �������
-//������� �����\����� ��������� ������
-//������� �������������� ������� �� �����
-//������� ���������
-//��������� ������� � ���., ...
-//��������� �������+������ � �������������
-define(['react', 'react-bootstrap', 'react-router', 'ramda', 'shuttle', 'shuttle-react', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'utils/commons'], (React, ReactBootstrap, ReactRouter, R, Shuttle, ShuttleReact, TextCellView, DateCellView, SelectCellView, Commons) => {
-
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'utils/commons'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, TextCellView, DateCellView, SelectCellView, Commons) => {
     class ParticipantView extends Shuttle.React.Component {
 
         number;

@@ -76,7 +76,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
             render: function () {
                 var DOM = React.DOM;
 
-                return DOM.div({}, [
+                return DOM.div({key: 'main-root'}, [
                     R.mapIndexed((stylesheet, i) => {
                         return DOM.link({key: i, rel: 'stylesheet', href: stylesheet});
                     }, [

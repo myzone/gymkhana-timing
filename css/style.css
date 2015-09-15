@@ -7,18 +7,33 @@
     font-family: Race1 !important;
 }
 
-.selected-row ~ .selected-row-after > td {
+.selected-row, .selected-row-after, .selected-row-after > table, .selected-row-after > table {
+    background: none !important;
+}
+
+.pair-table-striped > tbody > tr:nth-of-type(4n - 1),
+.pair-table-striped > tbody > tr:nth-of-type(4n) {
+    background: #f9f9f9 !important;
+}
+
+.pair-table-striped > tbody > tr:nth-of-type(4n + 1),
+.pair-table-striped > tbody > tr:nth-of-type(4n + 2) {
+    background: white !important;
+}
+
+.pair-table-striped > tbody > tr:nth-of-type(4n + 1) > td,
+.pair-table-striped > tbody > tr:nth-of-type(4n + 3) > td {
     border-bottom: none !important;
 }
 
-.selected-row + .selected-row-after > td {
+.pair-table-striped > tbody > tr:nth-of-type(4n) > td,
+.pair-table-striped > tbody > tr:nth-of-type(4n + 2) > td{
     border-top: none !important;
 }
 
-.selected-row, .selected-row-after, .selected-row-after td, .selected-row-after th {
-    background: whitesmoke !important;
+.inner-table {
+    background: transparent !important;
 }
-
 
 .podium-label {
     border-radius: 50%;

@@ -87,7 +87,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
             render: function render() {
                 var DOM = React.DOM;
 
-                return DOM.div({}, [R.mapIndexed(function (stylesheet, i) {
+                return DOM.div({ key: 'main-root' }, [R.mapIndexed(function (stylesheet, i) {
                     return DOM.link({ key: i, rel: 'stylesheet', href: stylesheet });
                 }, ['css/style.css', 'css/bootstrap.css', 'css/photoswipe.css', 'css/photoswipe-default-skin.css', 'css/jquery.justified.css', 'css/vis.min.css', 'css/c3.css', 'css/timeline.css']), this.props.children]);
             }
