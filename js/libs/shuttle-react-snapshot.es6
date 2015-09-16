@@ -1,32 +1,48 @@
 define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
     class ShuttleReactComponent extends React.Component {
 
+        updateListener;
+        lastState;
+
         constructor(props) {
             super(props);
 
-            this.state = this.computeState(this.props);
+            this.updateListener = (a, b) => this.setState(this.computeState(this.props, this.state));
+            this.state = this.computeState(this.props, {});
+            this.lastState = this.state;
         }
 
         componentDidMount() {
-            var updateListener = this.updateListener.bind(this);
-
-            R.forEach((shuttleProp) => {
-                shuttleProp.value.addListener(updateListener);
-            }, this.getShuttleProps(this.props));
+            R.forEach(shuttleProp => shuttleProp.value.addListener(this.updateListener), this.getShuttleProps(this.props));
         }
 
         componentWillUnmount() {
-            var updateListener = this.updateListener.bind(this);
+            R.forEach(shuttleProp => shuttleProp.value.removeListener(this.updateListener), this.getShuttleProps(this.props));
+        }
 
-            R.forEach((shuttleProp) => {
-                shuttleProp.value.removeListener(updateListener);
-            }, this.getShuttleProps(this.props));
+        shouldComponentUpdate(nextProps, nextState) {
+            return !R.eqDeep(nextProps, this.props)
+                || !R.eqDeep(this.computeState(nextProps, nextState), R.eqDeep(this.computeState(this.props, this.lastState)));
+        }
+
+        componentWillReceiveProps(props) {
+            this.setState(this.computeState(props, this.lastState));
+        }
+
+        componentDidUpdate(prevProps, prevState) {
+            this.lastState = prevState;
+        }
+
+        computeState(props, state) {
+            return R.reduce((object, prop) => {
+                object[prop.key] = prop.value.get();
+
+                return object;
+            }, state, this.getShuttleProps(props));
         }
 
         getShuttleProps(props) {
-            return R.filter((prop) => {
-                return prop.value instanceof Shuttle.Ref;
-            }, R.map((key) => {
+            return R.filter(prop => prop.value instanceof Shuttle.Ref, R.map(key => {
                 return {
                     key: key,
                     value: this.props[key]
@@ -34,33 +50,7 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
             }, Object.keys(props)))
         }
 
-        updateListener(_1, _2) {
-            this.setState(this.computeState(this.props));
-        }
-
-        componentWillReceiveProps() {
-            this.updateListener();
-        }
-
-        computeState(props) {
-            return R.reduce((object, prop) => {
-                object[prop.key] = prop.value.get();
-
-                return object;
-            }, {}, this.getShuttleProps(props));
-        }
-
-        shouldComponentUpdate(nextProps, nextState) {
-            var computedState = this.computeState(nextProps);
-
-            //return !R.reduce(R.and, true, R.map((key) {
-            //        return R.eqDeep(computedState[key], this.state ? this.state[key] : null);
-            //    }.bind(this), Object.keys(computedState))) || R.eq(nextState, this.state);
-
-            return !R.eqDeep(this.computeState(nextProps), this.state);
-        }
     }
-    ;
 
     // publish
     Shuttle.React = {

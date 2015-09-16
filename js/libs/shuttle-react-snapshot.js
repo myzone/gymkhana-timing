@@ -13,83 +13,82 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
         _inherits(ShuttleReactComponent, _React$Component);
 
         function ShuttleReactComponent(props) {
+            var _this = this;
+
             _classCallCheck(this, ShuttleReactComponent);
 
             _get(Object.getPrototypeOf(ShuttleReactComponent.prototype), 'constructor', this).call(this, props);
 
-            this.state = this.computeState(this.props);
+            this.updateListener = function (a, b) {
+                return _this.setState(_this.computeState(_this.props, _this.state));
+            };
+            this.state = this.computeState(this.props, {});
+            this.lastState = this.state;
         }
+
+        // publish
 
         _createClass(ShuttleReactComponent, [{
             key: 'componentDidMount',
             value: function componentDidMount() {
-                var updateListener = this.updateListener.bind(this);
+                var _this2 = this;
 
                 R.forEach(function (shuttleProp) {
-                    shuttleProp.value.addListener(updateListener);
+                    return shuttleProp.value.addListener(_this2.updateListener);
                 }, this.getShuttleProps(this.props));
             }
         }, {
             key: 'componentWillUnmount',
             value: function componentWillUnmount() {
-                var updateListener = this.updateListener.bind(this);
+                var _this3 = this;
 
                 R.forEach(function (shuttleProp) {
-                    shuttleProp.value.removeListener(updateListener);
+                    return shuttleProp.value.removeListener(_this3.updateListener);
                 }, this.getShuttleProps(this.props));
+            }
+        }, {
+            key: 'shouldComponentUpdate',
+            value: function shouldComponentUpdate(nextProps, nextState) {
+                return !R.eqDeep(nextProps, this.props) || !R.eqDeep(this.computeState(nextProps, nextState), R.eqDeep(this.computeState(this.props, this.lastState)));
+            }
+        }, {
+            key: 'componentWillReceiveProps',
+            value: function componentWillReceiveProps(props) {
+                this.setState(this.computeState(props, this.lastState));
+            }
+        }, {
+            key: 'componentDidUpdate',
+            value: function componentDidUpdate(prevProps, prevState) {
+                this.lastState = prevState;
+            }
+        }, {
+            key: 'computeState',
+            value: function computeState(props, state) {
+                return R.reduce(function (object, prop) {
+                    object[prop.key] = prop.value.get();
+
+                    return object;
+                }, state, this.getShuttleProps(props));
             }
         }, {
             key: 'getShuttleProps',
             value: function getShuttleProps(props) {
-                var _this = this;
+                var _this4 = this;
 
                 return R.filter(function (prop) {
                     return prop.value instanceof Shuttle.Ref;
                 }, R.map(function (key) {
                     return {
                         key: key,
-                        value: _this.props[key]
+                        value: _this4.props[key]
                     };
                 }, Object.keys(props)));
-            }
-        }, {
-            key: 'updateListener',
-            value: function updateListener(_1, _2) {
-                this.setState(this.computeState(this.props));
-            }
-        }, {
-            key: 'componentWillReceiveProps',
-            value: function componentWillReceiveProps() {
-                this.updateListener();
-            }
-        }, {
-            key: 'computeState',
-            value: function computeState(props) {
-                return R.reduce(function (object, prop) {
-                    object[prop.key] = prop.value.get();
-
-                    return object;
-                }, {}, this.getShuttleProps(props));
-            }
-        }, {
-            key: 'shouldComponentUpdate',
-            value: function shouldComponentUpdate(nextProps, nextState) {
-                var computedState = this.computeState(nextProps);
-
-                //return !R.reduce(R.and, true, R.map((key) {
-                //        return R.eqDeep(computedState[key], this.state ? this.state[key] : null);
-                //    }.bind(this), Object.keys(computedState))) || R.eq(nextState, this.state);
-
-                return !R.eqDeep(this.computeState(nextProps), this.state);
             }
         }]);
 
         return ShuttleReactComponent;
     })(React.Component);
 
-    ;
-
-    // publish
     Shuttle.React = {
         Component: ShuttleReactComponent
     };

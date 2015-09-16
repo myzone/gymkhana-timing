@@ -93,16 +93,16 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
             }
         });
 
-        var ApplicationRegistrationProvider = (function (_React$Component) {
-            _inherits(ApplicationRegistrationProvider, _React$Component);
+        var RegistrationApplicationProvider = (function (_React$Component) {
+            _inherits(RegistrationApplicationProvider, _React$Component);
 
-            function ApplicationRegistrationProvider() {
-                _classCallCheck(this, ApplicationRegistrationProvider);
+            function RegistrationApplicationProvider() {
+                _classCallCheck(this, RegistrationApplicationProvider);
 
-                _get(Object.getPrototypeOf(ApplicationRegistrationProvider.prototype), 'constructor', this).apply(this, arguments);
+                _get(Object.getPrototypeOf(RegistrationApplicationProvider.prototype), 'constructor', this).apply(this, arguments);
             }
 
-            _createClass(ApplicationRegistrationProvider, [{
+            _createClass(RegistrationApplicationProvider, [{
                 key: 'render',
                 value: function render() {
                     return React.createElement(RegistrationView, {
@@ -115,7 +115,32 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
                 }
             }]);
 
-            return ApplicationRegistrationProvider;
+            return RegistrationApplicationProvider;
+        })(React.Component);
+
+        var CompetitionApplicationProvider = (function (_React$Component2) {
+            _inherits(CompetitionApplicationProvider, _React$Component2);
+
+            function CompetitionApplicationProvider() {
+                _classCallCheck(this, CompetitionApplicationProvider);
+
+                _get(Object.getPrototypeOf(CompetitionApplicationProvider.prototype), 'constructor', this).apply(this, arguments);
+            }
+
+            _createClass(CompetitionApplicationProvider, [{
+                key: 'render',
+                value: function render() {
+                    return React.createElement(CompetitionView, {
+                        key: 'view',
+                        params: this.props.params,
+                        participants: application.flatMap(function (application) {
+                            return application.participants;
+                        })
+                    });
+                }
+            }]);
+
+            return CompetitionApplicationProvider;
         })(React.Component);
 
         React.render(React.createElement(Main, { key: 'main' }, [React.createElement(PageView, { key: 'page' }, [React.createElement(ReactRouter.Router, { key: 'router' }, [React.createElement(ReactRouter.Route, { key: 'index-route', path: '/', component: EventsView }), React.createElement(ReactRouter.Route, {
@@ -132,11 +157,11 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
         }), React.createElement(ReactRouter.Route, {
             key: 'event-registration-route',
             path: 'registration',
-            component: ApplicationRegistrationProvider
+            component: RegistrationApplicationProvider
         }), React.createElement(ReactRouter.Route, {
             key: 'event-competition-route',
             path: 'competition',
-            component: CompetitionView
+            component: CompetitionApplicationProvider
         }), React.createElement(ReactRouter.Route, {
             key: 'event-results-route',
             path: 'results',

@@ -1,4 +1,4 @@
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/text-cell',], (React, ReactBootstrap, R, Shuttle, ShuttleReact, TextCellView) => {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/text-cell'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, TextCellView) => {
     class ParticipantView extends Shuttle.React.Component {
 
         constructor(props) {
@@ -7,15 +7,23 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
 
         render() {
             const DOM = React.DOM;
+            const participant = this.state.participant;
 
-            return DOM.tr({key: 'opened-participant-row-1', className: `non-selected ${this.state.opened ? 'selected' : ''}`,onClick: () => this.props.opened.set(!this.state.opened)}, [
-                DOM.td({className: 'important middle-aligned'}, DOM.span({className: 'race-number'}, "42")),
-                DOM.td({className: 'middle-aligned'}, DOM.img({className: 'country', src: 'http://www.geonames.org/flags/x/ua.gif'})),
-                DOM.td({className: 'important middle-aligned'}, "Vyacheslav Goldenshteyn"),
-                DOM.td({className: 'middle-aligned'}, "Honda FMX 650"),
-                DOM.td({className: 'middle-aligned'}, "Group 3B"),
+            return DOM.tr({
+                key: 'opened-participant-row-1',
+                className: `non-selected ${this.props.opened ? 'selected' : ''}`,
+                onClick: () => this.props.onToggle()
+            }, [
+                DOM.td({className: 'important middle-aligned'}, DOM.span({className: 'race-number'}, participant.number)),
+                DOM.td({className: 'middle-aligned'}, DOM.img({
+                    className: 'country',
+                    src: `http://www.geonames.org/flags/x/${participant.country}.gif`
+                })),
+                DOM.td({className: 'important middle-aligned'}, participant.name),
+                DOM.td({className: 'middle-aligned'}, participant.motorcycle),
+                DOM.td({className: 'middle-aligned'}, participant.group),
                 DOM.td({className: 'important middle-aligned'}, "0/1"),
-                DOM.td({className: 'middle-aligned'}, "Sommmmm Team")
+                DOM.td({className: 'middle-aligned'}, participant.team)
             ]);
         }
 
@@ -29,7 +37,11 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
             return DOM.tr({key: 'opened-participant-row-2'}, [
                 DOM.td({style: {padding: '0'}}),
                 DOM.td({style: {padding: '0'}, colSpan: 3}, [
-                    DOM.div({className: `non-selected-additional ${this.state.opened ? 'selected-additional' : ''}`}, React.createElement(ReactBootstrap.Table, {className: 'inner-table', responsive: true, condensed: true}, [
+                    DOM.div({className: `non-selected-additional ${this.props.opened ? 'selected-additional' : ''}`}, React.createElement(ReactBootstrap.Table, {
+                        className: 'inner-table',
+                        responsive: true,
+                        condensed: true
+                    }, [
                         DOM.thead({}, DOM.tr({}, [
                             DOM.td({}, ""),
                             DOM.td({}, "Time"),
@@ -65,16 +77,18 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
 
     }
 
-    const a = Shuttle.ref(false);
-    const b = Shuttle.ref(true);
-    const c = Shuttle.ref(false);
-    const d = Shuttle.ref(false);
+    class CompetitionView extends Shuttle.React.Component {
 
-    class CompetitionView extends React.Component {
+        constructor(props) {
+            super(props);
+
+            this.state.current = null;
+        }
+
         render() {
             const DOM = React.DOM;
+            const eventId = this.props.eventId;
 
-            const eventId = this.props.params.eventId;
             return DOM.div({}, [
                 React.createElement(ReactBootstrap.Pager, {}, [
                     React.createElement(ReactBootstrap.PageItem, {
@@ -90,23 +104,36 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                 ]),
 
                 React.createElement(ReactBootstrap.Table, {
+                    key: 'table',
                     className: 'pair-table-striped',
                     responsive: true,
                     hover: true
                 }, [
-                    DOM.tbody({}, [
-                        React.createElement(ParticipantView, {opened: a}),
-                        React.createElement(AdditionalParticipantView, {opened: a}),
-                        React.createElement(ParticipantView, {opened: b}),
-                        React.createElement(AdditionalParticipantView, {opened: b}),
-                        React.createElement(ParticipantView, {opened: c}),
-                        React.createElement(AdditionalParticipantView, {opened: c}),
-                        React.createElement(ParticipantView, {opened: d}),
-                        React.createElement(AdditionalParticipantView, {opened: d})
+                    DOM.tbody({key: 'table-body'}, [
+                        R.flatten(R.mapIndexed((participant, i) => {
+                            const opened = R.eq(this.state.current, participant.get());
+
+                            return [
+                                React.createElement(ParticipantView, {
+                                    key: `main-${i}`,
+                                    opened: opened,
+                                    onToggle: () => {
+                                        this.setState({current: !opened ? participant.get() : null});
+                                    },
+                                    participant: participant
+                                }),
+                                React.createElement(AdditionalParticipantView, {
+                                    key: `additional-${i}`,
+                                    opened: opened,
+                                    participant: participant
+                                })
+                            ]
+                        }, this.state.participants))
                     ])
                 ])
             ]);
         }
+
     }
 
     return CompetitionView;

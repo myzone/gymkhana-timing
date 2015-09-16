@@ -94,7 +94,8 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
                 ]);
             }
         });
-        class ApplicationRegistrationProvider extends React.Component {
+
+        class RegistrationApplicationProvider extends React.Component {
             render() {
                 return React.createElement(RegistrationView, {
                     key: 'view',
@@ -103,7 +104,17 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
                         .flatMap(application => application.participants)
                 })
             }
+        }
 
+        class CompetitionApplicationProvider extends React.Component {
+            render() {
+                return React.createElement(CompetitionView, {
+                    key: 'view',
+                    params: this.props.params,
+                    participants: application
+                        .flatMap(application => application.participants)
+                })
+            }
         }
 
 
@@ -129,12 +140,12 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
                         React.createElement(ReactRouter.Route, {
                             key: 'event-registration-route',
                             path: 'registration',
-                            component: ApplicationRegistrationProvider
+                            component: RegistrationApplicationProvider
                         }),
                         React.createElement(ReactRouter.Route, {
                             key: 'event-competition-route',
                             path: 'competition',
-                            component: CompetitionView
+                            component: CompetitionApplicationProvider
                         }),
                         React.createElement(ReactRouter.Route, {
                             key: 'event-results-route',
