@@ -6,44 +6,16 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
         }
 
         render() {
-            return this.state.opened
-                ? this.renderOpened()
-                : this.renderClosed();
-        }
-
-        renderClosed() {
             const DOM = React.DOM;
 
-            return DOM.tr({key: 'closed-participant-row', onClick: () => this.props.opened.set(true)}, [
-                DOM.td({}, DOM.span({className: 'race-number'}, "42")),
-                DOM.td({}, DOM.img({height: '20px', src: 'http://www.geonames.org/flags/x/ua.gif'})),
-                DOM.td({}, "Vyacheslav Goldenshteyn"),
-                DOM.td({}, "Honda FMX 650"),
-                DOM.td({}, "Group 3B"),
-                DOM.td({}, "1/2"),
-                DOM.td({}, "Sommmmm Team")
-            ])
-        }
-
-        renderOpened() {
-            const DOM = React.DOM;
-
-            return DOM.tr({key: 'opened-participant-row-1', onClick: () => this.props.opened.set(false)}, [
-                DOM.td({
-                    style: {
-                        fontSize: '34px',
-                        verticalAlign: 'middle'
-                    }
-                }, DOM.span({className: 'race-number'}, "42")),
-                DOM.td({style: {verticalAlign: 'middle'}}, DOM.img({
-                    height: '48px',
-                    src: 'http://www.geonames.org/flags/x/ua.gif'
-                })),
-                DOM.td({style: {fontSize: '34px', verticalAlign: 'middle'}}, "Vyacheslav Goldenshteyn"),
-                DOM.td({style: {verticalAlign: 'middle'}}, "Honda FMX 650"),
-                DOM.td({style: {verticalAlign: 'middle'}}, "Group 3B"),
-                DOM.td({style: {fontSize: '34px', verticalAlign: 'middle'}}, "0/1"),
-                DOM.td({style: {verticalAlign: 'middle'}}, "Sommmmm Team")
+            return DOM.tr({key: 'opened-participant-row-1', className: `non-selected ${this.state.opened ? 'selected' : ''}`,onClick: () => this.props.opened.set(!this.state.opened)}, [
+                DOM.td({className: 'important middle-aligned'}, DOM.span({className: 'race-number'}, "42")),
+                DOM.td({className: 'middle-aligned'}, DOM.img({className: 'country', src: 'http://www.geonames.org/flags/x/ua.gif'})),
+                DOM.td({className: 'important middle-aligned'}, "Vyacheslav Goldenshteyn"),
+                DOM.td({className: 'middle-aligned'}, "Honda FMX 650"),
+                DOM.td({className: 'middle-aligned'}, "Group 3B"),
+                DOM.td({className: 'important middle-aligned'}, "0/1"),
+                DOM.td({className: 'middle-aligned'}, "Sommmmm Team")
             ]);
         }
 
@@ -52,24 +24,12 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
     class AdditionalParticipantView extends Shuttle.React.Component {
 
         render() {
-            return this.state.opened
-                ? this.renderOpened()
-                : this.renderClosed();
-        }
-
-        renderClosed() {
             const DOM = React.DOM;
 
-            return DOM.tr({onClick: () => this.props.opened.set(true)})
-        }
-
-        renderOpened() {
-            const DOM = React.DOM;
-
-            return DOM.tr({key: 'opened-participant-row-2', onClick: () => this.props.opened.set(false)}, [
-                DOM.td({}),
-                DOM.td({colSpan: '3'}, [
-                    React.createElement(ReactBootstrap.Table, {className: 'inner-table', responsive: true, condensed: true}, [
+            return DOM.tr({key: 'opened-participant-row-2'}, [
+                DOM.td({style: {padding: '0'}}),
+                DOM.td({style: {padding: '0'}, colSpan: 3}, [
+                    DOM.div({className: `non-selected-additional ${this.state.opened ? 'selected-additional' : ''}`}, React.createElement(ReactBootstrap.Table, {className: 'inner-table', responsive: true, condensed: true}, [
                         DOM.thead({}, DOM.tr({}, [
                             DOM.td({}, ""),
                             DOM.td({}, "Time"),
@@ -97,11 +57,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                                 DOM.td({className: 'col-md-2'}, "0:00.01")
                             ])
                         ])
-                    ])
+                    ]))
                 ]),
-                DOM.td({}),
-                DOM.td({}),
-                DOM.td({})
+                DOM.td({style: {padding: '0'}, colSpan: 3})
             ]);
         }
 

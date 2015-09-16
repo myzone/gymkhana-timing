@@ -66,5 +66,38 @@
     overflow-y: scroll;
 }
 
+.middle-aligned {
+    vertical-align: middle !important;
+}
 
+.non-selected .country {
+    height: 20px;
+}
 
+.selected .important {
+    font-size: 34px;
+}
+
+.selected .country {
+    height: 48px;
+}
+
+.non-selected-additional {
+    /* Initially we don't want any height, and we want the contents to be hidden */
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+
+    /* Set our transitions up. */
+    -webkit-transition: opacity 1s, max-height 1s ease ;
+    -moz-transition: opacity 1s, max-height 1s ease;
+    transition: opacity 1s, max-height 1s ease;
+
+    /*-webkit-box-sizing: border-box;*/
+    /*box-sizing: border-box;*/
+}
+
+.selected-additional {
+    max-height: 100px;
+    opacity: 1
+}

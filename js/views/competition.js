@@ -21,37 +21,13 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
         _createClass(ParticipantView, [{
             key: 'render',
             value: function render() {
-                return this.state.opened ? this.renderOpened() : this.renderClosed();
-            }
-        }, {
-            key: 'renderClosed',
-            value: function renderClosed() {
                 var _this = this;
 
                 var DOM = React.DOM;
 
-                return DOM.tr({ key: 'closed-participant-row', onClick: function onClick() {
-                        return _this.props.opened.set(true);
-                    } }, [DOM.td({}, DOM.span({ className: 'race-number' }, "42")), DOM.td({}, DOM.img({ height: '20px', src: 'http://www.geonames.org/flags/x/ua.gif' })), DOM.td({}, "Vyacheslav Goldenshteyn"), DOM.td({}, "Honda FMX 650"), DOM.td({}, "Group 3B"), DOM.td({}, "1/2"), DOM.td({}, "Sommmmm Team")]);
-            }
-        }, {
-            key: 'renderOpened',
-            value: function renderOpened() {
-                var _this2 = this;
-
-                var DOM = React.DOM;
-
-                return DOM.tr({ key: 'opened-participant-row-1', onClick: function onClick() {
-                        return _this2.props.opened.set(false);
-                    } }, [DOM.td({
-                    style: {
-                        fontSize: '34px',
-                        verticalAlign: 'middle'
-                    }
-                }, DOM.span({ className: 'race-number' }, "42")), DOM.td({ style: { verticalAlign: 'middle' } }, DOM.img({
-                    height: '48px',
-                    src: 'http://www.geonames.org/flags/x/ua.gif'
-                })), DOM.td({ style: { fontSize: '34px', verticalAlign: 'middle' } }, "Vyacheslav Goldenshteyn"), DOM.td({ style: { verticalAlign: 'middle' } }, "Honda FMX 650"), DOM.td({ style: { verticalAlign: 'middle' } }, "Group 3B"), DOM.td({ style: { fontSize: '34px', verticalAlign: 'middle' } }, "0/1"), DOM.td({ style: { verticalAlign: 'middle' } }, "Sommmmm Team")]);
+                return DOM.tr({ key: 'opened-participant-row-1', className: 'non-selected ' + (this.state.opened ? 'selected' : ''), onClick: function onClick() {
+                        return _this.props.opened.set(!_this.state.opened);
+                    } }, [DOM.td({ className: 'important middle-aligned' }, DOM.span({ className: 'race-number' }, "42")), DOM.td({ className: 'middle-aligned' }, DOM.img({ className: 'country', src: 'http://www.geonames.org/flags/x/ua.gif' })), DOM.td({ className: 'important middle-aligned' }, "Vyacheslav Goldenshteyn"), DOM.td({ className: 'middle-aligned' }, "Honda FMX 650"), DOM.td({ className: 'middle-aligned' }, "Group 3B"), DOM.td({ className: 'important middle-aligned' }, "0/1"), DOM.td({ className: 'middle-aligned' }, "Sommmmm Team")]);
             }
         }]);
 
@@ -70,29 +46,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
         _createClass(AdditionalParticipantView, [{
             key: 'render',
             value: function render() {
-                return this.state.opened ? this.renderOpened() : this.renderClosed();
-            }
-        }, {
-            key: 'renderClosed',
-            value: function renderClosed() {
-                var _this3 = this;
-
                 var DOM = React.DOM;
 
-                return DOM.tr({ onClick: function onClick() {
-                        return _this3.props.opened.set(true);
-                    } });
-            }
-        }, {
-            key: 'renderOpened',
-            value: function renderOpened() {
-                var _this4 = this;
-
-                var DOM = React.DOM;
-
-                return DOM.tr({ key: 'opened-participant-row-2', onClick: function onClick() {
-                        return _this4.props.opened.set(false);
-                    } }, [DOM.td({}), DOM.td({ colSpan: '3' }, [React.createElement(ReactBootstrap.Table, { className: 'inner-table', responsive: true, condensed: true }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "Time"), DOM.td({}, "Penalty"), DOM.th({}, "Total"), DOM.td({}, "∆")])), DOM.tbody({}, [DOM.tr({}, [DOM.td({}, "1"), DOM.td({ className: 'col-md-2' }, "1:11.15"), DOM.td({}, [React.createElement(ReactBootstrap.Label, { bsStyle: 'warning' }, "Cone")]), DOM.td({ className: 'col-md-2' }, "1:12.15"), DOM.td({ className: 'col-md-2' }, "0:00.00")]), DOM.tr({}, [DOM.td({}, "2"), DOM.td({ className: 'col-md-2' }, "1:11.16"), DOM.td({}, [React.createElement(ReactBootstrap.Label, { bsStyle: 'warning' }, "Cone")]), DOM.td({ className: 'col-md-2' }, "1:12.16"), DOM.td({ className: 'col-md-2' }, "0:00.01")])])])]), DOM.td({}), DOM.td({}), DOM.td({})]);
+                return DOM.tr({ key: 'opened-participant-row-2' }, [DOM.td({ style: { padding: '0' } }), DOM.td({ style: { padding: '0' }, colSpan: 3 }, [DOM.div({ className: 'non-selected-additional ' + (this.state.opened ? 'selected-additional' : '') }, React.createElement(ReactBootstrap.Table, { className: 'inner-table', responsive: true, condensed: true }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "Time"), DOM.td({}, "Penalty"), DOM.th({}, "Total"), DOM.td({}, "∆")])), DOM.tbody({}, [DOM.tr({}, [DOM.td({}, "1"), DOM.td({ className: 'col-md-2' }, "1:11.15"), DOM.td({}, [React.createElement(ReactBootstrap.Label, { bsStyle: 'warning' }, "Cone")]), DOM.td({ className: 'col-md-2' }, "1:12.15"), DOM.td({ className: 'col-md-2' }, "0:00.00")]), DOM.tr({}, [DOM.td({}, "2"), DOM.td({ className: 'col-md-2' }, "1:11.16"), DOM.td({}, [React.createElement(ReactBootstrap.Label, { bsStyle: 'warning' }, "Cone")]), DOM.td({ className: 'col-md-2' }, "1:12.16"), DOM.td({ className: 'col-md-2' }, "0:00.01")])])]))]), DOM.td({ style: { padding: '0' }, colSpan: 3 })]);
             }
         }]);
 
