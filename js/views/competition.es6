@@ -1,4 +1,4 @@
-define(['react', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react', 'components/text-cell'], (React, ReactBootstrap, R, moment, Shuttle, ShuttleReact, TextCellView) => {
+define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react', 'components/stopwatch-cell'], (React, ReactRouter, ReactBootstrap, R, moment, Shuttle, ShuttleReact, StopwatchCellView) => {
     const HEATS_COUNT = 2;
     const PENALTY_STYLES = {
         negligible: 'default',
@@ -101,7 +101,7 @@ define(['react', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react
                         DOM.tbody({}, [
                             R.addIndex(R.map)((result, i) => DOM.tr({key: i}, [
                                 DOM.td({}, i + 1),
-                                DOM.td({className: 'col-md-2'}, this.renderDuration(result.time)),
+                                DOM.td({className: 'col-md-2'}, React.createElement(StopwatchCellView, {})/*this.renderDuration(result.time)*/),
                                 DOM.td({}, R.map(penalty => [React.createElement(ReactBootstrap.Label, {bsStyle: PENALTY_STYLES[penalty.type]}, penalty.name), ' '], result.penalties)),
                                 DOM.td({className: 'col-md-2'}, this.renderDuration(result.totalTime)),
                                 DOM.td({className: 'col-md-2'}, `+${this.renderDuration(result.deltaTime)}`)
@@ -130,7 +130,7 @@ define(['react', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react
         constructor(props) {
             super(props);
 
-            this.state.current = null;
+            this.state.current = R.head(R.filter(participant => R.equals(participant.id, this.props.params.participantId), R.map(participant => participant.get(), this.state.participants)));
         }
 
         render() {
@@ -170,7 +170,8 @@ define(['react', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react
                                         this.setState({current: !opened ? participant.get() : null});
                                     },
                                     participant: participant,
-                                    heats: heats
+                                    heats: heats,
+                                    eventId: eventId
                                 }),
                                 React.createElement(AdditionalParticipantView, {
                                     key: `additional-${i}`,

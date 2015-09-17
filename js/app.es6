@@ -28,6 +28,7 @@ require.config({
         'components/text-cell': 'views/components/text-cell',
         'components/date-cell': 'views/components/date-cell',
         'components/select-cell': 'views/components/select-cell',
+        'components/stopwatch-cell': 'views/components/stopwatch-cell',
 
         'utils/commons': 'utils/commons'
     },
@@ -48,8 +49,8 @@ require.config({
 
 require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery', 'shuttle', 'shuttle-react'], (React, ReactBootstrap, ReactRouter, R, moment, $, Shuttle, ShuttleReact) => {
     require(['views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results'], (PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView) => {
-        const myzone = {
-            id: 3,
+        const myzone = Shuttle.ref({
+            id: '3',
             number: "43",
             country: "il",
             name: "Vyacheslav Goldenshteyn1",
@@ -57,12 +58,12 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             group: "Group 3B",
             birthday: "2015-09-01",
             team: "Sommmmm Team"
-        };
+        });
 
         const application = Shuttle.ref({
             configuration: Shuttle.ref({}),
             participants: Shuttle.ref([Shuttle.ref({
-                id: 2,
+                id: '2',
                 number: "43",
                 country: "il",
                 name: "Vyacheslavzaza11 Goldenshteyn1",
@@ -70,7 +71,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                 group: "Group 3B",
                 birthday: "2015-09-01",
                 team: "Sommmmm Team"
-            }), Shuttle.ref(myzone)]),
+            }), myzone]),
             heats: Shuttle.ref([{
                 participant: myzone,
                 result: callback => callback.onTimedResult(moment.duration({
@@ -164,7 +165,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         }),
                         React.createElement(ReactRouter.Route, {
                             key: 'event-competition-route',
-                            path: 'competition',
+                            path: 'competition(/:participantId)',
                             component: CompetitionApplicationProvider
                         }),
                         React.createElement(ReactRouter.Route, {

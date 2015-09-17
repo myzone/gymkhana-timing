@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react', 'components/text-cell'], function (React, ReactBootstrap, R, moment, Shuttle, ShuttleReact, TextCellView) {
+define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react', 'components/stopwatch-cell'], function (React, ReactRouter, ReactBootstrap, R, moment, Shuttle, ShuttleReact, StopwatchCellView) {
     var HEATS_COUNT = 2;
     var PENALTY_STYLES = {
         negligible: 'default',
@@ -122,7 +122,7 @@ define(['react', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react
                     responsive: true,
                     condensed: true
                 }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "Time"), DOM.td({}, "Penalty"), DOM.th({}, "Total"), DOM.td({}, "∆")])), DOM.tbody({}, [R.addIndex(R.map)(function (result, i) {
-                    return DOM.tr({ key: i }, [DOM.td({}, i + 1), DOM.td({ className: 'col-md-2' }, _this2.renderDuration(result.time)), DOM.td({}, R.map(function (penalty) {
+                    return DOM.tr({ key: i }, [DOM.td({}, i + 1), DOM.td({ className: 'col-md-2' }, React.createElement(StopwatchCellView, {}) /*this.renderDuration(result.time)*/), DOM.td({}, R.map(function (penalty) {
                         return [React.createElement(ReactBootstrap.Label, { bsStyle: PENALTY_STYLES[penalty.type] }, penalty.name), ' '];
                     }, result.penalties)), DOM.td({ className: 'col-md-2' }, _this2.renderDuration(result.totalTime)), DOM.td({ className: 'col-md-2' }, '+' + _this2.renderDuration(result.deltaTime))]);
                 }, results)])]))]), DOM.td({ style: { padding: '0' }, colSpan: 3 })]);
@@ -148,17 +148,23 @@ define(['react', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react
         _inherits(CompetitionView, _Shuttle$React$Component3);
 
         function CompetitionView(props) {
+            var _this3 = this;
+
             _classCallCheck(this, CompetitionView);
 
             _get(Object.getPrototypeOf(CompetitionView.prototype), 'constructor', this).call(this, props);
 
-            this.state.current = null;
+            this.state.current = R.head(R.filter(function (participant) {
+                return R.equals(participant.id, _this3.props.params.participantId);
+            }, R.map(function (participant) {
+                return participant.get();
+            }, this.state.participants)));
         }
 
         _createClass(CompetitionView, [{
             key: 'render',
             value: function render() {
-                var _this3 = this;
+                var _this4 = this;
 
                 var DOM = React.DOM;
                 var eventId = this.props.params.eventId;
@@ -172,19 +178,20 @@ define(['react', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react
                     responsive: true,
                     hover: true
                 }, [DOM.tbody({ key: 'table-body' }, [R.flatten(R.addIndex(R.map)(function (participant, i) {
-                    var opened = R.equals(_this3.state.current, participant.get());
+                    var opened = R.equals(_this4.state.current, participant.get());
                     var heats = R.filter(function (heat) {
                         return R.equals(heat.participant, participant.get());
-                    }, _this3.state.heats);
+                    }, _this4.state.heats);
 
                     return [React.createElement(ParticipantView, {
                         key: 'main-' + i,
                         opened: opened,
                         onToggle: function onToggle() {
-                            _this3.setState({ current: !opened ? participant.get() : null });
+                            _this4.setState({ current: !opened ? participant.get() : null });
                         },
                         participant: participant,
-                        heats: heats
+                        heats: heats,
+                        eventId: eventId
                     }), React.createElement(AdditionalParticipantView, {
                         key: 'additional-' + i,
                         opened: opened,
