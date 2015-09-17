@@ -9,23 +9,23 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
-    var ResultsView = (function (_React$Component) {
-        _inherits(ResultsView, _React$Component);
+    var WinnersView = (function (_React$Component) {
+        _inherits(WinnersView, _React$Component);
 
-        function ResultsView() {
-            _classCallCheck(this, ResultsView);
+        function WinnersView() {
+            _classCallCheck(this, WinnersView);
 
-            _get(Object.getPrototypeOf(ResultsView.prototype), 'constructor', this).apply(this, arguments);
+            _get(Object.getPrototypeOf(WinnersView.prototype), 'constructor', this).apply(this, arguments);
         }
 
-        _createClass(ResultsView, [{
+        _createClass(WinnersView, [{
             key: 'render',
             value: function render() {
                 var DOM = React.DOM;
-
-                var eventId = this.props.params.eventId;
-
-                return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, { previous: true, href: '#event/' + eventId + '/competition' }, [React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-left' }), ' ', "Competition"]), React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/results' }, "Results")]), DOM.table({ style: { width: '100%' } }, DOM.tr({}, [DOM.td({ style: { width: '250px' } }), DOM.td({}, [React.createElement('center', {}, DOM.div({ style: { marginTop: '20px' } }, [DOM.span({ className: 'race-number' }, "42"), ' ', DOM.span({}, "Vyacheslav Goldenshteyn")])), DOM.div({
+                var firstPlace = this.props.firstPlace;
+                var secondPlace = this.props.secondPlace;
+                var thirdPlace = this.props.thirdPlace;
+                return DOM.table({ style: { width: '100%' } }, DOM.tr({}, [DOM.td({ style: { width: '250px' } }), DOM.td({}, [React.createElement('center', {}, DOM.div({ style: { marginTop: '20px' } }, [DOM.span({ className: 'race-number' }, secondPlace.number), ' ', DOM.span({}, secondPlace.name)])), DOM.div({
                     style: {
                         background: 'silver',
                         height: '60px',
@@ -39,7 +39,7 @@ define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
                         paddingLeft: '13px',
                         paddingRight: '13px'
                     }
-                }, "2")))]), DOM.td({}, [React.createElement('center', {}, DOM.div({ style: { marginTop: '0px' } }, [DOM.span({ className: 'race-number' }, "42"), ' ', DOM.span({}, "Vyacheslav Goldenshteyn")])), DOM.div({
+                }, "2")))]), DOM.td({}, [React.createElement('center', {}, DOM.div({ style: { marginTop: '0px' } }, [DOM.span({ className: 'race-number' }, firstPlace.number), ' ', DOM.span({}, firstPlace.name)])), DOM.div({
                     style: {
                         background: 'gold',
                         height: '80px',
@@ -53,7 +53,7 @@ define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
                         paddingLeft: '16px',
                         paddingRight: '16px'
                     }
-                }, "1")))]), DOM.td({}, [React.createElement('center', {}, DOM.div({ style: { marginTop: '40px' } }, [DOM.span({ className: 'race-number' }, "42"), ' ', DOM.span({}, "Vyacheslav Goldenshteyn")])), DOM.div({
+                }, "1")))]), DOM.td({}, [React.createElement('center', {}, DOM.div({ style: { marginTop: '40px' } }, [DOM.span({ className: 'race-number' }, thirdPlace.number), ' ', DOM.span({}, thirdPlace.name)])), DOM.div({
                     style: {
                         height: '40px',
                         background: '#CD7F32',
@@ -67,7 +67,27 @@ define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
                         paddingLeft: '9px',
                         paddingRight: '9px'
                     }
-                }, "3")))]), DOM.td({ style: { width: '250px' } })])), React.createElement(ReactBootstrap.Table, { responsive: true, hover: true, striped: true }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "#"), DOM.th({}, "Country"), DOM.th({}, "Name"), DOM.th({}, "Best time"), DOM.th({}, "Motorcycle"), DOM.th({}, "Group"), DOM.th({}, "Age"), DOM.th({}, "Team")])), DOM.tbody({}, [DOM.tr({}, [DOM.td({}, "1"), DOM.td({}, DOM.span({ className: 'race-number' }, "42")), DOM.td({}, DOM.img({ height: '20px', src: 'http://www.geonames.org/flags/x/ua.gif' })), DOM.td({}, "Vyacheslav Goldenshteyn"), DOM.td({}, "1:11.15"), DOM.td({}, "Honda FMX 650"), DOM.td({}, "Group 3B"), DOM.td({}, "22"), DOM.td({}, "Sommmmm Team")]), DOM.tr({}, [DOM.td({}, "2"), DOM.td({}, DOM.span({ className: 'race-number' }, "42")), DOM.td({}, DOM.img({ height: '20px', src: 'http://www.geonames.org/flags/x/ua.gif' })), DOM.td({}, "Vyacheslav Goldenshteyn"), DOM.td({}, "1:11.15"), DOM.td({}, "Honda FMX 650"), DOM.td({}, "Group 3B"), DOM.td({}, "22"), DOM.td({}, "Sommmmm Team")]), DOM.tr({ className: 'selected-row' }, [DOM.td({ style: { fontSize: '18px', verticalAlign: 'middle' } }, "3"), DOM.td({
+                }, "3")))]), DOM.td({ style: { width: '250px' } })]));
+            }
+        }]);
+
+        return WinnersView;
+    })(React.Component);
+
+    var TableView = (function (_React$Component2) {
+        _inherits(TableView, _React$Component2);
+
+        function TableView() {
+            _classCallCheck(this, TableView);
+
+            _get(Object.getPrototypeOf(TableView.prototype), 'constructor', this).apply(this, arguments);
+        }
+
+        _createClass(TableView, [{
+            key: 'render',
+            value: function render() {
+                var DOM = React.DOM;
+                return React.createElement(ReactBootstrap.Table, { responsive: true, hover: true, striped: true }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "#"), DOM.th({}, "Country"), DOM.th({}, "Name"), DOM.th({}, "Best time"), DOM.th({}, "Motorcycle"), DOM.th({}, "Group"), DOM.th({}, "Age"), DOM.th({}, "Team")])), DOM.tbody({}, [DOM.tr({}, [DOM.td({}, "1"), DOM.td({}, DOM.span({ className: 'race-number' }, "42")), DOM.td({}, DOM.img({ height: '20px', src: 'http://www.geonames.org/flags/x/ua.gif' })), DOM.td({}, "Vyacheslav Goldenshteyn"), DOM.td({}, "1:11.15"), DOM.td({}, "Honda FMX 650"), DOM.td({}, "Group 3B"), DOM.td({}, "22"), DOM.td({}, "Sommmmm Team")]), DOM.tr({}, [DOM.td({}, "2"), DOM.td({}, DOM.span({ className: 'race-number' }, "42")), DOM.td({}, DOM.img({ height: '20px', src: 'http://www.geonames.org/flags/x/ua.gif' })), DOM.td({}, "Vyacheslav Goldenshteyn"), DOM.td({}, "1:11.15"), DOM.td({}, "Honda FMX 650"), DOM.td({}, "Group 3B"), DOM.td({}, "22"), DOM.td({}, "Sommmmm Team")]), DOM.tr({ className: 'selected-row' }, [DOM.td({ style: { fontSize: '18px', verticalAlign: 'middle' } }, "3"), DOM.td({
                     style: {
                         fontSize: '34px',
                         verticalAlign: 'middle'
@@ -75,7 +95,42 @@ define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
                 }, DOM.span({ className: 'race-number' }, "42")), DOM.td({ style: { verticalAlign: 'middle' } }, DOM.img({
                     height: '48px',
                     src: 'http://www.geonames.org/flags/x/ua.gif'
-                })), DOM.td({ style: { fontSize: '34px', verticalAlign: 'middle' } }, "Vyacheslav Goldenshteyn"), DOM.td({ style: { verticalAlign: 'middle' } }, "1:11.15"), DOM.td({ style: { verticalAlign: 'middle' } }, "Honda FMX 650"), DOM.td({ style: { verticalAlign: 'middle' } }, "Group 3B"), DOM.td({ style: { verticalAlign: 'middle' } }, "22"), DOM.td({ style: { verticalAlign: 'middle' } }, "Sommmmm Team")]), DOM.tr({ className: 'selected-row-after' }, [DOM.td({}), DOM.td({}), DOM.td({ colSpan: '4' }, [React.createElement(ReactBootstrap.Table, { responsive: true, condensed: true }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "Time"), DOM.td({}, "Penalty"), DOM.th({}, "Total"), DOM.td({}, "∆")])), DOM.tbody({}, [DOM.tr({}, [DOM.td({}, "1"), DOM.td({ className: 'col-md-2' }, "1:11.15"), DOM.td({}, [React.createElement(ReactBootstrap.Label, { bsStyle: 'warning' }, "Cone")]), DOM.td({ className: 'col-md-2' }, "1:12.15"), DOM.td({ className: 'col-md-2' }, "0:00.00")]), DOM.tr({}, [DOM.td({}, "2"), DOM.td({ className: 'col-md-2' }, "1:11.16"), DOM.td({}, [React.createElement(ReactBootstrap.Label, { bsStyle: 'warning' }, "Cone")]), DOM.td({ className: 'col-md-2' }, "1:12.16"), DOM.td({ className: 'col-md-2' }, "0:00.01")])])])]), DOM.td({}), DOM.td({}), DOM.td({})]), DOM.tr({}, [DOM.td({}, "4"), DOM.td({}, DOM.span({ className: 'race-number' }, "42")), DOM.td({}, DOM.img({ height: '20px', src: 'http://www.geonames.org/flags/x/ua.gif' })), DOM.td({}, "Vyacheslav Goldenshteyn"), DOM.td({}, "1:11.15"), DOM.td({}, "Honda FMX 650"), DOM.td({}, "Group 3B"), DOM.td({}, "22"), DOM.td({}, "Sommmmm Team")])])])]);
+                })), DOM.td({ style: { fontSize: '34px', verticalAlign: 'middle' } }, "Vyacheslav Goldenshteyn"), DOM.td({ style: { verticalAlign: 'middle' } }, "1:11.15"), DOM.td({ style: { verticalAlign: 'middle' } }, "Honda FMX 650"), DOM.td({ style: { verticalAlign: 'middle' } }, "Group 3B"), DOM.td({ style: { verticalAlign: 'middle' } }, "22"), DOM.td({ style: { verticalAlign: 'middle' } }, "Sommmmm Team")]), DOM.tr({ className: 'selected-row-after' }, [DOM.td({}), DOM.td({}), DOM.td({ colSpan: '4' }, [React.createElement(ReactBootstrap.Table, { responsive: true, condensed: true }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "Time"), DOM.td({}, "Penalty"), DOM.th({}, "Total"), DOM.td({}, "∆")])), DOM.tbody({}, [DOM.tr({}, [DOM.td({}, "1"), DOM.td({ className: 'col-md-2' }, "1:11.15"), DOM.td({}, [React.createElement(ReactBootstrap.Label, { bsStyle: 'warning' }, "Cone")]), DOM.td({ className: 'col-md-2' }, "1:12.15"), DOM.td({ className: 'col-md-2' }, "0:00.00")]), DOM.tr({}, [DOM.td({}, "2"), DOM.td({ className: 'col-md-2' }, "1:11.16"), DOM.td({}, [React.createElement(ReactBootstrap.Label, { bsStyle: 'warning' }, "Cone")]), DOM.td({ className: 'col-md-2' }, "1:12.16"), DOM.td({ className: 'col-md-2' }, "0:00.01")])])])]), DOM.td({}), DOM.td({}), DOM.td({})]), DOM.tr({}, [DOM.td({}, "4"), DOM.td({}, DOM.span({ className: 'race-number' }, "42")), DOM.td({}, DOM.img({ height: '20px', src: 'http://www.geonames.org/flags/x/ua.gif' })), DOM.td({}, "Vyacheslav Goldenshteyn"), DOM.td({}, "1:11.15"), DOM.td({}, "Honda FMX 650"), DOM.td({}, "Group 3B"), DOM.td({}, "22"), DOM.td({}, "Sommmmm Team")])])]);
+            }
+        }]);
+
+        return TableView;
+    })(React.Component);
+
+    var ResultsView = (function (_React$Component3) {
+        _inherits(ResultsView, _React$Component3);
+
+        function ResultsView() {
+            _classCallCheck(this, ResultsView);
+
+            _get(Object.getPrototypeOf(ResultsView.prototype), 'constructor', this).apply(this, arguments);
+        }
+
+        _createClass(ResultsView, [{
+            key: 'render',
+            value: function render() {
+                var DOM = React.DOM;
+
+                var eventId = this.props.params.eventId;
+                var myzone = {
+                    id: 3,
+                    number: "43",
+                    country: "il",
+                    name: "Vyacheslav Goldenshteyn1",
+                    motorcycle: "Honda FMX 650",
+                    group: "Group 3B",
+                    birthday: "2015-09-01",
+                    team: "Sommmmm Team"
+                };
+                return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, {
+                    previous: true,
+                    href: '#event/' + eventId + '/competition'
+                }, [React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-left' }), ' ', "Competition"]), React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/results' }, "Results")]), React.createElement(WinnersView, { firstPlace: myzone, secondPlace: myzone, thirdPlace: myzone }), React.createElement(TableView, {})]);
             }
         }]);
 
