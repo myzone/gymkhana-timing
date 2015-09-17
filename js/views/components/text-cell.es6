@@ -11,6 +11,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                 defaultValue: this.state.value,
                 className: this.props.className,
                 style: this.props.style,
+                maxLength: this.props.maxLength,
                 onChange: (event) => this.props.value.set(event.target.value)
             })
         }

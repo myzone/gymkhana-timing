@@ -24,26 +24,25 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                 var _this = this;
 
                 var renderer = this.props.renderer;
+                var overlay = React.createElement(ReactBootstrap.Popover, {
+                    key: 'cell-popover'
+                }, [React.DOM.div({ className: 'with-scroll', style: { height: '240px', marginBottom: '5px' } }, React.createElement(ReactBootstrap.ListGroup, { key: 'cell-list' }, [R.addIndex(R.map)(function (item, i) {
+                    return React.createElement(ReactBootstrap.ListGroupItem, {
+                        key: i,
+                        bsStyle: _this.state.value == item ? 'info' : 'default',
+                        onClick: function onClick() {
+                            return _this.props.value.set(item);
+                        }
+                    }, renderer(item));
+                }, this.props.items)]))]);
 
                 return React.createElement(ReactBootstrap.OverlayTrigger, {
                     key: 'cell-overlay',
                     trigger: 'click',
                     rootClose: true,
-                    placement: 'top',
-                    overlay: React.createElement(ReactBootstrap.Popover, {
-                        key: 'cell-popover',
-                        className: 'with-scroll',
-                        style: { height: '140px' }
-                    }, [React.createElement(ReactBootstrap.ListGroup, { key: 'cell-list' }, [R.addIndex(R.map)(function (item, i) {
-                        return React.createElement(ReactBootstrap.ListGroupItem, {
-                            key: i,
-                            bsStyle: _this.state.value == item ? 'info' : 'default',
-                            onClick: function onClick() {
-                                return _this.props.value.set(item);
-                            }
-                        }, renderer(item));
-                    }, this.props.items)])])
-                }, renderer(this.state.value));
+                    placement: 'bottom',
+                    overlay: overlay
+                }, React.DOM.div({}, [renderer(this.state.value), React.DOM.span({ className: 'caret' })]));
             }
         }]);
 

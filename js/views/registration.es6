@@ -70,10 +70,11 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                     bsSize: 'xsmall',
                     onClick: onDelete
                 }, React.createElement(ReactBootstrap.Glyphicon, {key: 'glyph', glyph: 'trash'}))),
-                DOM.td({key: 'number', className: 'col-md-1'}, React.createElement(TextCellView, {
+                DOM.td({key: 'number', style: {width: '50px'}}, React.createElement(TextCellView, {
                     key: 'number-cell',
                     className: 'race-number',
-                    //style: {width: '40px'},
+                    style: {width: '50px'},
+                    maxLength: 3,
                     value: this.number
                 })),
                 DOM.td({key: 'country', className: 'col-md-1'}, DOM.div({
@@ -102,7 +103,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                 })),
                 DOM.td({
                     key: 'motorcycle',
-                    className: 'col-md-1'
+                    className: 'col-md-2'
                 }, React.createElement(TextCellView, {key: 'motorcycle-cell', value: this.motorcycle})),
                 DOM.td({key: 'group', className: 'col-md-1'}, React.createElement(TextCellView, {
                     key: 'group-cell',
@@ -116,7 +117,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                     key: 'team-cell',
                     value: this.team
                 })),
-                DOM.td({key: 'validation', className: 'col-md-1'}, this.props.last ? "" : validationStatus
+                DOM.td({key: 'validation'}, this.props.last ? "" : validationStatus
                     ? React.createElement(ReactBootstrap.Glyphicon, {glyph: 'ok'})
                     : React.createElement(ReactBootstrap.Glyphicon, {glyph: 'remove'}))
             ]);
