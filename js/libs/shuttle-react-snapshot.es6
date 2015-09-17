@@ -20,10 +20,10 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
             R.forEach(shuttleProp => shuttleProp.value.removeListener(this.updateListener), this.getShuttleProps(this.props));
         }
 
-        shouldComponentUpdate(nextProps, nextState) {
-            return !R.eqDeep(nextProps, this.props)
-                || !R.eqDeep(this.computeState(nextProps, nextState), R.eqDeep(this.computeState(this.props, this.lastState)));
-        }
+        //shouldComponentUpdate(nextProps, nextState) {
+        //    return !R.equals(nextProps, this.props)
+        //        || !R.equals(this.computeState(nextProps, nextState), R.equals(this.computeState(this.props, this.lastState)));
+        //}
 
         componentWillReceiveProps(props) {
             this.setState(this.computeState(props, this.lastState));

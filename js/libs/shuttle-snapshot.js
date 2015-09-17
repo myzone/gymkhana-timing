@@ -15,7 +15,7 @@ define(['ramda'], function (R) {
             state.value = newState;
 
 
-            if (!R.eq(oldState, newState)) {
+            if (!R.equals(oldState, newState)) {
                 listeners.forEach(function (listener) {
                     listener(oldState, newState);
                 });

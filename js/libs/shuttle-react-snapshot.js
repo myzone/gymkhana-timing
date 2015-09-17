@@ -46,11 +46,12 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
                     return shuttleProp.value.removeListener(_this3.updateListener);
                 }, this.getShuttleProps(this.props));
             }
-        }, {
-            key: 'shouldComponentUpdate',
-            value: function shouldComponentUpdate(nextProps, nextState) {
-                return !R.eqDeep(nextProps, this.props) || !R.eqDeep(this.computeState(nextProps, nextState), R.eqDeep(this.computeState(this.props, this.lastState)));
-            }
+
+            //shouldComponentUpdate(nextProps, nextState) {
+            //    return !R.equals(nextProps, this.props)
+            //        || !R.equals(this.computeState(nextProps, nextState), R.equals(this.computeState(this.props, this.lastState)));
+            //}
+
         }, {
             key: 'componentWillReceiveProps',
             value: function componentWillReceiveProps(props) {

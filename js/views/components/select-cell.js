@@ -34,7 +34,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                         key: 'cell-popover',
                         className: 'with-scroll',
                         style: { height: '140px' }
-                    }, [React.createElement(ReactBootstrap.ListGroup, { key: 'cell-list' }, [R.mapIndexed(function (item, i) {
+                    }, [React.createElement(ReactBootstrap.ListGroup, { key: 'cell-list' }, [R.addIndex(R.map)(function (item, i) {
                         return React.createElement(ReactBootstrap.ListGroupItem, {
                             key: i,
                             bsStyle: _this.state.value == item ? 'info' : 'default',

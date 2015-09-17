@@ -1,6 +1,6 @@
 require.config({
     paths: {
-        'ramda': 'libs/ramda-0.13.min',
+        'ramda': 'libs/ramda-0.17.1.min',
         'jquery': 'libs/jquery-2.1.3',
         'moment': 'libs/moment-with-locales-2.10.2',
 
@@ -17,8 +17,6 @@ require.config({
         'unslider': 'libs/unslider-1.0.0',
         'justified': 'libs/jquery.justified-1.0.0',
         'parallax': 'libs/parallax-2.1.3',
-
-        'models/local-storage': 'models/application',
 
         'views/page': 'views/page',
         'views/events': 'views/events',
@@ -48,9 +46,21 @@ require.config({
 });
 
 
-require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle', 'shuttle-react'], (React, ReactBootstrap, ReactRouter, R, $, Shuttle, ShuttleReact) => {
-    require(['models/application', 'views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results'], (LocalStorage, PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView) => {
+require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery', 'shuttle', 'shuttle-react'], (React, ReactBootstrap, ReactRouter, R, moment, $, Shuttle, ShuttleReact) => {
+    require(['views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results'], (PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView) => {
+        const myzone = {
+            id: 3,
+            number: "43",
+            country: "il",
+            name: "Vyacheslav Goldenshteyn1",
+            motorcycle: "Honda FMX 650",
+            group: "Group 3B",
+            birthday: "2015-09-01",
+            team: "Sommmmm Team"
+        };
+
         const application = Shuttle.ref({
+            configuration: Shuttle.ref({}),
             participants: Shuttle.ref([Shuttle.ref({
                 id: 2,
                 number: "43",
@@ -60,24 +70,32 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
                 group: "Group 3B",
                 birthday: "2015-09-01",
                 team: "Sommmmm Team"
-            }), Shuttle.ref({
-                id: 3,
-                number: "43",
-                country: "il",
-                name: "Vyacheslav Goldenshteyn1",
-                motorcycle: "Honda FMX 650",
-                group: "Group 3B",
-                birthday: "2015-09-01",
-                team: "Sommmmm Team"
-            })])
+            }), Shuttle.ref(myzone)]),
+            heats: Shuttle.ref([{
+                participant: myzone,
+                result: callback => callback.onTimedResult(moment.duration({
+                    minutes: 59,
+                    seconds: 59,
+                    milliseconds: 999
+                }), [{
+                    name: '+1',
+                    type: 'critical',
+                    delay: moment.duration(0)
+                }, {
+                    name: '+1',
+                    type: 'critical',
+                    delay: moment.duration(0)
+                }])
+            }])
         });
+
         const Main = React.createClass({
             mixins: [Shuttle.React.Mixin],
             render: function () {
                 var DOM = React.DOM;
 
                 return DOM.div({key: 'main-root'}, [
-                    R.mapIndexed((stylesheet, i) => {
+                    R.addIndex(R.map)((stylesheet, i) => {
                         return DOM.link({key: i, rel: 'stylesheet', href: stylesheet});
                     }, [
                         'css/style.css',
@@ -112,7 +130,9 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
                     key: 'view',
                     params: this.props.params,
                     participants: application
-                        .flatMap(application => application.participants)
+                        .flatMap(application => application.participants),
+                    heats: application
+                        .flatMap(application => application.heats)
                 })
             }
         }
@@ -156,6 +176,8 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'jquery', 'shuttle
                 ])
             ])
         ]), document.getElementById('root'));
+
+        window.R = R
     });
 });
 

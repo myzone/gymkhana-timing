@@ -19,7 +19,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                     style: {height: '140px'}
                 }, [
                     React.createElement(ReactBootstrap.ListGroup, {key: 'cell-list'}, [
-                        R.mapIndexed((item, i) => React.createElement(ReactBootstrap.ListGroupItem, {
+                        R.addIndex(R.map)((item, i) => React.createElement(ReactBootstrap.ListGroupItem, {
                             key: i,
                             bsStyle: this.state.value == item ? 'info' : 'default',
                             onClick: () => this.props.value.set(item)

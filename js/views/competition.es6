@@ -1,4 +1,11 @@
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/text-cell'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, TextCellView) => {
+define(['react', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react', 'components/text-cell'], (React, ReactBootstrap, R, moment, Shuttle, ShuttleReact, TextCellView) => {
+    const HEATS_COUNT = 2;
+    const PENALTY_STYLES = {
+        negligible: 'default',
+        significant: 'warning',
+        critical: 'danger'
+    };
+
     class ParticipantView extends Shuttle.React.Component {
 
         constructor(props) {
@@ -8,6 +15,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
         render() {
             const DOM = React.DOM;
             const participant = this.state.participant;
+            const heats = this.props.heats;
 
             return DOM.tr({
                 key: 'opened-participant-row-1',
@@ -22,7 +30,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                 DOM.td({className: 'important middle-aligned'}, participant.name),
                 DOM.td({className: 'middle-aligned'}, participant.motorcycle),
                 DOM.td({className: 'middle-aligned'}, participant.group),
-                DOM.td({className: 'important middle-aligned'}, "0/1"),
+                DOM.td({className: 'important middle-aligned'}, `${heats.length}/${HEATS_COUNT}`),
                 DOM.td({className: 'middle-aligned'}, participant.team)
             ]);
         }
@@ -33,6 +41,47 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
 
         render() {
             const DOM = React.DOM;
+            const participant = this.state.participant;
+            const semiResults = R.map(heat => {
+                return {
+                    time: heat.time,
+                    penalties: heat.penalties,
+                    totalTime: R.reduce((time, delay) => time.add(delay), moment.duration(heat.time), R.map(penalty => penalty.delay, heat.penalties))
+                }
+            }, R.map(heat => heat.result({
+                onTimedResult: (time, penalties) => {
+                    return {
+                        time: time,
+                        penalties: penalties
+                    };
+                },
+                onHaventStared: () => {
+                    return {
+                        time: moment.duration({
+                            minutes: 59,
+                            seconds: 59,
+                            milliseconds: 999
+                        }),
+                        penalties: [{
+                            name: 'HS',
+                            type: 'negligible',
+                            delay: moment.duration(0)
+                        }]
+                    };
+                }
+            }), R.concat(this.props.heats, R.repeat({
+                participant: participant,
+                result: callback => callback.onHaventStared()
+            }, HEATS_COUNT - this.props.heats.length))));
+            const bestHeatTime = R.min(R.map(result => result.totalTime), semiResults);
+            const results = R.map(result => {
+                return {
+                    time: result.time,
+                    penalties: result.penalties,
+                    totalTime: result.totalTime,
+                    deltaTime: moment.duration(result.totalTime).subtract(bestHeatTime)
+                }
+            }, semiResults);
 
             return DOM.tr({key: 'opened-participant-row-2'}, [
                 DOM.td({style: {padding: '0'}}),
@@ -50,29 +99,28 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                             DOM.td({}, "∆")
                         ])),
                         DOM.tbody({}, [
-                            DOM.tr({}, [
-                                DOM.td({}, "1"),
-                                DOM.td({className: 'col-md-2'}, "1:11.15"),
-                                DOM.td({}, [
-                                    React.createElement(ReactBootstrap.Label, {bsStyle: 'warning'}, "Cone")
-                                ]),
-                                DOM.td({className: 'col-md-2'}, "1:12.15"),
-                                DOM.td({className: 'col-md-2'}, "0:00.00")
-                            ]),
-                            DOM.tr({}, [
-                                DOM.td({}, "2"),
-                                DOM.td({className: 'col-md-2'}, "1:11.16"),
-                                DOM.td({}, [
-                                    React.createElement(ReactBootstrap.Label, {bsStyle: 'warning'}, "Cone")
-                                ]),
-                                DOM.td({className: 'col-md-2'}, "1:12.16"),
-                                DOM.td({className: 'col-md-2'}, "0:00.01")
-                            ])
+                            R.addIndex(R.map)((result, i) => DOM.tr({key: i}, [
+                                DOM.td({}, i + 1),
+                                DOM.td({className: 'col-md-2'}, this.renderDuration(result.time)),
+                                DOM.td({}, R.map(penalty => [React.createElement(ReactBootstrap.Label, {bsStyle: PENALTY_STYLES[penalty.type]}, penalty.name), ' '], result.penalties)),
+                                DOM.td({className: 'col-md-2'}, this.renderDuration(result.totalTime)),
+                                DOM.td({className: 'col-md-2'}, `+${this.renderDuration(result.deltaTime)}`)
+                            ]), results)
                         ])
                     ]))
                 ]),
                 DOM.td({style: {padding: '0'}, colSpan: 3})
             ]);
+        }
+
+        renderDuration(duration) {
+            return `${duration.minutes()}:${duration.seconds()}.${this.pad(duration.milliseconds(), 3).substr(0, 2)}`
+        }
+
+        pad(n, size) {
+            const s = R.repeat('0', size - 1).join('') + n;
+
+            return s.substr(s.length - size);
         }
 
     }
@@ -87,7 +135,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
 
         render() {
             const DOM = React.DOM;
-            const eventId = this.props.eventId;
+            const eventId = this.props.params.eventId;
 
             return DOM.div({}, [
                 React.createElement(ReactBootstrap.Pager, {}, [
@@ -110,8 +158,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                     hover: true
                 }, [
                     DOM.tbody({key: 'table-body'}, [
-                        R.flatten(R.mapIndexed((participant, i) => {
-                            const opened = R.eq(this.state.current, participant.get());
+                        R.flatten(R.addIndex(R.map)((participant, i) => {
+                            const opened = R.equals(this.state.current, participant.get());
+                            const heats = R.filter(heat => R.equals(heat.participant, participant.get()), this.state.heats);
 
                             return [
                                 React.createElement(ParticipantView, {
@@ -120,12 +169,14 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                                     onToggle: () => {
                                         this.setState({current: !opened ? participant.get() : null});
                                     },
-                                    participant: participant
+                                    participant: participant,
+                                    heats: heats
                                 }),
                                 React.createElement(AdditionalParticipantView, {
                                     key: `additional-${i}`,
                                     opened: opened,
-                                    participant: participant
+                                    participant: participant,
+                                    heats: heats
                                 })
                             ]
                         }, this.state.participants))
