@@ -35,6 +35,18 @@
     background: transparent !important;
 }
 
+.goto-next {
+    transform: rotateZ(90deg);
+    font-size: 65px;
+    margin-left: -10px;
+    color: gray;
+}
+
+.goto-next:hover {
+    color: black;
+}
+
+
 .podium-label {
     border-radius: 50%;
     background: white;

@@ -117,10 +117,11 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                     };
                 }, semiResults);
 
-                return DOM.tr({ key: 'opened-participant-row-2' }, [DOM.td({ style: { padding: '0' } }), DOM.td({ style: { padding: '0' }, colSpan: 3 }, [DOM.div({ className: 'non-selected-additional ' + (this.props.opened ? 'selected-additional' : '') }, React.createElement(ReactBootstrap.Table, {
+                return DOM.tr({ key: 'opened-participant-row-2' }, [DOM.td({ style: { padding: '0' } }, React.createElement('center', { className: 'goto-next' }, this.props.opened ? React.createElement(ReactBootstrap.Glyphicon, { glyph: 'forward' }) : '')), DOM.td({ style: { padding: '0' }, colSpan: 3 }, [DOM.div({ className: 'non-selected-additional ' + (this.props.opened ? 'selected-additional' : '') }, React.createElement(ReactBootstrap.Table, {
                     className: 'inner-table',
                     responsive: true,
-                    condensed: true
+                    condensed: true,
+                    hover: true
                 }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "Time"), DOM.td({}, "Penalty"), DOM.th({}, "Total"), DOM.td({}, "∆")])), DOM.tbody({}, [R.addIndex(R.map)(function (result, i) {
                     return DOM.tr({ key: i }, [DOM.td({}, i + 1), DOM.td({ className: 'col-md-2' }, React.createElement(StopwatchCellView, {}) /*this.renderDuration(result.time)*/), DOM.td({}, R.map(function (penalty) {
                         return [React.createElement(ReactBootstrap.Label, { bsStyle: PENALTY_STYLES[penalty.type] }, penalty.name), ' '];
@@ -180,7 +181,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                 }, [DOM.tbody({ key: 'table-body' }, [R.flatten(R.addIndex(R.map)(function (participant, i) {
                     var opened = R.equals(_this4.state.current, participant.get());
                     var heats = R.filter(function (heat) {
-                        return R.equals(heat.participant, participant.get());
+                        return R.equals(heat.participant.get(), participant.get());
                     }, _this4.state.heats);
 
                     return [React.createElement(ParticipantView, {

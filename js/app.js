@@ -61,7 +61,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
         var myzone = Shuttle.ref({
             id: '3',
             number: "43",
-            country: "il",
+            country: "ua",
             name: "Vyacheslav Goldenshteyn1",
             motorcycle: "Honda FMX 650",
             group: "Group 3B",
@@ -74,7 +74,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             participants: Shuttle.ref([Shuttle.ref({
                 id: '2',
                 number: "43",
-                country: "il",
+                country: "ua",
                 name: "Vyacheslavzaza11 Goldenshteyn1",
                 motorcycle: "Honda FMX 650",
                 group: "Group 3B",

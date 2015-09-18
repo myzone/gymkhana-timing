@@ -84,12 +84,13 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
             }, semiResults);
 
             return DOM.tr({key: 'opened-participant-row-2'}, [
-                DOM.td({style: {padding: '0'}}),
+                DOM.td({style: {padding: '0'}}, React.createElement('center', {className: 'goto-next'}, this.props.opened ? React.createElement(ReactBootstrap.Glyphicon, {glyph: 'forward'}) : '')),
                 DOM.td({style: {padding: '0'}, colSpan: 3}, [
                     DOM.div({className: `non-selected-additional ${this.props.opened ? 'selected-additional' : ''}`}, React.createElement(ReactBootstrap.Table, {
                         className: 'inner-table',
                         responsive: true,
-                        condensed: true
+                        condensed: true,
+                        hover: true
                     }, [
                         DOM.thead({}, DOM.tr({}, [
                             DOM.td({}, ""),
@@ -160,7 +161,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                     DOM.tbody({key: 'table-body'}, [
                         R.flatten(R.addIndex(R.map)((participant, i) => {
                             const opened = R.equals(this.state.current, participant.get());
-                            const heats = R.filter(heat => R.equals(heat.participant, participant.get()), this.state.heats);
+                            const heats = R.filter(heat => R.equals(heat.participant.get(), participant.get()), this.state.heats);
 
                             return [
                                 React.createElement(ParticipantView, {
