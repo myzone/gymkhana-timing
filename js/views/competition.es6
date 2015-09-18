@@ -5,6 +5,32 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
         significant: 'warning',
         critical: 'danger'
     };
+    const PENALTIES = [{
+        name: 'CM',
+        description: 'Course miss',
+        penalty: moment.duration({seconds: 0}),
+        type: 'negligible'
+    }, {
+        name: 'CT',
+        description: 'Cone touch',
+        penalty: moment.duration({seconds: 1}),
+        type: 'significant'
+    }, {
+        name: 'GS',
+        description: 'Ground stand',
+        penalty: moment.duration({seconds: 1}),
+        type: 'significant'
+    }, {
+        name: 'WF',
+        description: 'Wrong finish',
+        penalty: moment.duration({seconds: 3}),
+        type: 'significant'
+    }, {
+        name: 'WC',
+        description: 'Wrong course',
+        penalty: moment.duration({seconds: 0}),
+        type: 'critical'
+    }];
 
     class ParticipantView extends Shuttle.React.Component {
 
@@ -38,6 +64,13 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
     }
 
     class AdditionalParticipantView extends Shuttle.React.Component {
+
+
+        constructor(props) {
+            super(props);
+
+            this.state.currentRow = null;
+        }
 
         render() {
             const DOM = React.DOM;
@@ -87,7 +120,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                 DOM.td({style: {padding: '0'}}, React.createElement('center', {className: 'goto-next'}, this.props.opened ? React.createElement(ReactBootstrap.Glyphicon, {glyph: 'forward'}) : '')),
                 DOM.td({style: {padding: '0'}, colSpan: 3}, [
                     DOM.div({className: `non-selected-additional ${this.props.opened ? 'selected-additional' : ''}`}, React.createElement(ReactBootstrap.Table, {
-                        className: 'inner-table',
+                        className: 'inner-table pair-table-striped',
                         responsive: true,
                         condensed: true,
                         hover: true
@@ -100,18 +133,67 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                             DOM.td({}, "∆")
                         ])),
                         DOM.tbody({}, [
-                            R.addIndex(R.map)((result, i) => DOM.tr({key: i}, [
-                                DOM.td({}, i + 1),
-                                DOM.td({className: 'col-md-2'}, React.createElement(StopwatchCellView, {})/*this.renderDuration(result.time)*/),
-                                DOM.td({}, R.map(penalty => [React.createElement(ReactBootstrap.Label, {bsStyle: PENALTY_STYLES[penalty.type]}, penalty.name), ' '], result.penalties)),
-                                DOM.td({className: 'col-md-2'}, this.renderDuration(result.totalTime)),
-                                DOM.td({className: 'col-md-2'}, `+${this.renderDuration(result.deltaTime)}`)
-                            ]), results)
+                            R.flatten(R.addIndex(R.map)((result, i) => this.state.currentRow == i
+                                ? [
+                                DOM.tr({key: i, className: 'info selected-heat-row'}, [
+                                    DOM.td({}, i + 1),
+                                    DOM.td({className: 'col-md-2'}, this.renderDuration(result.time)),
+                                    DOM.td({}, R.map(penalty => [React.createElement(ReactBootstrap.Label, {bsStyle: PENALTY_STYLES[penalty.type]}, [
+                                        penalty.name,
+                                        ' ',
+                                        React.createElement(ReactBootstrap.Glyphicon, {
+                                            className: 'tag-remove-btn',
+                                            glyph: 'remove'
+                                        })
+                                    ]), ' '], result.penalties)),
+                                    DOM.td({className: 'col-md-2'}, this.renderDuration(result.totalTime)),
+                                    DOM.td({className: 'col-md-2'}, `+${this.renderDuration(result.deltaTime)}`)
+                                ]),
+                                DOM.tr({key: `${i}-additional`, className: 'info selected-heat-row-additional'}, [
+                                    DOM.td({}, ''),
+                                    DOM.td({className: 'col-md-2'}, ''),
+                                    DOM.td({colSpan: 2}, React.createElement(ReactBootstrap.ButtonGroup, {}, R.map(penalty => {
+                                        return React.createElement(ReactBootstrap.OverlayTrigger, {
+                                            placement: 'bottom',
+                                            delayShow: 1000,
+                                            overlay: React.createElement(ReactBootstrap.Tooltip, {}, penalty.description)
+                                        }, React.createElement(ReactBootstrap.Button, {
+                                            bsSize: 'small',
+                                            bsStyle: PENALTY_STYLES[penalty.type]
+                                        }, penalty.name));
+                                    }, PENALTIES))),
+                                    DOM.td({}, React.createElement(ReactBootstrap.Button, {
+                                        onClick: () => {
+                                            this.setState({currentRow: null});
+                                        }
+                                    }, React.createElement(ReactBootstrap.Glyphicon, {
+                                        className: 'tag-remove-btn',
+                                        glyph: 'ok'
+                                    })))
+                                ])]
+                                : [
+                                DOM.tr({
+                                    key: i,
+                                    onClick: () => {
+                                        if(this.state.currentRow === null) {
+                                            this.setState({currentRow: i});
+                                        }
+                                    }
+                                }, [
+                                    DOM.td({}, i + 1),
+                                    DOM.td({className: 'col-md-2'}, this.renderDuration(result.time)),
+                                    DOM.td({}, R.map(penalty => [React.createElement(ReactBootstrap.Label, {bsStyle: PENALTY_STYLES[penalty.type]}, penalty.name), ' '], result.penalties)),
+                                    DOM.td({className: 'col-md-2'}, this.renderDuration(result.totalTime)),
+                                    DOM.td({className: 'col-md-2'}, `+${this.renderDuration(result.deltaTime)}`)
+                                ]),
+                                DOM.tr({})
+                            ], results))
                         ])
                     ]))
                 ]),
                 DOM.td({style: {padding: '0'}, colSpan: 3})
-            ]);
+            ])
+                ;
         }
 
         renderDuration(duration) {
