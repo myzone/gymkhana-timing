@@ -82,21 +82,25 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                 team: "Sommmmm Team"
             }), myzone]),
             heats: Shuttle.ref([{
+                id: "94",
                 participant: myzone,
-                result: function result(callback) {
-                    return callback.onTimedResult(moment.duration({
-                        minutes: 59,
-                        seconds: 59,
-                        milliseconds: 999
-                    }), [{
+                number: 1,
+                result: {
+                    type: 'TimedResult',
+                    time: moment.duration({
+                        minutes: 1,
+                        seconds: 25,
+                        milliseconds: 13
+                    }),
+                    penalties: [{
                         name: '+1',
                         type: 'critical',
-                        delay: moment.duration(0)
+                        delay: moment.duration({ seconds: 1 })
                     }, {
                         name: '+1',
                         type: 'critical',
-                        delay: moment.duration(0)
-                    }]);
+                        delay: moment.duration({ seconds: 1 })
+                    }]
                 }
             }])
         });

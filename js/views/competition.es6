@@ -1,4 +1,4 @@
-define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react', 'components/stopwatch-cell'], (React, ReactRouter, ReactBootstrap, R, moment, Shuttle, ShuttleReact, StopwatchCellView) => {
+define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react', 'components/stopwatch-cell', 'utils/commons'], (React, ReactRouter, ReactBootstrap, R, moment, Shuttle, ShuttleReact, StopwatchCellView, Commons) => {
     const HEATS_COUNT = 2;
     const PENALTY_STYLES = {
         negligible: 'default',
@@ -8,29 +8,212 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
     const PENALTIES = [{
         name: 'CM',
         description: 'Course miss',
-        penalty: moment.duration({seconds: 0}),
+        delay: moment.duration({seconds: 0}),
         type: 'negligible'
     }, {
         name: 'CT',
         description: 'Cone touch',
-        penalty: moment.duration({seconds: 1}),
+        delay: moment.duration({seconds: 1}),
         type: 'significant'
     }, {
         name: 'GS',
         description: 'Ground stand',
-        penalty: moment.duration({seconds: 1}),
+        delay: moment.duration({seconds: 1}),
         type: 'significant'
     }, {
         name: 'WF',
         description: 'Wrong finish',
-        penalty: moment.duration({seconds: 3}),
+        delay: moment.duration({seconds: 3}),
         type: 'significant'
     }, {
         name: 'WC',
         description: 'Wrong course',
-        penalty: moment.duration({seconds: 0}),
+        delay: moment.duration({seconds: 0}),
         type: 'critical'
     }];
+
+    class HeatView extends React.Component {
+
+        constructor(props) {
+            super(props);
+
+            this.time = Shuttle.ref(this.props.result.time);
+            this.penalties = Shuttle.ref(this.props.result.penalties);
+
+            this.heat = Shuttle.combine([this.time, this.penalties], (time, penalties) => {
+                return {
+                    id: !R.isNil(this.props.result.id) ? this.props.result.id : Commons.guid(),
+                    participant: this.props.result.participant,
+                    number: this.props.rowId + 1,
+                    result: {
+                        type: 'TimedResult',
+                        time: time,
+                        penalties: penalties
+                    }
+                }
+            });
+
+            this.listener = (_, heat) => {
+                let heats = this.props.heats.get();
+
+                const index = R.findIndex(heat => heat.id == this.props.result.id, heats);
+                if (index >= 0) {
+                    heats = R.remove(index, 1, heats);
+                }
+
+                this.props.heats.set(R.append(heat, heats));
+            }
+        }
+
+        componentDidMount() {
+            this.heat.addListener(this.listener);
+        }
+
+        componentWillUnmount() {
+            this.heat.removeListener(this.listener);
+        }
+
+        render() {
+            return React.DOM.tbody({}, [
+                React.createElement(AdditionalHeatView1, {
+                    rowId: this.props.rowId,
+                    currentRow: this.props.currentRow,
+
+                    time: this.time,
+                    penalties: this.penalties,
+                    result: this.props.result
+                }),
+                React.createElement(AdditionalHeatView2, {
+                    rowId: this.props.rowId,
+                    currentRow: this.props.currentRow,
+
+                    time: this.time,
+                    penalties: this.penalties,
+
+                    result: this.props.result,
+
+                    heat: this.heat,
+                    heats: this.props.heats
+                })
+            ]);
+        }
+
+    }
+
+    class AdditionalHeatView1 extends Shuttle.React.Component {
+
+        render() {
+            return this.state.currentRow == this.props.rowId
+                ? this.renderSelected()
+                : this.renderNonSelected();
+        }
+
+        renderSelected() {
+            const DOM = React.DOM;
+
+            return DOM.tr({key: 'selected', className: 'info selected-heat-row'}, [
+                DOM.td({}, this.props.rowId + 1),
+                DOM.td({className: 'col-md-2'}, this.props.result.time ? this.renderDuration(this.props.result.time) : ''),
+                DOM.td({}, R.addIndex(R.map)((penalty, i) => [React.createElement(ReactBootstrap.Label, {
+                    key: i,
+                    bsStyle: PENALTY_STYLES[penalty.type],
+                    onClick: () => {
+                        this.props.penalties.set(R.remove(i, 1, this.props.result.penalties))
+                    }
+                }, [
+                    penalty.name,
+                    ' ',
+                    React.createElement(ReactBootstrap.Glyphicon, {
+                        className: 'tag-remove-btn',
+                        glyph: 'remove'
+                    })
+                ]), ' '], this.props.result.penalties)),
+                DOM.td({className: 'col-md-2'}, this.renderDuration(this.props.result.totalTime)),
+                DOM.td({className: 'col-md-2'}, `+${this.renderDuration(this.props.result.deltaTime)}`)
+            ]);
+        }
+
+        renderNonSelected() {
+            const DOM = React.DOM;
+
+            return DOM.tr({
+                key: 'non-selected',
+                onClick: () => {
+                    if (R.isNil(this.state.currentRow)) {
+                        this.props.currentRow.set(this.props.rowId);
+                    }
+                }
+            }, [
+                DOM.td({}, this.props.rowId + 1),
+                DOM.td({className: 'col-md-2'}, this.props.result.time ? this.renderDuration(this.props.result.time) : ''),
+                DOM.td({}, R.addIndex(R.map)((penalty, i) => [React.createElement(ReactBootstrap.Label, {
+                    key: i,
+                    bsStyle: PENALTY_STYLES[penalty.type]
+                }, penalty.name), ' '], this.props.result.penalties)),
+                DOM.td({className: 'col-md-2'}, this.renderDuration(this.props.result.totalTime)),
+                DOM.td({className: 'col-md-2'}, `+${this.renderDuration(this.props.result.deltaTime)}`)
+            ]);
+        }
+
+
+        renderDuration(duration) {
+            return `${duration.minutes()}:${duration.seconds()}.${this.pad(duration.milliseconds(), 3).substr(0, 2)}`
+        }
+
+        pad(n, size) {
+            const s = R.repeat('0', size - 1).join('') + n;
+
+            return s.substr(s.length - size);
+        }
+
+    }
+
+    class AdditionalHeatView2 extends Shuttle.React.Component {
+
+        render() {
+            return this.state.currentRow == this.props.rowId
+                ? this.renderSelected()
+                : this.renderNonSelected();
+        }
+
+        renderSelected() {
+            const DOM = React.DOM;
+
+            return DOM.tr({className: 'info selected-heat-row-additional'}, [
+                DOM.td({}, ''),
+                DOM.td({className: 'col-md-2'}, ''),
+                DOM.td({colSpan: 2}, React.createElement(ReactBootstrap.ButtonGroup, {}, R.addIndex(R.map)((penalty, i) => {
+                    return React.createElement(ReactBootstrap.OverlayTrigger, {
+                        key: `overlay-trigger-${i}`,
+                        placement: 'bottom',
+                        delayShow: 1000,
+                        overlay: React.createElement(ReactBootstrap.Tooltip, {key: `overlay-${i}`}, penalty.description)
+                    }, React.createElement(ReactBootstrap.Button, {
+                        key: `button-${i}`,
+                        bsSize: 'small',
+                        bsStyle: PENALTY_STYLES[penalty.type],
+                        onClick: () => {
+                            this.props.penalties.set(R.append(penalty, this.props.result.penalties))
+                        }
+                    }, penalty.name));
+                }, PENALTIES))),
+                DOM.td({}, React.createElement(ReactBootstrap.Button, {
+                    bsSize: 'small',
+                    onClick: () => {
+                        this.props.currentRow.set(null);
+                    }
+                }, React.createElement(ReactBootstrap.Glyphicon, {
+                    glyph: 'ok'
+                })))
+            ])
+        }
+
+        renderNonSelected() {
+            return React.DOM.tr({key: 'empty'});
+        }
+
+    }
+
 
     class ParticipantView extends Shuttle.React.Component {
 
@@ -41,7 +224,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
         render() {
             const DOM = React.DOM;
             const participant = this.state.participant;
-            const heats = this.props.heats;
+            const heats = this.state.heats;
 
             return DOM.tr({
                 key: 'opened-participant-row-1',
@@ -65,56 +248,17 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
 
     class AdditionalParticipantView extends Shuttle.React.Component {
 
-
         constructor(props) {
             super(props);
 
-            this.state.currentRow = null;
+            this.currentRow = Shuttle.ref(this.props.currentRow);
         }
 
         render() {
             const DOM = React.DOM;
             const participant = this.state.participant;
-            const semiResults = R.map(heat => {
-                return {
-                    time: heat.time,
-                    penalties: heat.penalties,
-                    totalTime: R.reduce((time, delay) => time.add(delay), moment.duration(heat.time), R.map(penalty => penalty.delay, heat.penalties))
-                }
-            }, R.map(heat => heat.result({
-                onTimedResult: (time, penalties) => {
-                    return {
-                        time: time,
-                        penalties: penalties
-                    };
-                },
-                onHaventStared: () => {
-                    return {
-                        time: moment.duration({
-                            minutes: 59,
-                            seconds: 59,
-                            milliseconds: 999
-                        }),
-                        penalties: [{
-                            name: 'HS',
-                            type: 'negligible',
-                            delay: moment.duration(0)
-                        }]
-                    };
-                }
-            }), R.concat(this.props.heats, R.repeat({
-                participant: participant,
-                result: callback => callback.onHaventStared()
-            }, HEATS_COUNT - this.props.heats.length))));
-            const bestHeatTime = R.min(R.map(result => result.totalTime), semiResults);
-            const results = R.map(result => {
-                return {
-                    time: result.time,
-                    penalties: result.penalties,
-                    totalTime: result.totalTime,
-                    deltaTime: moment.duration(result.totalTime).subtract(bestHeatTime)
-                }
-            }, semiResults);
+            const currentRow = this.currentRow;
+            const results = this.state.results;
 
             return DOM.tr({key: 'opened-participant-row-2'}, [
                 DOM.td({style: {padding: '0'}}, React.createElement('center', {className: 'goto-next'}, this.props.opened ? React.createElement(ReactBootstrap.Glyphicon, {glyph: 'forward'}) : '')),
@@ -132,78 +276,21 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                             DOM.th({}, "Total"),
                             DOM.td({}, "∆")
                         ])),
-                        DOM.tbody({}, [
-                            R.flatten(R.addIndex(R.map)((result, i) => this.state.currentRow == i
-                                ? [
-                                DOM.tr({key: i, className: 'info selected-heat-row'}, [
-                                    DOM.td({}, i + 1),
-                                    DOM.td({className: 'col-md-2'}, this.renderDuration(result.time)),
-                                    DOM.td({}, R.map(penalty => [React.createElement(ReactBootstrap.Label, {bsStyle: PENALTY_STYLES[penalty.type]}, [
-                                        penalty.name,
-                                        ' ',
-                                        React.createElement(ReactBootstrap.Glyphicon, {
-                                            className: 'tag-remove-btn',
-                                            glyph: 'remove'
-                                        })
-                                    ]), ' '], result.penalties)),
-                                    DOM.td({className: 'col-md-2'}, this.renderDuration(result.totalTime)),
-                                    DOM.td({className: 'col-md-2'}, `+${this.renderDuration(result.deltaTime)}`)
-                                ]),
-                                DOM.tr({key: `${i}-additional`, className: 'info selected-heat-row-additional'}, [
-                                    DOM.td({}, ''),
-                                    DOM.td({className: 'col-md-2'}, ''),
-                                    DOM.td({colSpan: 2}, React.createElement(ReactBootstrap.ButtonGroup, {}, R.map(penalty => {
-                                        return React.createElement(ReactBootstrap.OverlayTrigger, {
-                                            placement: 'bottom',
-                                            delayShow: 1000,
-                                            overlay: React.createElement(ReactBootstrap.Tooltip, {}, penalty.description)
-                                        }, React.createElement(ReactBootstrap.Button, {
-                                            bsSize: 'small',
-                                            bsStyle: PENALTY_STYLES[penalty.type]
-                                        }, penalty.name));
-                                    }, PENALTIES))),
-                                    DOM.td({}, React.createElement(ReactBootstrap.Button, {
-                                        onClick: () => {
-                                            this.setState({currentRow: null});
-                                        }
-                                    }, React.createElement(ReactBootstrap.Glyphicon, {
-                                        className: 'tag-remove-btn',
-                                        glyph: 'ok'
-                                    })))
-                                ])]
-                                : [
-                                DOM.tr({
-                                    key: i,
-                                    onClick: () => {
-                                        if(this.state.currentRow === null) {
-                                            this.setState({currentRow: i});
-                                        }
-                                    }
-                                }, [
-                                    DOM.td({}, i + 1),
-                                    DOM.td({className: 'col-md-2'}, this.renderDuration(result.time)),
-                                    DOM.td({}, R.map(penalty => [React.createElement(ReactBootstrap.Label, {bsStyle: PENALTY_STYLES[penalty.type]}, penalty.name), ' '], result.penalties)),
-                                    DOM.td({className: 'col-md-2'}, this.renderDuration(result.totalTime)),
-                                    DOM.td({className: 'col-md-2'}, `+${this.renderDuration(result.deltaTime)}`)
-                                ]),
-                                DOM.tr({})
-                            ], results))
-                        ])
+                        R.addIndex(R.map)((result, i) => {
+                            return React.createElement(HeatView, {
+                                key: i,
+
+                                rowId: i,
+                                currentRow: currentRow,
+
+                                result: result,
+                                heats: this.props.heats
+                            })
+                        }, results)
                     ]))
                 ]),
                 DOM.td({style: {padding: '0'}, colSpan: 3})
-            ])
-                ;
-        }
-
-        renderDuration(duration) {
-            return `${duration.minutes()}:${duration.seconds()}.${this.pad(duration.milliseconds(), 3).substr(0, 2)}`
-        }
-
-        pad(n, size) {
-            const s = R.repeat('0', size - 1).join('') + n;
-
-            return s.substr(s.length - size);
+            ]);
         }
 
     }
@@ -242,28 +329,87 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                 }, [
                     DOM.tbody({key: 'table-body'}, [
                         R.flatten(R.addIndex(R.map)((participant, i) => {
-                            const opened = R.equals(this.state.current, participant.get());
-                            const heats = R.filter(heat => R.equals(heat.participant.get(), participant.get()), this.state.heats);
+                                const opened = R.equals(this.state.current, participant.get());
+                                const heats = this.props.heats
+                                    .map(heats => R.filter(heat => R.equals(heat.participant.get(), participant.get()), heats));
 
-                            return [
-                                React.createElement(ParticipantView, {
-                                    key: `main-${i}`,
-                                    opened: opened,
-                                    onToggle: () => {
-                                        this.setState({current: !opened ? participant.get() : null});
-                                    },
-                                    participant: participant,
-                                    heats: heats,
-                                    eventId: eventId
-                                }),
-                                React.createElement(AdditionalParticipantView, {
-                                    key: `additional-${i}`,
-                                    opened: opened,
-                                    participant: participant,
-                                    heats: heats
-                                })
-                            ]
-                        }, this.state.participants))
+                                const results = heats
+                                    .map(heats => R.map(heat => {
+                                            if (heat.result.type == 'TimedResult')
+                                                return {
+                                                    id: heat.id,
+                                                    participant: heat.participant,
+                                                    number: heat.number,
+                                                    time: heat.result.time,
+                                                    penalties: heat.result.penalties,
+                                                    totalTime: R.reduce((time, delay) => time.add(delay), moment.duration(heat.result.time), R.map(penalty => penalty.delay, heat.result.penalties))
+                                                };
+
+                                            if (heat.result.type == 'NoTimeResult')
+                                                return {
+                                                    id: heat.id,
+                                                    participant: heat.participant,
+                                                    number: heat.number,
+                                                    time: null,
+                                                    penalties: [/*{
+                                                     name: 'HS',
+                                                     type: 'negligible',
+                                                     delay: moment.duration(0)
+                                                     }*/],
+                                                    totalTime: moment.duration({
+                                                        minutes: 59,
+                                                        seconds: 59,
+                                                        milliseconds: 999
+                                                    })
+                                                };
+
+                                            throw 'undefined';
+                                        }, R.concat(heats, R.repeat({
+                                            participant: participant,
+                                            result: {
+                                                type: 'NoTimeResult'
+                                            }
+                                        }, R.max(HEATS_COUNT - heats.length, 0))))
+                                    )
+                                    .map(semiResults => {
+                                        const bestHeatTime = R.reduce(R.min, moment.duration(Infinity), R.map(result => result.totalTime, semiResults));
+
+                                        return R.sortBy(result => result.number, R.map(result => {
+                                            return {
+                                                id: result.id,
+                                                time: result.time,
+                                                participant: result.participant,
+                                                number: result.number,
+                                                penalties: result.penalties,
+                                                totalTime: result.totalTime,
+                                                deltaTime: moment.duration(result.totalTime).subtract(bestHeatTime)
+                                            }
+                                        }, semiResults));
+                                    });
+
+                                return [
+                                    React.createElement(ParticipantView, {
+                                        key: `main-${i}`,
+                                        opened: opened,
+                                        onToggle: () => {
+                                            this.setState({current: !opened ? participant.get() : null});
+                                        },
+                                        participant: participant,
+                                        heats: heats
+                                            .map(heats => R.filter(heat => heat.result.type == 'TimedResult', heats)),
+                                        eventId: eventId
+                                    }),
+                                    React.createElement(AdditionalParticipantView, {
+                                        key: `additional-${i}`,
+                                        opened: opened,
+                                        participant: participant,
+                                        heats: this.props.heats,
+                                        results: results
+                                    })
+                                ]
+                            },
+                            this.state.participants
+                        ))
                     ])
                 ])
             ]);
