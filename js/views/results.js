@@ -1,45 +1,25 @@
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
 var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
-    var WinnersView = (function (_React$Component) {
-        _inherits(WinnersView, _React$Component);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-        function WinnersView() {
-            _classCallCheck(this, WinnersView);
-
-            _get(Object.getPrototypeOf(WinnersView.prototype), 'constructor', this).apply(this, arguments);
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment) {
+    var FirstPlaceView = (function () {
+        function FirstPlaceView() {
+            _classCallCheck(this, FirstPlaceView);
         }
 
-        _createClass(WinnersView, [{
+        _createClass(FirstPlaceView, [{
             key: 'render',
             value: function render() {
                 var DOM = React.DOM;
-                var firstPlace = this.props.firstPlace;
-                var secondPlace = this.props.secondPlace;
-                var thirdPlace = this.props.thirdPlace;
-                return DOM.table({ style: { width: '100%' } }, DOM.tr({}, [DOM.td({ style: { width: '250px' } }), DOM.td({}, [React.createElement('center', {}, DOM.div({ style: { marginTop: '20px' } }, [DOM.span({ className: 'race-number' }, secondPlace.number), ' ', DOM.span({}, secondPlace.name)])), DOM.div({
-                    style: {
-                        background: 'silver',
-                        height: '60px',
-                        marginLeft: '5px',
-                        marginRight: '5px',
-                        fontSize: '43px'
-                    }
-                }, React.createElement('center', {}, DOM.span({
-                    className: 'podium-label',
-                    style: {
-                        paddingLeft: '13px',
-                        paddingRight: '13px'
-                    }
-                }, "2")))]), DOM.td({}, [React.createElement('center', {}, DOM.div({ style: { marginTop: '0px' } }, [DOM.span({ className: 'race-number' }, firstPlace.number), ' ', DOM.span({}, firstPlace.name)])), DOM.div({
+
+                return DOM.td({ className: 'col-md-3' }, [React.createElement('center', {}, DOM.div({ style: { marginTop: '0px' } }, [DOM.span({ className: 'race-number' }, this.props.number), ' ', DOM.span({}, this.props.name)])), DOM.div({
                     style: {
                         background: 'gold',
                         height: '80px',
@@ -53,7 +33,55 @@ define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
                         paddingLeft: '16px',
                         paddingRight: '16px'
                     }
-                }, "1")))]), DOM.td({}, [React.createElement('center', {}, DOM.div({ style: { marginTop: '40px' } }, [DOM.span({ className: 'race-number' }, thirdPlace.number), ' ', DOM.span({}, thirdPlace.name)])), DOM.div({
+                }, "1")))]);
+            }
+        }]);
+
+        return FirstPlaceView;
+    })();
+
+    var SecondPlaceView = (function () {
+        function SecondPlaceView() {
+            _classCallCheck(this, SecondPlaceView);
+        }
+
+        _createClass(SecondPlaceView, [{
+            key: 'render',
+            value: function render() {
+                var DOM = React.DOM;
+
+                return DOM.td({ className: 'col-md-3' }, [React.createElement('center', {}, DOM.div({ style: { marginTop: '20px' } }, [DOM.span({ className: 'race-number' }, this.props.number), ' ', DOM.span({}, this.props.name)])), DOM.div({
+                    style: {
+                        background: 'silver',
+                        height: '60px',
+                        marginLeft: '5px',
+                        marginRight: '5px',
+                        fontSize: '43px'
+                    }
+                }, React.createElement('center', {}, DOM.span({
+                    className: 'podium-label',
+                    style: {
+                        paddingLeft: '13px',
+                        paddingRight: '13px'
+                    }
+                }, "2")))]);
+            }
+        }]);
+
+        return SecondPlaceView;
+    })();
+
+    var ThirdPlaceView = (function () {
+        function ThirdPlaceView() {
+            _classCallCheck(this, ThirdPlaceView);
+        }
+
+        _createClass(ThirdPlaceView, [{
+            key: 'render',
+            value: function render() {
+                var DOM = React.DOM;
+
+                return DOM.td({ className: 'col-md-3' }, [React.createElement('center', {}, DOM.div({ style: { marginTop: '40px' } }, [DOM.span({ className: 'race-number' }, this.props.number), ' ', DOM.span({}, this.props.name)])), DOM.div({
                     style: {
                         height: '40px',
                         background: '#CD7F32',
@@ -67,43 +95,40 @@ define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
                         paddingLeft: '9px',
                         paddingRight: '9px'
                     }
-                }, "3")))]), DOM.td({ style: { width: '250px' } })]));
+                }, "3")))]);
+            }
+        }]);
+
+        return ThirdPlaceView;
+    })();
+
+    var WinnersView = (function (_Shuttle$React$Component) {
+        _inherits(WinnersView, _Shuttle$React$Component);
+
+        function WinnersView() {
+            _classCallCheck(this, WinnersView);
+
+            _get(Object.getPrototypeOf(WinnersView.prototype), 'constructor', this).apply(this, arguments);
+        }
+
+        _createClass(WinnersView, [{
+            key: 'render',
+            value: function render() {
+                var DOM = React.DOM;
+
+                var firstPlace = this.state.firstPlace;
+                var secondPlace = this.state.secondPlace;
+                var thirdPlace = this.state.thirdPlace;
+
+                return DOM.table({ style: { width: '100%' } }, DOM.tr({}, [DOM.td({ style: { width: '250px' } }), secondPlace ? React.createElement(SecondPlaceView, { name: secondPlace.name, number: secondPlace.number }) : DOM.td(), firstPlace ? React.createElement(FirstPlaceView, { name: firstPlace.name, number: firstPlace.number }) : DOM.td(),, thirdPlace ? React.createElement(ThirdPlaceView, { name: thirdPlace.name, number: thirdPlace.number }) : DOM.td(),, DOM.td({ style: { width: '250px' } })]));
             }
         }]);
 
         return WinnersView;
-    })(React.Component);
+    })(Shuttle.React.Component);
 
-    var TableView = (function (_React$Component2) {
-        _inherits(TableView, _React$Component2);
-
-        function TableView() {
-            _classCallCheck(this, TableView);
-
-            _get(Object.getPrototypeOf(TableView.prototype), 'constructor', this).apply(this, arguments);
-        }
-
-        _createClass(TableView, [{
-            key: 'render',
-            value: function render() {
-                var DOM = React.DOM;
-                return React.createElement(ReactBootstrap.Table, { responsive: true, hover: true, striped: true }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "#"), DOM.th({}, "Country"), DOM.th({}, "Name"), DOM.th({}, "Best time"), DOM.th({}, "Motorcycle"), DOM.th({}, "Group"), DOM.th({}, "Age"), DOM.th({}, "Team")])), DOM.tbody({}, [DOM.tr({}, [DOM.td({}, "1"), DOM.td({}, DOM.span({ className: 'race-number' }, "42")), DOM.td({}, DOM.img({ height: '20px', src: 'http://www.geonames.org/flags/x/ua.gif' })), DOM.td({}, "Vyacheslav Goldenshteyn"), DOM.td({}, "1:11.15"), DOM.td({}, "Honda FMX 650"), DOM.td({}, "Group 3B"), DOM.td({}, "22"), DOM.td({}, "Sommmmm Team")]), DOM.tr({}, [DOM.td({}, "2"), DOM.td({}, DOM.span({ className: 'race-number' }, "42")), DOM.td({}, DOM.img({ height: '20px', src: 'http://www.geonames.org/flags/x/ua.gif' })), DOM.td({}, "Vyacheslav Goldenshteyn"), DOM.td({}, "1:11.15"), DOM.td({}, "Honda FMX 650"), DOM.td({}, "Group 3B"), DOM.td({}, "22"), DOM.td({}, "Sommmmm Team")]), DOM.tr({ className: 'selected-row' }, [DOM.td({ style: { fontSize: '18px', verticalAlign: 'middle' } }, "3"), DOM.td({
-                    style: {
-                        fontSize: '34px',
-                        verticalAlign: 'middle'
-                    }
-                }, DOM.span({ className: 'race-number' }, "42")), DOM.td({ style: { verticalAlign: 'middle' } }, DOM.img({
-                    height: '48px',
-                    src: 'http://www.geonames.org/flags/x/ua.gif'
-                })), DOM.td({ style: { fontSize: '34px', verticalAlign: 'middle' } }, "Vyacheslav Goldenshteyn"), DOM.td({ style: { verticalAlign: 'middle' } }, "1:11.15"), DOM.td({ style: { verticalAlign: 'middle' } }, "Honda FMX 650"), DOM.td({ style: { verticalAlign: 'middle' } }, "Group 3B"), DOM.td({ style: { verticalAlign: 'middle' } }, "22"), DOM.td({ style: { verticalAlign: 'middle' } }, "Sommmmm Team")]), DOM.tr({ className: 'selected-row-after' }, [DOM.td({}), DOM.td({}), DOM.td({ colSpan: '4' }, [React.createElement(ReactBootstrap.Table, { responsive: true, condensed: true }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "Time"), DOM.td({}, "Penalty"), DOM.th({}, "Total"), DOM.td({}, "∆")])), DOM.tbody({}, [DOM.tr({}, [DOM.td({}, "1"), DOM.td({ className: 'col-md-2' }, "1:11.15"), DOM.td({}, [React.createElement(ReactBootstrap.Label, { bsStyle: 'warning' }, "Cone")]), DOM.td({ className: 'col-md-2' }, "1:12.15"), DOM.td({ className: 'col-md-2' }, "0:00.00")]), DOM.tr({}, [DOM.td({}, "2"), DOM.td({ className: 'col-md-2' }, "1:11.16"), DOM.td({}, [React.createElement(ReactBootstrap.Label, { bsStyle: 'warning' }, "Cone")]), DOM.td({ className: 'col-md-2' }, "1:12.16"), DOM.td({ className: 'col-md-2' }, "0:00.01")])])])]), DOM.td({}), DOM.td({}), DOM.td({})]), DOM.tr({}, [DOM.td({}, "4"), DOM.td({}, DOM.span({ className: 'race-number' }, "42")), DOM.td({}, DOM.img({ height: '20px', src: 'http://www.geonames.org/flags/x/ua.gif' })), DOM.td({}, "Vyacheslav Goldenshteyn"), DOM.td({}, "1:11.15"), DOM.td({}, "Honda FMX 650"), DOM.td({}, "Group 3B"), DOM.td({}, "22"), DOM.td({}, "Sommmmm Team")])])]);
-            }
-        }]);
-
-        return TableView;
-    })(React.Component);
-
-    var ResultsView = (function (_React$Component3) {
-        _inherits(ResultsView, _React$Component3);
+    var ResultsView = (function (_React$Component) {
+        _inherits(ResultsView, _React$Component);
 
         function ResultsView() {
             _classCallCheck(this, ResultsView);
@@ -115,22 +140,52 @@ define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
             key: 'render',
             value: function render() {
                 var DOM = React.DOM;
-
                 var eventId = this.props.params.eventId;
-                var myzone = {
-                    id: 3,
-                    number: "43",
-                    country: "il",
-                    name: "Vyacheslav Goldenshteyn1",
-                    motorcycle: "Honda FMX 650",
-                    group: "Group 3B",
-                    birthday: "2015-09-01",
-                    team: "Sommmmm Team"
+
+                var totalTime = function totalTime(heat) {
+                    return R.reduce(function (time, delay) {
+                        return time.add(delay);
+                    }, moment.duration(heat.result.time), R.map(function (penalty) {
+                        return penalty.delay;
+                    }, heat.result.penalties));
                 };
+                var winners = this.props.heats.map(function (heats) {
+                    return R.filter(function (heat) {
+                        return heat.result.type == 'TimedResult';
+                    }, heats);
+                }).map(function (heats) {
+                    return R.map(function (heat) {
+                        return {
+                            participant: heat.participant,
+                            totalTime: totalTime(heat)
+                        };
+                    }, heats);
+                }).map(function (heats) {
+                    return R.sortBy(function (heat) {
+                        return -heat.totalTime;
+                    }, heats);
+                }).map(function (heats) {
+                    return R.map(function (heat) {
+                        return heat.participant;
+                    }, heats);
+                });
+
                 return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, {
                     previous: true,
                     href: '#event/' + eventId + '/competition'
-                }, [React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-left' }), ' ', "Competition"]), React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/results' }, "Results")]), React.createElement(WinnersView, { firstPlace: myzone, secondPlace: myzone, thirdPlace: myzone }), React.createElement(TableView, {})]);
+                }, [React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-left' }), ' ', "Competition"]), React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/results' }, "Results")]), React.createElement(WinnersView, {
+                    firstPlace: winners.flatMap(function (winners) {
+                        return winners.length > 0 ? winners[0] : null;
+                    }),
+                    secondPlace: winners.flatMap(function (winners) {
+                        return winners.length > 1 ? winners[1] : null;
+                    }),
+                    thirdPlace: winners.flatMap(function (winners) {
+                        return winners.length > 2 ? winners[2] : null;
+                    })
+                })
+                //React.createElement(TableView, {})
+                ]);
             }
         }]);
 

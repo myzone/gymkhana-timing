@@ -148,6 +148,19 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
         }
     }
 
+    class ResultsApplicationProvider extends React.Component {
+        render() {
+            return React.createElement(ResultsView, {
+                key: 'view',
+                params: this.props.params,
+                participants: application
+                    .flatMap(application => application.participants),
+                heats: application
+                    .flatMap(application => application.heats)
+            })
+        }
+    }
+
 
     React.render(React.createElement(Main, {key: 'main'}, [
         React.createElement(PageView, {key: 'page'}, [
@@ -181,7 +194,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                     React.createElement(ReactRouter.Route, {
                         key: 'event-results-route',
                         path: 'results',
-                        component: ResultsView
+                        component: ResultsApplicationProvider
                     })
                 ])
             ])

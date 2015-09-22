@@ -394,11 +394,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                                 participant: heat.participant,
                                 number: heat.number,
                                 time: null,
-                                penalties: [/*{
-                                            name: 'HS',
-                                            type: 'negligible',
-                                            delay: moment.duration(0)
-                                            }*/],
+                                penalties: [],
                                 totalTime: moment.duration({
                                     minutes: 59,
                                     seconds: 59,

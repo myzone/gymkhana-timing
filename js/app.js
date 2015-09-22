@@ -174,6 +174,34 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             return CompetitionApplicationProvider;
         })(React.Component);
 
+        var ResultsApplicationProvider = (function (_React$Component3) {
+            _inherits(ResultsApplicationProvider, _React$Component3);
+
+            function ResultsApplicationProvider() {
+                _classCallCheck(this, ResultsApplicationProvider);
+
+                _get(Object.getPrototypeOf(ResultsApplicationProvider.prototype), 'constructor', this).apply(this, arguments);
+            }
+
+            _createClass(ResultsApplicationProvider, [{
+                key: 'render',
+                value: function render() {
+                    return React.createElement(ResultsView, {
+                        key: 'view',
+                        params: this.props.params,
+                        participants: application.flatMap(function (application) {
+                            return application.participants;
+                        }),
+                        heats: application.flatMap(function (application) {
+                            return application.heats;
+                        })
+                    });
+                }
+            }]);
+
+            return ResultsApplicationProvider;
+        })(React.Component);
+
         React.render(React.createElement(Main, { key: 'main' }, [React.createElement(PageView, { key: 'page' }, [React.createElement(ReactRouter.Router, { key: 'router' }, [React.createElement(ReactRouter.Route, { key: 'index-route', path: '/', component: EventsView }), React.createElement(ReactRouter.Route, {
             key: 'event-route',
             path: 'event/:eventId',
@@ -196,7 +224,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
         }), React.createElement(ReactRouter.Route, {
             key: 'event-results-route',
             path: 'results',
-            component: ResultsView
+            component: ResultsApplicationProvider
         })])])])]), document.getElementById('root'));
 
         window.R = R;

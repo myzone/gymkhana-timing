@@ -1,215 +1,126 @@
-define(['react', 'react-bootstrap'], (React, ReactBootstrap) => {
-
-
-    class WinnersView extends React.Component {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment) => {
+    class FirstPlaceView {
         render() {
             const DOM = React.DOM;
-            const firstPlace = this.props.firstPlace;
-            const secondPlace = this.props.secondPlace;
-            const thirdPlace = this.props.thirdPlace
+
+            return DOM.td({className: 'col-md-3'}, [
+                React.createElement('center', {}, DOM.div({style: {marginTop: '0px'}}, [
+                    DOM.span({className: 'race-number'}, this.props.number),
+                    ' ',
+                    DOM.span({}, this.props.name)
+                ])),
+                DOM.div({
+                    style: {
+                        background: 'gold',
+                        height: '80px',
+                        marginLeft: '5px',
+                        marginRight: '5px',
+                        fontSize: '58px'
+                    }
+                }, React.createElement('center', {}, DOM.span({
+                    className: 'podium-label',
+                    style: {
+                        paddingLeft: '16px',
+                        paddingRight: '16px'
+                    }
+                }, "1")))
+            ]);
+        }
+    }
+    class SecondPlaceView {
+        render() {
+            const DOM = React.DOM;
+
+            return DOM.td({className: 'col-md-3'}, [
+                React.createElement('center', {}, DOM.div({style: {marginTop: '20px'}}, [
+                    DOM.span({className: 'race-number'}, this.props.number),
+                    ' ',
+                    DOM.span({}, this.props.name)
+                ])),
+                DOM.div({
+                    style: {
+                        background: 'silver',
+                        height: '60px',
+                        marginLeft: '5px',
+                        marginRight: '5px',
+                        fontSize: '43px'
+                    }
+                }, React.createElement('center', {}, DOM.span({
+                    className: 'podium-label',
+                    style: {
+                        paddingLeft: '13px',
+                        paddingRight: '13px'
+                    }
+                }, "2")))
+            ]);
+        }
+    }
+    class ThirdPlaceView {
+        render() {
+            const DOM = React.DOM;
+
+            return DOM.td({className: 'col-md-3'}, [
+                React.createElement('center', {}, DOM.div({style: {marginTop: '40px'}}, [
+                    DOM.span({className: 'race-number'}, this.props.number),
+                    ' ',
+                    DOM.span({}, this.props.name)
+                ])),
+                DOM.div({
+                    style: {
+                        height: '40px',
+                        background: '#CD7F32',
+                        marginLeft: '5px',
+                        marginRight: '5px',
+                        fontSize: '30px'
+                    }
+                }, React.createElement('center', {}, DOM.span({
+                    className: 'podium-label',
+                    style: {
+                        paddingLeft: '9px',
+                        paddingRight: '9px'
+                    }
+                }, "3")))
+            ]);
+        }
+    }
+
+
+    class WinnersView extends Shuttle.React.Component {
+        render() {
+            const DOM = React.DOM;
+
+            const firstPlace = this.state.firstPlace;
+            const secondPlace = this.state.secondPlace;
+            const thirdPlace = this.state.thirdPlace;
+
+
             return DOM.table({style: {width: '100%'}}, DOM.tr({}, [
                 DOM.td({style: {width: '250px'}}),
-                DOM.td({}, [
-                    React.createElement('center', {}, DOM.div({style: {marginTop: '20px'}}, [
-                        DOM.span({className: 'race-number'}, secondPlace.number),
-                        ' ',
-                        DOM.span({}, secondPlace.name)
-                    ])),
-                    DOM.div({
-                        style: {
-                            background: 'silver',
-                            height: '60px',
-                            marginLeft: '5px',
-                            marginRight: '5px',
-                            fontSize: '43px'
-                        }
-                    }, React.createElement('center', {}, DOM.span({
-                        className: 'podium-label',
-                        style: {
-                            paddingLeft: '13px',
-                            paddingRight: '13px'
-                        }
-                    }, "2")))
-                ]),
-                DOM.td({}, [
-                    React.createElement('center', {}, DOM.div({style: {marginTop: '0px'}}, [
-                        DOM.span({className: 'race-number'}, firstPlace.number),
-                        ' ',
-                        DOM.span({}, firstPlace.name)
-                    ])),
-                    DOM.div({
-                        style: {
-                            background: 'gold',
-                            height: '80px',
-                            marginLeft: '5px',
-                            marginRight: '5px',
-                            fontSize: '58px'
-                        }
-                    }, React.createElement('center', {}, DOM.span({
-                        className: 'podium-label',
-                        style: {
-                            paddingLeft: '16px',
-                            paddingRight: '16px'
-                        }
-                    }, "1")))
-                ]),
-                DOM.td({}, [
-                    React.createElement('center', {}, DOM.div({style: {marginTop: '40px'}}, [
-                        DOM.span({className: 'race-number'}, thirdPlace.number),
-                        ' ',
-                        DOM.span({}, thirdPlace.name)
-                    ])),
-                    DOM.div({
-                        style: {
-                            height: '40px',
-                            background: '#CD7F32',
-                            marginLeft: '5px',
-                            marginRight: '5px',
-                            fontSize: '30px'
-                        }
-                    }, React.createElement('center', {}, DOM.span({
-                        className: 'podium-label',
-                        style: {
-                            paddingLeft: '9px',
-                            paddingRight: '9px'
-                        }
-                    }, "3")))
-                ]),
+                secondPlace ? React.createElement(SecondPlaceView, {name: secondPlace.name, number: secondPlace.number}) : DOM.td(),
+                firstPlace ? React.createElement(FirstPlaceView, {name: firstPlace.name, number: firstPlace.number}) : DOM.td(),,
+                thirdPlace ? React.createElement(ThirdPlaceView, {name: thirdPlace.name, number: thirdPlace.number}) : DOM.td(),,
                 DOM.td({style: {width: '250px'}})
             ]));
-
-
         }
     }
-
-
-    class TableView extends React.Component {
-        render() {
-            const DOM = React.DOM;
-            return React.createElement(ReactBootstrap.Table, {responsive: true, hover: true, striped: true}, [
-                DOM.thead({}, DOM.tr({}, [
-                    DOM.td({}, ""),
-                    DOM.td({}, "#"),
-                    DOM.th({}, "Country"),
-                    DOM.th({}, "Name"),
-                    DOM.th({}, "Best time"),
-                    DOM.th({}, "Motorcycle"),
-                    DOM.th({}, "Group"),
-                    DOM.th({}, "Age"),
-                    DOM.th({}, "Team")
-                ])),
-                DOM.tbody({}, [
-                    DOM.tr({}, [
-                        DOM.td({}, "1"),
-                        DOM.td({}, DOM.span({className: 'race-number'}, "42")),
-                        DOM.td({}, DOM.img({height: '20px', src: 'http://www.geonames.org/flags/x/ua.gif'})),
-                        DOM.td({}, "Vyacheslav Goldenshteyn"),
-                        DOM.td({}, "1:11.15"),
-                        DOM.td({}, "Honda FMX 650"),
-                        DOM.td({}, "Group 3B"),
-                        DOM.td({}, "22"),
-                        DOM.td({}, "Sommmmm Team")
-                    ]),
-                    DOM.tr({}, [
-                        DOM.td({}, "2"),
-                        DOM.td({}, DOM.span({className: 'race-number'}, "42")),
-                        DOM.td({}, DOM.img({height: '20px', src: 'http://www.geonames.org/flags/x/ua.gif'})),
-                        DOM.td({}, "Vyacheslav Goldenshteyn"),
-                        DOM.td({}, "1:11.15"),
-                        DOM.td({}, "Honda FMX 650"),
-                        DOM.td({}, "Group 3B"),
-                        DOM.td({}, "22"),
-                        DOM.td({}, "Sommmmm Team")
-                    ]),
-                    DOM.tr({className: 'selected-row'}, [
-                        DOM.td({style: {fontSize: '18px', verticalAlign: 'middle'}}, "3"),
-                        DOM.td({
-                            style: {
-                                fontSize: '34px',
-                                verticalAlign: 'middle'
-                            }
-                        }, DOM.span({className: 'race-number'}, "42")),
-                        DOM.td({style: {verticalAlign: 'middle'}}, DOM.img({
-                            height: '48px',
-                            src: 'http://www.geonames.org/flags/x/ua.gif'
-                        })),
-                        DOM.td({style: {fontSize: '34px', verticalAlign: 'middle'}}, "Vyacheslav Goldenshteyn"),
-                        DOM.td({style: {verticalAlign: 'middle'}}, "1:11.15"),
-                        DOM.td({style: {verticalAlign: 'middle'}}, "Honda FMX 650"),
-                        DOM.td({style: {verticalAlign: 'middle'}}, "Group 3B"),
-                        DOM.td({style: {verticalAlign: 'middle'}}, "22"),
-                        DOM.td({style: {verticalAlign: 'middle'}}, "Sommmmm Team")
-                    ]),
-                    DOM.tr({className: 'selected-row-after'}, [
-                        DOM.td({}),
-                        DOM.td({}),
-                        DOM.td({colSpan: '4'}, [
-                            React.createElement(ReactBootstrap.Table, {responsive: true, condensed: true}, [
-                                DOM.thead({}, DOM.tr({}, [
-                                    DOM.td({}, ""),
-                                    DOM.td({}, "Time"),
-                                    DOM.td({}, "Penalty"),
-                                    DOM.th({}, "Total"),
-                                    DOM.td({}, "∆")
-                                ])),
-                                DOM.tbody({}, [
-                                    DOM.tr({}, [
-                                        DOM.td({}, "1"),
-                                        DOM.td({className: 'col-md-2'}, "1:11.15"),
-                                        DOM.td({}, [
-                                            React.createElement(ReactBootstrap.Label, {bsStyle: 'warning'}, "Cone")
-                                        ]),
-                                        DOM.td({className: 'col-md-2'}, "1:12.15"),
-                                        DOM.td({className: 'col-md-2'}, "0:00.00")
-                                    ]),
-                                    DOM.tr({}, [
-                                        DOM.td({}, "2"),
-                                        DOM.td({className: 'col-md-2'}, "1:11.16"),
-                                        DOM.td({}, [
-                                            React.createElement(ReactBootstrap.Label, {bsStyle: 'warning'}, "Cone")
-                                        ]),
-                                        DOM.td({className: 'col-md-2'}, "1:12.16"),
-                                        DOM.td({className: 'col-md-2'}, "0:00.01")
-                                    ])
-                                ])
-                            ])
-                        ]),
-                        DOM.td({}),
-                        DOM.td({}),
-                        DOM.td({})
-                    ]),
-                    DOM.tr({}, [
-                        DOM.td({}, "4"),
-                        DOM.td({}, DOM.span({className: 'race-number'}, "42")),
-                        DOM.td({}, DOM.img({height: '20px', src: 'http://www.geonames.org/flags/x/ua.gif'})),
-                        DOM.td({}, "Vyacheslav Goldenshteyn"),
-                        DOM.td({}, "1:11.15"),
-                        DOM.td({}, "Honda FMX 650"),
-                        DOM.td({}, "Group 3B"),
-                        DOM.td({}, "22"),
-                        DOM.td({}, "Sommmmm Team")
-                    ])
-                ])
-            ])
-        }
-    }
-
 
     class ResultsView extends React.Component {
         render() {
             const DOM = React.DOM;
-
             const eventId = this.props.params.eventId;
-            const myzone = {
-                id: 3,
-                number: "43",
-                country: "il",
-                name: "Vyacheslav Goldenshteyn1",
-                motorcycle: "Honda FMX 650",
-                group: "Group 3B",
-                birthday: "2015-09-01",
-                team: "Sommmmm Team"
-            };
+
+            const totalTime = (heat) => R.reduce((time, delay) => time.add(delay), moment.duration(heat.result.time), R.map(penalty => penalty.delay, heat.result.penalties));
+            const winners = this.props.heats
+                .map(heats => R.filter(heat => heat.result.type == 'TimedResult', heats))
+                .map(heats => R.map(heat => {
+                    return {
+                        participant: heat.participant,
+                        totalTime: totalTime(heat)
+                    }
+                }, heats))
+                .map(heats => (R.sortBy(heat => -heat.totalTime, heats)))
+                .map(heats => R.map(heat => heat.participant, heats))
+
             return DOM.div({}, [
                 React.createElement(ReactBootstrap.Pager, {}, [
                     React.createElement(ReactBootstrap.PageItem, {
@@ -221,9 +132,12 @@ define(['react', 'react-bootstrap'], (React, ReactBootstrap) => {
                     React.createElement(ReactBootstrap.PageItem, {href: `#event/${eventId}/results`}, "Results")
                 ]),
 
-                React.createElement(WinnersView, {firstPlace: myzone, secondPlace: myzone, thirdPlace: myzone}),
-                React.createElement(TableView, {})
-
+                React.createElement(WinnersView, {
+                    firstPlace: winners.flatMap(winners => winners.length > 0 ? winners[0] : null),
+                    secondPlace: winners.flatMap(winners => winners.length > 1 ? winners[1] : null),
+                    thirdPlace: winners.flatMap(winners => winners.length > 2 ? winners[2] : null)
+                })
+                //React.createElement(TableView, {})
             ]);
         }
 
