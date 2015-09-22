@@ -251,13 +251,27 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
             const results = this.state.results;
 
             return DOM.tr({key: 'opened-participant-row-2'}, [
-                DOM.td({style: {padding: '0'}}, React.createElement('center', {className: 'goto-next'}, this.props.opened ? React.createElement(ReactBootstrap.Glyphicon, {glyph: 'forward'}) : '')),
+                DOM.td({style: {padding: '0'}}, React.createElement('center', {className: 'goto-next'}, this.props.opened ? React.createElement(ReactBootstrap.Glyphicon, {
+                    onClick: () => {
+                        const heats = R.map(participant => {
+                            return {
+                                participant: participant,
+                                count: R.length(R.filter(heat => R.equals(heat.participant.get(), participant), this.state.heats))
+                            }
+                        }, R.map(ref => ref.get(), this.state.participants));
+
+                        const minHeatsCount = R.reduce(R.min, Infinity, R.map(heats => heats.count, heats));
+                        const next = R.find(participant => participant.count == minHeatsCount, heats).participant;
+
+                        this.props.onNext(next);
+                    },
+                    glyph: 'forward'
+                }) : '')),
                 DOM.td({style: {padding: '0'}, colSpan: 3}, [
                     DOM.div({className: `non-selected-additional ${this.props.opened ? 'selected-additional' : ''}`}, React.createElement(ReactBootstrap.Table, {
-                        className: 'inner-table pair-table-striped',
+                        className: 'inner-table group-table-striped group-table-hover',
                         responsive: true,
-                        condensed: true,
-                        hover: true
+                        condensed: true
                     }, [
                         DOM.thead({}, DOM.tr({}, [
                             DOM.td({}, ""),
@@ -313,95 +327,98 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
 
                 React.createElement(ReactBootstrap.Table, {
                     key: 'table',
-                    className: 'pair-table-striped data-editable',
+                    className: 'group-table-striped group-table-hover data-editable',
                     responsive: true,
                     hover: true
                 }, [
-                    DOM.tbody({key: 'table-body'}, [
-                        R.flatten(R.addIndex(R.map)((participant, i) => {
-                                const opened = R.equals(this.state.current, participant.get());
-                                const heats = this.props.heats
-                                    .map(heats => R.filter(heat => R.equals(heat.participant.get(), participant.get()), heats));
 
-                                const results = heats
-                                    .map(heats => R.map(heat => {
-                                            if (heat.result.type == 'TimedResult')
-                                                return {
-                                                    id: heat.id,
-                                                    participant: heat.participant,
-                                                    number: heat.number,
-                                                    time: heat.result.time,
-                                                    penalties: heat.result.penalties,
-                                                    totalTime: R.reduce((time, delay) => time.add(delay), moment.duration(heat.result.time), R.map(penalty => penalty.delay, heat.result.penalties))
-                                                };
+                    R.addIndex(R.map)((participant, i) => {
+                            const opened = R.equals(this.state.current, participant.get());
+                            const heats = this.props.heats
+                                .map(heats => R.filter(heat => R.equals(heat.participant.get(), participant.get()), heats));
 
-                                            if (heat.result.type == 'NoTimeResult')
-                                                return {
-                                                    id: heat.id,
-                                                    participant: heat.participant,
-                                                    number: heat.number,
-                                                    time: null,
-                                                    penalties: [/*{
-                                                     name: 'HS',
-                                                     type: 'negligible',
-                                                     delay: moment.duration(0)
-                                                     }*/],
-                                                    totalTime: moment.duration({
-                                                        minutes: 59,
-                                                        seconds: 59,
-                                                        milliseconds: 999
-                                                    })
-                                                };
+                            const results = heats
+                                .map(heats => R.map(heat => {
+                                        if (heat.result.type == 'TimedResult')
+                                            return {
+                                                id: heat.id,
+                                                participant: heat.participant,
+                                                number: heat.number,
+                                                time: heat.result.time,
+                                                penalties: heat.result.penalties,
+                                                totalTime: R.reduce((time, delay) => time.add(delay), moment.duration(heat.result.time), R.map(penalty => penalty.delay, heat.result.penalties))
+                                            };
 
-                                            throw 'undefined';
-                                        }, R.reduce((result, i) => R.append(R.find(heat => heat.number == i + 1, heats) || {
+                                        if (heat.result.type == 'NoTimeResult')
+                                            return {
+                                                id: heat.id,
+                                                participant: heat.participant,
+                                                number: heat.number,
+                                                time: null,
+                                                penalties: [/*{
+                                                 name: 'HS',
+                                                 type: 'negligible',
+                                                 delay: moment.duration(0)
+                                                 }*/],
+                                                totalTime: moment.duration({
+                                                    minutes: 59,
+                                                    seconds: 59,
+                                                    milliseconds: 999
+                                                })
+                                            };
+
+                                        throw 'undefined';
+                                    }, R.reduce((result, i) => R.append(R.find(heat => heat.number == i + 1, heats) || {
                                             participant: participant,
                                             number: i + 1,
                                             result: {
                                                 type: 'NoTimeResult'
                                             }
                                         }, result), [], R.range(0, HEATS_COUNT)))
-                                    )
-                                    .map(semiResults => {
-                                        const bestHeatTime = R.reduce(R.min, moment.duration(Infinity), R.map(result => result.totalTime, semiResults));
+                                )
+                                .map(semiResults => {
+                                    const bestHeatTime = R.reduce(R.min, moment.duration(Infinity), R.map(result => result.totalTime, semiResults));
 
-                                        return R.sortBy(result => result.number, R.map(result => {
-                                            return {
-                                                id: result.id,
-                                                time: result.time,
-                                                participant: result.participant,
-                                                number: result.number,
-                                                penalties: result.penalties,
-                                                totalTime: result.totalTime,
-                                                deltaTime: moment.duration(result.totalTime).subtract(bestHeatTime)
-                                            }
-                                        }, semiResults));
-                                    });
+                                    return R.sortBy(result => result.number, R.map(result => {
+                                        return {
+                                            id: result.id,
+                                            time: result.time,
+                                            participant: result.participant,
+                                            number: result.number,
+                                            penalties: result.penalties,
+                                            totalTime: result.totalTime,
+                                            deltaTime: moment.duration(result.totalTime).subtract(bestHeatTime)
+                                        }
+                                    }, semiResults));
+                                });
 
-                                return [
-                                    React.createElement(ParticipantView, {
-                                        key: `main-${i}`,
-                                        opened: opened,
-                                        onToggle: () => {
-                                            this.setState({current: !opened ? participant.get() : null});
-                                        },
-                                        participant: participant,
-                                        heats: heats
-                                            .map(heats => R.filter(heat => heat.result.type == 'TimedResult', heats)),
-                                        eventId: eventId
-                                    }),
-                                    React.createElement(AdditionalParticipantView, {
-                                        key: `additional-${i}`,
-                                        opened: opened,
-                                        participant: participant,
-                                        heats: this.props.heats,
-                                        results: results
-                                    })
-                                ]
-                            },
-                            this.state.participants
-                        ))
-                    ])
+                            return DOM.tbody({key: i}, [
+                                React.createElement(ParticipantView, {
+                                    key: `main-${i}`,
+                                    opened: opened,
+                                    onToggle: () => {
+                                        this.setState({current: !opened ? participant.get() : null});
+                                    },
+                                    participant: participant,
+                                    heats: heats
+                                        .map(heats => R.filter(heat => heat.result.type == 'TimedResult', heats)),
+                                    eventId: eventId
+                                }),
+                                React.createElement(AdditionalParticipantView, {
+                                    key: `additional-${i}`,
+                                    opened: opened,
+                                    participant: participant,
+                                    heats: this.props.heats,
+                                    results: results,
+                                    participants: this.props.participants,
+                                    onNext: (next) => {
+                                        this.setState({current: next});
+                                    }
+                                })
+                            ])
+                        },
+                        this.state.participants
+                    )
                 ])
             ]);
         }

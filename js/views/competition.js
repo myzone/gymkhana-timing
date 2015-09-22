@@ -289,11 +289,33 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                 var currentRow = this.currentRow;
                 var results = this.state.results;
 
-                return DOM.tr({ key: 'opened-participant-row-2' }, [DOM.td({ style: { padding: '0' } }, React.createElement('center', { className: 'goto-next' }, this.props.opened ? React.createElement(ReactBootstrap.Glyphicon, { glyph: 'forward' }) : '')), DOM.td({ style: { padding: '0' }, colSpan: 3 }, [DOM.div({ className: 'non-selected-additional ' + (this.props.opened ? 'selected-additional' : '') }, React.createElement(ReactBootstrap.Table, {
-                    className: 'inner-table pair-table-striped',
+                return DOM.tr({ key: 'opened-participant-row-2' }, [DOM.td({ style: { padding: '0' } }, React.createElement('center', { className: 'goto-next' }, this.props.opened ? React.createElement(ReactBootstrap.Glyphicon, {
+                    onClick: function onClick() {
+                        var heats = R.map(function (participant) {
+                            return {
+                                participant: participant,
+                                count: R.length(R.filter(function (heat) {
+                                    return R.equals(heat.participant.get(), participant);
+                                }, _this6.state.heats))
+                            };
+                        }, R.map(function (ref) {
+                            return ref.get();
+                        }, _this6.state.participants));
+
+                        var minHeatsCount = R.reduce(R.min, Infinity, R.map(function (heats) {
+                            return heats.count;
+                        }, heats));
+                        var next = R.find(function (participant) {
+                            return participant.count == minHeatsCount;
+                        }, heats).participant;
+
+                        _this6.props.onNext(next);
+                    },
+                    glyph: 'forward'
+                }) : '')), DOM.td({ style: { padding: '0' }, colSpan: 3 }, [DOM.div({ className: 'non-selected-additional ' + (this.props.opened ? 'selected-additional' : '') }, React.createElement(ReactBootstrap.Table, {
+                    className: 'inner-table group-table-striped group-table-hover',
                     responsive: true,
-                    condensed: true,
-                    hover: true
+                    condensed: true
                 }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "Time"), DOM.td({}, "Penalty"), DOM.th({}, "Total"), DOM.td({}, "∆")])), R.addIndex(R.map)(function (result, i) {
                     return React.createElement(HeatView, {
                         key: i,
@@ -341,10 +363,10 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                     href: '#event/' + eventId + '/registration'
                 }, [React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-left' }), ' ', "Registration"]), React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/competition' }, "Competition"), React.createElement(ReactBootstrap.PageItem, { next: true, href: '#event/' + eventId + '/results' }, ["Results", ' ', React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-right' })])]), React.createElement(ReactBootstrap.Table, {
                     key: 'table',
-                    className: 'pair-table-striped data-editable',
+                    className: 'group-table-striped group-table-hover data-editable',
                     responsive: true,
                     hover: true
-                }, [DOM.tbody({ key: 'table-body' }, [R.flatten(R.addIndex(R.map)(function (participant, i) {
+                }, [R.addIndex(R.map)(function (participant, i) {
                     var opened = R.equals(_this8.state.current, participant.get());
                     var heats = _this8.props.heats.map(function (heats) {
                         return R.filter(function (heat) {
@@ -416,7 +438,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                         }, semiResults));
                     });
 
-                    return [React.createElement(ParticipantView, {
+                    return DOM.tbody({ key: i }, [React.createElement(ParticipantView, {
                         key: 'main-' + i,
                         opened: opened,
                         onToggle: function onToggle() {
@@ -434,9 +456,13 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                         opened: opened,
                         participant: participant,
                         heats: _this8.props.heats,
-                        results: results
-                    })];
-                }, this.state.participants))])])]);
+                        results: results,
+                        participants: _this8.props.participants,
+                        onNext: function onNext(next) {
+                            _this8.setState({ current: next });
+                        }
+                    })]);
+                }, this.state.participants)])]);
             }
         }]);
 

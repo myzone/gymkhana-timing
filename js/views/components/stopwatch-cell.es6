@@ -12,7 +12,7 @@ define(['react', 'react-bootstrap', 'react-input-mask', 'ramda', 'shuttle', 'shu
                 mask: '99:99.999',
                 className: this.props.className,
                 style: this.props.style,
-                defaultValue: duration ? duration.format('mm:ss.SSS', {trim: false}) : '',
+                defaultValue: duration ? duration.format('mm:ss.SSS', {trim: false}) : '__:__.___',
                 onChange: (event) => {
                     const val = event.target.value;
 
