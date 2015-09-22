@@ -218,8 +218,12 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
 
             return DOM.tr({
                 key: 'opened-participant-row-1',
-                className: `non-selected ${this.props.opened ? 'selected' : ''}`,
-                onClick: () => this.props.onToggle()
+                className: `non-selected ${this.state.opened ? 'selected' : ''}`,
+                onClick: () => {
+                    if (R.isNil(this.state.currentRow)) {
+                        this.props.current.set(!this.state.opened ? participant : null)
+                    }
+                }
             }, [
                 DOM.td({className: 'important middle-aligned'}, DOM.span({className: 'race-number'}, participant.number)),
                 DOM.td({className: 'middle-aligned'}, DOM.img({
@@ -240,20 +244,36 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
 
         constructor(props) {
             super(props);
-
-            this.currentRow = Shuttle.ref(this.props.currentRow);
         }
 
         render() {
             const DOM = React.DOM;
             const participant = this.state.participant;
-            const currentRow = this.currentRow;
+            const currentRow = this.props.currentRow;
             const results = this.state.results;
 
             return DOM.tr({key: 'opened-participant-row-2'}, [
-                DOM.td({style: {padding: '0'}}, React.createElement('center', {className: 'goto-next'}, this.props.opened ? React.createElement(ReactBootstrap.Glyphicon, {glyph: 'forward'}) : '')),
+                DOM.td({style: {padding: '0'}}, React.createElement('center', {className: 'goto-next'}, this.state.opened ? React.createElement(ReactBootstrap.Glyphicon, {
+                    glyph: 'forward',
+                    onClick: () => {
+                        if (R.isNil(this.state.currentRow)) {
+                            const heats = R.map(participant => {
+                                return {
+                                    participant: participant,
+                                    count: R.length(R.filter(heat => R.equals(heat.participant.get(), participant), this.state.heats))
+                                }
+                            }, R.map(ref => ref.get(), this.state.participants));
+
+                            const minHeatsCount = R.reduce(R.min, Infinity, R.map(heats => heats.count, heats));
+                            const next = R.find(participant => participant.count == minHeatsCount, heats).participant;
+
+                            this.props.current.set(null);
+                            setTimeout(() => this.props.current.set(next), 800);
+                        }
+                    }
+                }) : '')),
                 DOM.td({style: {padding: '0'}, colSpan: 3}, [
-                    DOM.div({className: `non-selected-additional ${this.props.opened ? 'selected-additional' : ''}`}, React.createElement(ReactBootstrap.Table, {
+                    DOM.div({className: `non-selected-additional ${this.state.opened ? 'selected-additional' : ''}`}, React.createElement(ReactBootstrap.Table, {
                         className: 'inner-table pair-table-striped',
                         responsive: true,
                         condensed: true,
@@ -290,7 +310,8 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
         constructor(props) {
             super(props);
 
-            this.state.current = R.head(R.filter(participant => R.equals(participant.id, this.props.params.participantId), R.map(participant => participant.get(), this.state.participants)));
+            this.current = Shuttle.ref(R.find(participant => R.equals(participant.id, this.props.params.participantId), R.map(ref => ref.get(), this.state.participants)));
+            this.currentRow = Shuttle.ref(this.props.currentRow);
         }
 
         render() {
@@ -319,7 +340,8 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                 }, [
                     DOM.tbody({key: 'table-body'}, [
                         R.flatten(R.addIndex(R.map)((participant, i) => {
-                                const opened = R.equals(this.state.current, participant.get());
+                                const opened = this.current
+                                    .map(current => R.equals(current, participant.get()));
                                 const heats = this.props.heats
                                     .map(heats => R.filter(heat => R.equals(heat.participant.get(), participant.get()), heats));
 
@@ -341,11 +363,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                                                     participant: heat.participant,
                                                     number: heat.number,
                                                     time: null,
-                                                    penalties: [/*{
-                                                     name: 'HS',
-                                                     type: 'negligible',
-                                                     delay: moment.duration(0)
-                                                     }*/],
+                                                    penalties: [],
                                                     totalTime: moment.duration({
                                                         minutes: 59,
                                                         seconds: 59,
@@ -355,12 +373,12 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
 
                                             throw 'undefined';
                                         }, R.reduce((result, i) => R.append(R.find(heat => heat.number == i + 1, heats) || {
-                                            participant: participant,
-                                            number: i + 1,
-                                            result: {
-                                                type: 'NoTimeResult'
-                                            }
-                                        }, result), [], R.range(0, HEATS_COUNT)))
+                                                participant: participant,
+                                                number: i + 1,
+                                                result: {
+                                                    type: 'NoTimeResult'
+                                                }
+                                            }, result), [], R.range(0, HEATS_COUNT)))
                                     )
                                     .map(semiResults => {
                                         const bestHeatTime = R.reduce(R.min, moment.duration(Infinity), R.map(result => result.totalTime, semiResults));
@@ -382,9 +400,8 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                                     React.createElement(ParticipantView, {
                                         key: `main-${i}`,
                                         opened: opened,
-                                        onToggle: () => {
-                                            this.setState({current: !opened ? participant.get() : null});
-                                        },
+                                        current: this.current,
+                                        currentRow: this.currentRow,
                                         participant: participant,
                                         heats: heats
                                             .map(heats => R.filter(heat => heat.result.type == 'TimedResult', heats)),
@@ -393,9 +410,12 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                                     React.createElement(AdditionalParticipantView, {
                                         key: `additional-${i}`,
                                         opened: opened,
+                                        current: this.current,
+                                        currentRow: this.currentRow,
                                         participant: participant,
                                         heats: this.props.heats,
-                                        results: results
+                                        results: results,
+                                        participants: this.props.participants
                                     })
                                 ]
                             },

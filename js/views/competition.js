@@ -254,9 +254,11 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
 
                 return DOM.tr({
                     key: 'opened-participant-row-1',
-                    className: 'non-selected ' + (this.props.opened ? 'selected' : ''),
+                    className: 'non-selected ' + (this.state.opened ? 'selected' : ''),
                     onClick: function onClick() {
-                        return _this5.props.onToggle();
+                        if (R.isNil(_this5.state.currentRow)) {
+                            _this5.props.current.set(!_this5.state.opened ? participant : null);
+                        }
                     }
                 }, [DOM.td({ className: 'important middle-aligned' }, DOM.span({ className: 'race-number' }, participant.number)), DOM.td({ className: 'middle-aligned' }, DOM.img({
                     className: 'country',
@@ -275,8 +277,6 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
             _classCallCheck(this, AdditionalParticipantView);
 
             _get(Object.getPrototypeOf(AdditionalParticipantView.prototype), 'constructor', this).call(this, props);
-
-            this.currentRow = Shuttle.ref(this.props.currentRow);
         }
 
         _createClass(AdditionalParticipantView, [{
@@ -286,10 +286,40 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
 
                 var DOM = React.DOM;
                 var participant = this.state.participant;
-                var currentRow = this.currentRow;
+                var currentRow = this.props.currentRow;
                 var results = this.state.results;
 
-                return DOM.tr({ key: 'opened-participant-row-2' }, [DOM.td({ style: { padding: '0' } }, React.createElement('center', { className: 'goto-next' }, this.props.opened ? React.createElement(ReactBootstrap.Glyphicon, { glyph: 'forward' }) : '')), DOM.td({ style: { padding: '0' }, colSpan: 3 }, [DOM.div({ className: 'non-selected-additional ' + (this.props.opened ? 'selected-additional' : '') }, React.createElement(ReactBootstrap.Table, {
+                return DOM.tr({ key: 'opened-participant-row-2' }, [DOM.td({ style: { padding: '0' } }, React.createElement('center', { className: 'goto-next' }, this.state.opened ? React.createElement(ReactBootstrap.Glyphicon, {
+                    glyph: 'forward',
+                    onClick: function onClick() {
+                        if (R.isNil(_this6.state.currentRow)) {
+                            (function () {
+                                var heats = R.map(function (participant) {
+                                    return {
+                                        participant: participant,
+                                        count: R.length(R.filter(function (heat) {
+                                            return R.equals(heat.participant.get(), participant);
+                                        }, _this6.state.heats))
+                                    };
+                                }, R.map(function (ref) {
+                                    return ref.get();
+                                }, _this6.state.participants));
+
+                                var minHeatsCount = R.reduce(R.min, Infinity, R.map(function (heats) {
+                                    return heats.count;
+                                }, heats));
+                                var next = R.find(function (participant) {
+                                    return participant.count == minHeatsCount;
+                                }, heats).participant;
+
+                                _this6.props.current.set(null);
+                                setTimeout(function () {
+                                    return _this6.props.current.set(next);
+                                }, 800);
+                            })();
+                        }
+                    }
+                }) : '')), DOM.td({ style: { padding: '0' }, colSpan: 3 }, [DOM.div({ className: 'non-selected-additional ' + (this.state.opened ? 'selected-additional' : '') }, React.createElement(ReactBootstrap.Table, {
                     className: 'inner-table pair-table-striped',
                     responsive: true,
                     condensed: true,
@@ -321,11 +351,12 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
 
             _get(Object.getPrototypeOf(CompetitionView.prototype), 'constructor', this).call(this, props);
 
-            this.state.current = R.head(R.filter(function (participant) {
+            this.current = Shuttle.ref(R.find(function (participant) {
                 return R.equals(participant.id, _this7.props.params.participantId);
-            }, R.map(function (participant) {
-                return participant.get();
+            }, R.map(function (ref) {
+                return ref.get();
             }, this.state.participants)));
+            this.currentRow = Shuttle.ref(this.props.currentRow);
         }
 
         _createClass(CompetitionView, [{
@@ -345,7 +376,9 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                     responsive: true,
                     hover: true
                 }, [DOM.tbody({ key: 'table-body' }, [R.flatten(R.addIndex(R.map)(function (participant, i) {
-                    var opened = R.equals(_this8.state.current, participant.get());
+                    var opened = _this8.current.map(function (current) {
+                        return R.equals(current, participant.get());
+                    });
                     var heats = _this8.props.heats.map(function (heats) {
                         return R.filter(function (heat) {
                             return R.equals(heat.participant.get(), participant.get());
@@ -372,11 +405,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                                 participant: heat.participant,
                                 number: heat.number,
                                 time: null,
-                                penalties: [/*{
-                                            name: 'HS',
-                                            type: 'negligible',
-                                            delay: moment.duration(0)
-                                            }*/],
+                                penalties: [],
                                 totalTime: moment.duration({
                                     minutes: 59,
                                     seconds: 59,
@@ -419,9 +448,8 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                     return [React.createElement(ParticipantView, {
                         key: 'main-' + i,
                         opened: opened,
-                        onToggle: function onToggle() {
-                            _this8.setState({ current: !opened ? participant.get() : null });
-                        },
+                        current: _this8.current,
+                        currentRow: _this8.currentRow,
                         participant: participant,
                         heats: heats.map(function (heats) {
                             return R.filter(function (heat) {
@@ -432,9 +460,12 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                     }), React.createElement(AdditionalParticipantView, {
                         key: 'additional-' + i,
                         opened: opened,
+                        current: _this8.current,
+                        currentRow: _this8.currentRow,
                         participant: participant,
                         heats: _this8.props.heats,
-                        results: results
+                        results: results,
+                        participants: _this8.props.participants
                     })];
                 }, this.state.participants))])])]);
             }
