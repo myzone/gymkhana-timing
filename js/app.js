@@ -12,11 +12,14 @@ require.config({
     paths: {
         'ramda': 'libs/ramda-0.17.1.min',
         'jquery': 'libs/jquery-2.1.3',
+
         'moment': 'libs/moment-with-locales-2.10.2',
+        'moment-durations': 'libs/moment-duration-format-1.3.0',
 
         'react': 'libs/react-0.13.1',
         'react-bootstrap': 'libs/react-bootstrap-0.25.2',
         'react-router': 'libs/react-router-1.0.0-rc1',
+        'react-input-mask': 'libs/react-input-mask-0.1.3-PATCHED',
 
         'shuttle': 'libs/shuttle-snapshot',
         'shuttle-react': 'libs/shuttle-react-snapshot',

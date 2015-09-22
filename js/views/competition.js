@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react', 'components/stopwatch-cell', 'utils/commons'], function (React, ReactRouter, ReactBootstrap, R, moment, Shuttle, ShuttleReact, StopwatchCellView, Commons) {
+define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-durations', 'shuttle', 'shuttle-react', 'components/stopwatch-cell', 'utils/commons'], function (React, ReactRouter, ReactBootstrap, R, moment, momentDurations, Shuttle, ShuttleReact, StopwatchCellView, Commons) {
     var HEATS_COUNT = 2;
     var PENALTY_STYLES = {
         negligible: 'default',
@@ -42,6 +42,10 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
         type: 'critical'
     }];
 
+    var renderDuration = function renderDuration(duration) {
+        return duration.format("mm:ss.SSS", { trim: false });
+    };
+
     var HeatView = (function (_React$Component) {
         _inherits(HeatView, _React$Component);
 
@@ -59,12 +63,8 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                 return {
                     id: !R.isNil(_this.props.result.id) ? _this.props.result.id : Commons.guid(),
                     participant: _this.props.result.participant,
-                    number: _this.props.rowId + 1,
-                    result: {
-                        type: 'TimedResult',
-                        time: time,
-                        penalties: penalties
-                    }
+                    number: _this.props.result.number,
+                    result: !R.isNil(time) || !R.isEmpty(penalties) ? { type: 'TimedResult', time: time, penalties: penalties } : { type: 'NoTimeResult' }
                 };
             });
 
@@ -141,7 +141,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
 
                 var DOM = React.DOM;
 
-                return DOM.tr({ key: 'selected', className: 'info selected-heat-row' }, [DOM.td({}, this.props.rowId + 1), DOM.td({ className: 'col-md-2' }, this.props.result.time ? this.renderDuration(this.props.result.time) : ''), DOM.td({}, R.addIndex(R.map)(function (penalty, i) {
+                return DOM.tr({ key: 'selected', className: 'info selected-heat-row' }, [DOM.td({}, this.props.rowId + 1), DOM.td({ className: 'col-md-2' }, React.createElement(StopwatchCellView, { value: this.props.time })), DOM.td({}, R.addIndex(R.map)(function (penalty, i) {
                     return [React.createElement(ReactBootstrap.Label, {
                         key: i,
                         bsStyle: PENALTY_STYLES[penalty.type],
@@ -152,7 +152,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                         className: 'tag-remove-btn',
                         glyph: 'remove'
                     })]), ' '];
-                }, this.props.result.penalties)), DOM.td({ className: 'col-md-2' }, this.renderDuration(this.props.result.totalTime)), DOM.td({ className: 'col-md-2' }, '+' + this.renderDuration(this.props.result.deltaTime))]);
+                }, this.props.result.penalties)), DOM.td({ className: 'col-md-2' }, renderDuration(this.props.result.totalTime)), DOM.td({ className: 'col-md-2' }, '+' + renderDuration(this.props.result.deltaTime))]);
             }
         }, {
             key: 'renderNonSelected',
@@ -168,24 +168,12 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                             _this3.props.currentRow.set(_this3.props.rowId);
                         }
                     }
-                }, [DOM.td({}, this.props.rowId + 1), DOM.td({ className: 'col-md-2' }, this.props.result.time ? this.renderDuration(this.props.result.time) : ''), DOM.td({}, R.addIndex(R.map)(function (penalty, i) {
+                }, [DOM.td({}, this.props.rowId + 1), DOM.td({ className: 'col-md-2' }, this.props.result.time ? renderDuration(this.props.result.time) : ''), DOM.td({}, R.addIndex(R.map)(function (penalty, i) {
                     return [React.createElement(ReactBootstrap.Label, {
                         key: i,
                         bsStyle: PENALTY_STYLES[penalty.type]
                     }, penalty.name), ' '];
-                }, this.props.result.penalties)), DOM.td({ className: 'col-md-2' }, this.renderDuration(this.props.result.totalTime)), DOM.td({ className: 'col-md-2' }, '+' + this.renderDuration(this.props.result.deltaTime))]);
-            }
-        }, {
-            key: 'renderDuration',
-            value: function renderDuration(duration) {
-                return duration.minutes() + ':' + duration.seconds() + '.' + this.pad(duration.milliseconds(), 3).substr(0, 2);
-            }
-        }, {
-            key: 'pad',
-            value: function pad(n, size) {
-                var s = R.repeat('0', size - 1).join('') + n;
-
-                return s.substr(s.length - size);
+                }, this.props.result.penalties)), DOM.td({ className: 'col-md-2' }, renderDuration(this.props.result.totalTime)), DOM.td({ className: 'col-md-2' }, '+' + renderDuration(this.props.result.deltaTime))]);
             }
         }]);
 
@@ -353,7 +341,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                     href: '#event/' + eventId + '/registration'
                 }, [React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-left' }), ' ', "Registration"]), React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/competition' }, "Competition"), React.createElement(ReactBootstrap.PageItem, { next: true, href: '#event/' + eventId + '/results' }, ["Results", ' ', React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-right' })])]), React.createElement(ReactBootstrap.Table, {
                     key: 'table',
-                    className: 'pair-table-striped',
+                    className: 'pair-table-striped data-editable',
                     responsive: true,
                     hover: true
                 }, [DOM.tbody({ key: 'table-body' }, [R.flatten(R.addIndex(R.map)(function (participant, i) {
@@ -397,12 +385,17 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                             };
 
                             throw 'undefined';
-                        }, R.concat(heats, R.repeat({
-                            participant: participant,
-                            result: {
-                                type: 'NoTimeResult'
-                            }
-                        }, R.max(HEATS_COUNT - heats.length, 0))));
+                        }, R.reduce(function (result, i) {
+                            return R.append(R.find(function (heat) {
+                                return heat.number == i + 1;
+                            }, heats) || {
+                                participant: participant,
+                                number: i + 1,
+                                result: {
+                                    type: 'NoTimeResult'
+                                }
+                            }, result);
+                        }, [], R.range(0, HEATS_COUNT)));
                     }).map(function (semiResults) {
                         var bestHeatTime = R.reduce(R.min, moment.duration(Infinity), R.map(function (result) {
                             return result.totalTime;

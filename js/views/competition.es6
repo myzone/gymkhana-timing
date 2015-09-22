@@ -1,4 +1,4 @@
-define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle', 'shuttle-react', 'components/stopwatch-cell', 'utils/commons'], (React, ReactRouter, ReactBootstrap, R, moment, Shuttle, ShuttleReact, StopwatchCellView, Commons) => {
+define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-durations', 'shuttle', 'shuttle-react', 'components/stopwatch-cell', 'utils/commons'], (React, ReactRouter, ReactBootstrap, R, moment, momentDurations, Shuttle, ShuttleReact, StopwatchCellView, Commons) => {
     const HEATS_COUNT = 2;
     const PENALTY_STYLES = {
         negligible: 'default',
@@ -32,6 +32,8 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
         type: 'critical'
     }];
 
+    const renderDuration = duration => duration.format("mm:ss.SSS", {trim: false});
+
     class HeatView extends React.Component {
 
         constructor(props) {
@@ -44,12 +46,10 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                 return {
                     id: !R.isNil(this.props.result.id) ? this.props.result.id : Commons.guid(),
                     participant: this.props.result.participant,
-                    number: this.props.rowId + 1,
-                    result: {
-                        type: 'TimedResult',
-                        time: time,
-                        penalties: penalties
-                    }
+                    number: this.props.result.number,
+                    result: !R.isNil(time) || !R.isEmpty(penalties)
+                        ? {type: 'TimedResult', time: time, penalties: penalties}
+                        : {type: 'NoTimeResult'}
                 }
             });
 
@@ -113,7 +113,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
 
             return DOM.tr({key: 'selected', className: 'info selected-heat-row'}, [
                 DOM.td({}, this.props.rowId + 1),
-                DOM.td({className: 'col-md-2'}, this.props.result.time ? this.renderDuration(this.props.result.time) : ''),
+                DOM.td({className: 'col-md-2'}, React.createElement(StopwatchCellView, {value: this.props.time})),
                 DOM.td({}, R.addIndex(R.map)((penalty, i) => [React.createElement(ReactBootstrap.Label, {
                     key: i,
                     bsStyle: PENALTY_STYLES[penalty.type],
@@ -128,8 +128,8 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                         glyph: 'remove'
                     })
                 ]), ' '], this.props.result.penalties)),
-                DOM.td({className: 'col-md-2'}, this.renderDuration(this.props.result.totalTime)),
-                DOM.td({className: 'col-md-2'}, `+${this.renderDuration(this.props.result.deltaTime)}`)
+                DOM.td({className: 'col-md-2'}, renderDuration(this.props.result.totalTime)),
+                DOM.td({className: 'col-md-2'}, `+${renderDuration(this.props.result.deltaTime)}`)
             ]);
         }
 
@@ -145,26 +145,16 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                 }
             }, [
                 DOM.td({}, this.props.rowId + 1),
-                DOM.td({className: 'col-md-2'}, this.props.result.time ? this.renderDuration(this.props.result.time) : ''),
+                DOM.td({className: 'col-md-2'}, this.props.result.time ? renderDuration(this.props.result.time) : ''),
                 DOM.td({}, R.addIndex(R.map)((penalty, i) => [React.createElement(ReactBootstrap.Label, {
                     key: i,
                     bsStyle: PENALTY_STYLES[penalty.type]
                 }, penalty.name), ' '], this.props.result.penalties)),
-                DOM.td({className: 'col-md-2'}, this.renderDuration(this.props.result.totalTime)),
-                DOM.td({className: 'col-md-2'}, `+${this.renderDuration(this.props.result.deltaTime)}`)
+                DOM.td({className: 'col-md-2'}, renderDuration(this.props.result.totalTime)),
+                DOM.td({className: 'col-md-2'}, `+${renderDuration(this.props.result.deltaTime)}`)
             ]);
         }
 
-
-        renderDuration(duration) {
-            return `${duration.minutes()}:${duration.seconds()}.${this.pad(duration.milliseconds(), 3).substr(0, 2)}`
-        }
-
-        pad(n, size) {
-            const s = R.repeat('0', size - 1).join('') + n;
-
-            return s.substr(s.length - size);
-        }
 
     }
 
@@ -323,7 +313,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
 
                 React.createElement(ReactBootstrap.Table, {
                     key: 'table',
-                    className: 'pair-table-striped',
+                    className: 'pair-table-striped data-editable',
                     responsive: true,
                     hover: true
                 }, [
@@ -364,12 +354,13 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'shuttle'
                                                 };
 
                                             throw 'undefined';
-                                        }, R.concat(heats, R.repeat({
+                                        }, R.reduce((result, i) => R.append(R.find(heat => heat.number == i + 1, heats) || {
                                             participant: participant,
+                                            number: i + 1,
                                             result: {
                                                 type: 'NoTimeResult'
                                             }
-                                        }, R.max(HEATS_COUNT - heats.length, 0))))
+                                        }, result), [], R.range(0, HEATS_COUNT)))
                                     )
                                     .map(semiResults => {
                                         const bestHeatTime = R.reduce(R.min, moment.duration(Infinity), R.map(result => result.totalTime, semiResults));

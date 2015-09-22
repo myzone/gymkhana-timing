@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/commons'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, Commons) {
+define(['react', 'react-bootstrap', 'react-input-mask', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'moment-durations', 'utils/commons'], function (React, ReactBootstrap, InputElement, R, Shuttle, ShuttleReact, moment, momentDurations, Commons) {
     var StopwatchCellView = (function (_Shuttle$React$Component) {
         _inherits(StopwatchCellView, _Shuttle$React$Component);
 
@@ -21,17 +21,30 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
         _createClass(StopwatchCellView, [{
             key: 'render',
             value: function render() {
-                return React.createElement(ReactBootstrap.OverlayTrigger, {
-                    key: 'cell-overlay',
-                    trigger: 'click',
-                    placement: 'top',
-                    overlay: React.createElement(ReactBootstrap.Popover, { key: 'cell-popover' }, [React.createElement(ReactBootstrap.ListGroup, { style: { marginBottom: '5px' } }, [React.createElement(ReactBootstrap.ListGroupItem, { className: 'col-md-12' }, React.createElement('center', {}, "1:12.12")), React.createElement(ReactBootstrap.ListGroupItem, {
-                        className: 'col-md-12',
-                        onClick: function onClick() {
-                            return "10";
-                        }
-                    }, "Start")])])
-                }, React.DOM.span({ key: 'cell-value', className: 'date-cell' }, "123"));
+                var _this = this;
+
+                var duration = this.state.value;
+
+                return React.createElement(InputElement, {
+                    mask: '99:99.999',
+                    className: this.props.className,
+                    style: this.props.style,
+                    defaultValue: duration ? duration.format('mm:ss.SSS', { trim: false }) : '',
+                    onChange: function onChange(event) {
+                        var val = event.target.value;
+
+                        var res1 = R.split(':', val);
+                        var res2 = res1[1] ? R.split('.', res1[1]) : ['0', '0'];
+
+                        var replace_With0 = R.replace(/_/g, '0');
+                        var duration = moment.duration({
+                            m: replace_With0(res1[0]),
+                            s: replace_With0(res2[0]),
+                            ms: replace_With0(res2[1])
+                        });
+                        _this.props.value.set(duration.asMilliseconds() != 0 ? duration : null);
+                    }
+                });
             }
         }]);
 
