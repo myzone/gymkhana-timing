@@ -8,9 +8,31 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
-    var EventsView = (function (_React$Component) {
-        _inherits(EventsView, _React$Component);
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment) {
+    var Link2EventView = (function (_Shuttle$React$Component) {
+        _inherits(Link2EventView, _Shuttle$React$Component);
+
+        function Link2EventView() {
+            _classCallCheck(this, Link2EventView);
+
+            _get(Object.getPrototypeOf(Link2EventView.prototype), 'constructor', this).apply(this, arguments);
+        }
+
+        _createClass(Link2EventView, [{
+            key: 'render',
+            value: function render() {
+                return React.createElement(ReactBootstrap.ListGroupItem, {
+                    key: '0',
+                    href: '#/event/' + this.state.id
+                }, this.state.name);
+            }
+        }]);
+
+        return Link2EventView;
+    })(Shuttle.React.Component);
+
+    var EventsView = (function (_Shuttle$React$Component2) {
+        _inherits(EventsView, _Shuttle$React$Component2);
 
         function EventsView() {
             _classCallCheck(this, EventsView);
@@ -21,12 +43,31 @@ define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
         _createClass(EventsView, [{
             key: 'render',
             value: function render() {
-                return React.createElement(ReactBootstrap.ListGroup, { key: 'events-list' }, [React.createElement(ReactBootstrap.ListGroupItem, { key: '0', href: '#/event/asd1' }, "Championship of Ukraine 2013"), React.createElement(ReactBootstrap.ListGroupItem, { key: '1', href: '#/event/asd2' }, "Championship of Ukraine 2014"), React.createElement(ReactBootstrap.ListGroupItem, { key: '2', href: '#/event/asd3' }, "Championship of Ukraine 2015")]);
+                var events = R.map(function (event) {
+                    return {
+                        id: event.map(function (event) {
+                            return event.id;
+                        }),
+                        name: event.flatMap(function (e) {
+                            return e.configuration;
+                        }).map(function (c) {
+                            return c.name;
+                        })
+                    };
+                }, this.state.events);
+
+                return React.createElement(ReactBootstrap.ListGroup, { key: 'events-list' }, [R.map(function (event) {
+                    return React.createElement(Link2EventView, {
+                        key: event.id.get(),
+                        id: event.id,
+                        name: event.name
+                    });
+                }, events)]);
             }
         }]);
 
         return EventsView;
-    })(React.Component);
+    })(Shuttle.React.Component);
 
     return EventsView;
 });

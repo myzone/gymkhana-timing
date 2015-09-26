@@ -64,146 +64,168 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
         });
 
         const application = Shuttle.ref({
-            configuration: Shuttle.ref({}),
-            participants: Shuttle.ref([Shuttle.ref({
-                id: '2',
-                number: "43",
-                country: "ua",
-                name: "Vyacheslavzaza11 Goldenshteyn1",
-                motorcycle: "Honda FMX 650",
-                group: "Group 3B",
-                birthday: "2015-09-01",
-                team: "Sommmmm Team"
-            }), myzone]),
-            heats: Shuttle.ref([{
-                id: "94",
-                participant: myzone,
-                number: 1,
-                result: {
-                    type: 'TimedResult',
-                    time: moment.duration({
-                        minutes: 1,
-                        seconds: 25,
-                        milliseconds: 13
-                    }),
-                    penalties: [{
-                        name: '+1',
-                        type: 'critical',
-                        delay: moment.duration({seconds: 1})
-                    }, {
-                        name: '+1',
-                        type: 'critical',
-                        delay: moment.duration({seconds: 1})
-                    }]
-                }
-        }
-        ])
-    });
-
-    const Main = React.createClass({
-        mixins: [Shuttle.React.Mixin],
-        render: function () {
-            var DOM = React.DOM;
-
-            return DOM.div({key: 'main-root'}, [
-                R.addIndex(R.map)((stylesheet, i) => {
-                    return DOM.link({key: i, rel: 'stylesheet', href: stylesheet});
-                }, [
-                    'css/style.css',
-                    'css/bootstrap.css',
-                    'css/photoswipe.css',
-                    'css/photoswipe-default-skin.css',
-                    'css/jquery.justified.css',
-                    'css/vis.min.css',
-                    'css/c3.css',
-                    'css/timeline.css'
-                ]),
-
-                this.props.children
-            ]);
-        }
-    });
-
-    class RegistrationApplicationProvider extends React.Component {
-        render() {
-            return React.createElement(RegistrationView, {
-                key: 'view',
-                params: this.props.params,
-                participants: application
-                    .flatMap(application => application.participants)
+            id: Shuttle.ref({
+                id: 'id',
+                configuration: Shuttle.ref({
+                    name: "Championship of Ukraine 2013"
+                }),
+                participants: Shuttle.ref([Shuttle.ref({
+                    id: '2',
+                    number: "43",
+                    country: "ua",
+                    name: "Vyacheslavzaza11 Goldenshteyn1",
+                    motorcycle: "Honda FMX 650",
+                    group: "Group 3B",
+                    birthday: "2015-09-01",
+                    team: "Sommmmm Team"
+                }), myzone]),
+                heats: Shuttle.ref([{
+                    id: "94",
+                    participant: myzone,
+                    number: 1,
+                    result: {
+                        type: 'TimedResult',
+                        time: moment.duration({
+                            minutes: 1,
+                            seconds: 25,
+                            milliseconds: 13
+                        }),
+                        penalties: [{
+                            name: '+1',
+                            type: 'critical',
+                            delay: moment.duration({seconds: 1})
+                        }, {
+                            name: '+1',
+                            type: 'critical',
+                            delay: moment.duration({seconds: 1})
+                        }]
+                    }
+                }])
             })
+        });
+
+        const Main = React.createClass({
+            mixins: [Shuttle.React.Mixin],
+            render: function () {
+                var DOM = React.DOM;
+
+                return DOM.div({key: 'main-root'}, [
+                    R.addIndex(R.map)((stylesheet, i) => {
+                        return DOM.link({key: i, rel: 'stylesheet', href: stylesheet});
+                    }, [
+                        'css/style.css',
+                        'css/bootstrap.css',
+                        'css/photoswipe.css',
+                        'css/photoswipe-default-skin.css',
+                        'css/jquery.justified.css',
+                        'css/vis.min.css',
+                        'css/c3.css',
+                        'css/timeline.css'
+                    ]),
+
+                    this.props.children
+                ]);
+            }
+        });
+
+        class EventsApplicationProvider extends React.Component {
+            render() {
+                return React.createElement(EventsView, {
+                    key: 'view',
+                    params: this.props.params,
+                    events: application
+                        .map(application => R.values(application))
+                })
+            }
         }
-    }
 
-    class CompetitionApplicationProvider extends React.Component {
-        render() {
-            return React.createElement(CompetitionView, {
-                key: 'view',
-                params: this.props.params,
-                participants: application
-                    .flatMap(application => application.participants),
-                heats: application
-                    .flatMap(application => application.heats)
-            })
+        class RegistrationApplicationProvider extends React.Component {
+            render() {
+                const event = application
+                    .flatMap(application => application[this.props.params.eventId]);
+
+                return React.createElement(RegistrationView, {
+                    key: 'view',
+                    params: this.props.params,
+                    participants: event
+                        .flatMap(event => event.participants)
+                })
+            }
         }
-    }
 
-    class ResultsApplicationProvider extends React.Component {
-        render() {
-            return React.createElement(ResultsView, {
-                key: 'view',
-                params: this.props.params,
-                participants: application
-                    .flatMap(application => application.participants),
-                heats: application
-                    .flatMap(application => application.heats)
-            })
+        class CompetitionApplicationProvider extends React.Component {
+            render() {
+                const event = application
+                    .flatMap(application => application[this.props.params.eventId]);
+
+                return React.createElement(CompetitionView, {
+                    key: 'view',
+                    params: this.props.params,
+                    participants: event
+                        .flatMap(event => event.participants),
+                    heats: event
+                        .flatMap(event => event.heats)
+                })
+            }
         }
-    }
 
+        class ResultsApplicationProvider extends React.Component {
+            render() {
+                const event = application
+                    .flatMap(application => application[this.props.params.eventId]);
 
-    React.render(React.createElement(Main, {key: 'main'}, [
-        React.createElement(PageView, {key: 'page'}, [
-            React.createElement(ReactRouter.Router, {key: 'router'}, [
-                React.createElement(ReactRouter.Route, {key: 'index-route', path: '/', component: EventsView}),
+                return React.createElement(ResultsView, {
+                    key: 'view',
+                    params: this.props.params,
+                    participants: event
+                        .flatMap(event => event.participants),
+                    heats: event
+                        .flatMap(event => event.heats)
+                })
+            }
+        }
 
-                React.createElement(ReactRouter.Route, {
-                    key: 'event-route',
-                    path: 'event/:eventId',
-                    component: EventView
-                }, [
-                    React.createElement(ReactRouter.IndexRoute, {
-                        key: 'event-index-route',
-                        component: ConfigurationView
-                    }),
+        React.render(React.createElement(Main, {key: 'main'}, [
+            React.createElement(PageView, {key: 'page'}, [
+                React.createElement(ReactRouter.Router, {key: 'router'}, [
+                    React.createElement(ReactRouter.Route, {key: 'index-route', path: '/', component: EventsApplicationProvider}),
+
                     React.createElement(ReactRouter.Route, {
-                        key: 'event-configuration-route',
-                        path: 'configuration',
-                        component: ConfigurationView
-                    }),
-                    React.createElement(ReactRouter.Route, {
-                        key: 'event-registration-route',
-                        path: 'registration',
-                        component: RegistrationApplicationProvider
-                    }),
-                    React.createElement(ReactRouter.Route, {
-                        key: 'event-competition-route',
-                        path: 'competition(/:participantId)',
-                        component: CompetitionApplicationProvider
-                    }),
-                    React.createElement(ReactRouter.Route, {
-                        key: 'event-results-route',
-                        path: 'results',
-                        component: ResultsApplicationProvider
-                    })
+                        key: 'event-route',
+                        path: 'event/:eventId',
+                        component: EventView
+                    }, [
+                        React.createElement(ReactRouter.IndexRoute, {
+                            key: 'event-index-route',
+                            component: ConfigurationView
+                        }),
+                        React.createElement(ReactRouter.Route, {
+                            key: 'event-configuration-route',
+                            path: 'configuration',
+                            component: ConfigurationView
+                        }),
+                        React.createElement(ReactRouter.Route, {
+                            key: 'event-registration-route',
+                            path: 'registration',
+                            component: RegistrationApplicationProvider
+                        }),
+                        React.createElement(ReactRouter.Route, {
+                            key: 'event-competition-route',
+                            path: 'competition(/:participantId)',
+                            component: CompetitionApplicationProvider
+                        }),
+                        React.createElement(ReactRouter.Route, {
+                            key: 'event-results-route',
+                            path: 'results',
+                            component: ResultsApplicationProvider
+                        })
+                    ])
                 ])
             ])
-        ])
-    ]), document.getElementById('root'));
+        ]), document.getElementById('root'));
 
-    window.R = R
+        window.R = R
+    });
 });
-})
-;
 
 

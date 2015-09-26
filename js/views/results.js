@@ -120,7 +120,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 var secondPlace = this.state.secondPlace;
                 var thirdPlace = this.state.thirdPlace;
 
-                return DOM.table({ style: { width: '100%' } }, DOM.tr({}, [DOM.td({ style: { width: '250px' } }), secondPlace ? React.createElement(SecondPlaceView, { name: secondPlace.name, number: secondPlace.number }) : DOM.td(), firstPlace ? React.createElement(FirstPlaceView, { name: firstPlace.name, number: firstPlace.number }) : DOM.td(),, thirdPlace ? React.createElement(ThirdPlaceView, { name: thirdPlace.name, number: thirdPlace.number }) : DOM.td(),, DOM.td({ style: { width: '250px' } })]));
+                return DOM.table({ style: { width: '100%' } }, DOM.tr({}, [DOM.td({ style: { width: '250px' } }), secondPlace ? React.createElement(SecondPlaceView, { name: secondPlace.name, number: secondPlace.number }) : DOM.td(), firstPlace ? React.createElement(FirstPlaceView, { name: firstPlace.name, number: firstPlace.number }) : DOM.td(), thirdPlace ? React.createElement(ThirdPlaceView, { name: thirdPlace.name, number: thirdPlace.number }) : DOM.td(), DOM.td({ style: { width: '250px' } })]));
             }
         }]);
 
@@ -183,9 +183,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     thirdPlace: winners.flatMap(function (winners) {
                         return winners.length > 2 ? winners[2] : null;
                     })
-                })
-                //React.createElement(TableView, {})
-                ]);
+                })]);
             }
         }]);
 

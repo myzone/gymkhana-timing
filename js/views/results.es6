@@ -97,8 +97,8 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
             return DOM.table({style: {width: '100%'}}, DOM.tr({}, [
                 DOM.td({style: {width: '250px'}}),
                 secondPlace ? React.createElement(SecondPlaceView, {name: secondPlace.name, number: secondPlace.number}) : DOM.td(),
-                firstPlace ? React.createElement(FirstPlaceView, {name: firstPlace.name, number: firstPlace.number}) : DOM.td(),,
-                thirdPlace ? React.createElement(ThirdPlaceView, {name: thirdPlace.name, number: thirdPlace.number}) : DOM.td(),,
+                firstPlace ? React.createElement(FirstPlaceView, {name: firstPlace.name, number: firstPlace.number}) : DOM.td(),
+                thirdPlace ? React.createElement(ThirdPlaceView, {name: thirdPlace.name, number: thirdPlace.number}) : DOM.td(),
                 DOM.td({style: {width: '250px'}})
             ]));
         }
@@ -118,8 +118,8 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                         totalTime: totalTime(heat)
                     }
                 }, heats))
-                .map(heats => (R.sortBy(heat => -heat.totalTime, heats)))
-                .map(heats => R.map(heat => heat.participant, heats))
+                .map(heats => R.sortBy(heat => -heat.totalTime, heats))
+                .map(heats => R.map(heat => heat.participant, heats));
 
             return DOM.div({}, [
                 React.createElement(ReactBootstrap.Pager, {}, [
@@ -137,7 +137,6 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     secondPlace: winners.flatMap(winners => winners.length > 1 ? winners[1] : null),
                     thirdPlace: winners.flatMap(winners => winners.length > 2 ? winners[2] : null)
                 })
-                //React.createElement(TableView, {})
             ]);
         }
 

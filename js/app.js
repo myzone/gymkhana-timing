@@ -73,39 +73,44 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
         });
 
         var application = Shuttle.ref({
-            configuration: Shuttle.ref({}),
-            participants: Shuttle.ref([Shuttle.ref({
-                id: '2',
-                number: "43",
-                country: "ua",
-                name: "Vyacheslavzaza11 Goldenshteyn1",
-                motorcycle: "Honda FMX 650",
-                group: "Group 3B",
-                birthday: "2015-09-01",
-                team: "Sommmmm Team"
-            }), myzone]),
-            heats: Shuttle.ref([{
-                id: "94",
-                participant: myzone,
-                number: 1,
-                result: {
-                    type: 'TimedResult',
-                    time: moment.duration({
-                        minutes: 1,
-                        seconds: 25,
-                        milliseconds: 13
-                    }),
-                    penalties: [{
-                        name: '+1',
-                        type: 'critical',
-                        delay: moment.duration({ seconds: 1 })
-                    }, {
-                        name: '+1',
-                        type: 'critical',
-                        delay: moment.duration({ seconds: 1 })
-                    }]
-                }
-            }])
+            id: Shuttle.ref({
+                id: 'id',
+                configuration: Shuttle.ref({
+                    name: "Championship of Ukraine 2013"
+                }),
+                participants: Shuttle.ref([Shuttle.ref({
+                    id: '2',
+                    number: "43",
+                    country: "ua",
+                    name: "Vyacheslavzaza11 Goldenshteyn1",
+                    motorcycle: "Honda FMX 650",
+                    group: "Group 3B",
+                    birthday: "2015-09-01",
+                    team: "Sommmmm Team"
+                }), myzone]),
+                heats: Shuttle.ref([{
+                    id: "94",
+                    participant: myzone,
+                    number: 1,
+                    result: {
+                        type: 'TimedResult',
+                        time: moment.duration({
+                            minutes: 1,
+                            seconds: 25,
+                            milliseconds: 13
+                        }),
+                        penalties: [{
+                            name: '+1',
+                            type: 'critical',
+                            delay: moment.duration({ seconds: 1 })
+                        }, {
+                            name: '+1',
+                            type: 'critical',
+                            delay: moment.duration({ seconds: 1 })
+                        }]
+                    }
+                }])
+            })
         });
 
         var Main = React.createClass({
@@ -121,8 +126,33 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             }
         });
 
-        var RegistrationApplicationProvider = (function (_React$Component) {
-            _inherits(RegistrationApplicationProvider, _React$Component);
+        var EventsApplicationProvider = (function (_React$Component) {
+            _inherits(EventsApplicationProvider, _React$Component);
+
+            function EventsApplicationProvider() {
+                _classCallCheck(this, EventsApplicationProvider);
+
+                _get(Object.getPrototypeOf(EventsApplicationProvider.prototype), 'constructor', this).apply(this, arguments);
+            }
+
+            _createClass(EventsApplicationProvider, [{
+                key: 'render',
+                value: function render() {
+                    return React.createElement(EventsView, {
+                        key: 'view',
+                        params: this.props.params,
+                        events: application.map(function (application) {
+                            return R.values(application);
+                        })
+                    });
+                }
+            }]);
+
+            return EventsApplicationProvider;
+        })(React.Component);
+
+        var RegistrationApplicationProvider = (function (_React$Component2) {
+            _inherits(RegistrationApplicationProvider, _React$Component2);
 
             function RegistrationApplicationProvider() {
                 _classCallCheck(this, RegistrationApplicationProvider);
@@ -133,11 +163,17 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             _createClass(RegistrationApplicationProvider, [{
                 key: 'render',
                 value: function render() {
+                    var _this = this;
+
+                    var event = application.flatMap(function (application) {
+                        return application[_this.props.params.eventId];
+                    });
+
                     return React.createElement(RegistrationView, {
                         key: 'view',
                         params: this.props.params,
-                        participants: application.flatMap(function (application) {
-                            return application.participants;
+                        participants: event.flatMap(function (event) {
+                            return event.participants;
                         })
                     });
                 }
@@ -146,8 +182,8 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             return RegistrationApplicationProvider;
         })(React.Component);
 
-        var CompetitionApplicationProvider = (function (_React$Component2) {
-            _inherits(CompetitionApplicationProvider, _React$Component2);
+        var CompetitionApplicationProvider = (function (_React$Component3) {
+            _inherits(CompetitionApplicationProvider, _React$Component3);
 
             function CompetitionApplicationProvider() {
                 _classCallCheck(this, CompetitionApplicationProvider);
@@ -158,14 +194,20 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             _createClass(CompetitionApplicationProvider, [{
                 key: 'render',
                 value: function render() {
+                    var _this2 = this;
+
+                    var event = application.flatMap(function (application) {
+                        return application[_this2.props.params.eventId];
+                    });
+
                     return React.createElement(CompetitionView, {
                         key: 'view',
                         params: this.props.params,
-                        participants: application.flatMap(function (application) {
-                            return application.participants;
+                        participants: event.flatMap(function (event) {
+                            return event.participants;
                         }),
-                        heats: application.flatMap(function (application) {
-                            return application.heats;
+                        heats: event.flatMap(function (event) {
+                            return event.heats;
                         })
                     });
                 }
@@ -174,8 +216,8 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             return CompetitionApplicationProvider;
         })(React.Component);
 
-        var ResultsApplicationProvider = (function (_React$Component3) {
-            _inherits(ResultsApplicationProvider, _React$Component3);
+        var ResultsApplicationProvider = (function (_React$Component4) {
+            _inherits(ResultsApplicationProvider, _React$Component4);
 
             function ResultsApplicationProvider() {
                 _classCallCheck(this, ResultsApplicationProvider);
@@ -186,14 +228,20 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             _createClass(ResultsApplicationProvider, [{
                 key: 'render',
                 value: function render() {
+                    var _this3 = this;
+
+                    var event = application.flatMap(function (application) {
+                        return application[_this3.props.params.eventId];
+                    });
+
                     return React.createElement(ResultsView, {
                         key: 'view',
                         params: this.props.params,
-                        participants: application.flatMap(function (application) {
-                            return application.participants;
+                        participants: event.flatMap(function (event) {
+                            return event.participants;
                         }),
-                        heats: application.flatMap(function (application) {
-                            return application.heats;
+                        heats: event.flatMap(function (event) {
+                            return event.heats;
                         })
                     });
                 }
@@ -202,7 +250,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             return ResultsApplicationProvider;
         })(React.Component);
 
-        React.render(React.createElement(Main, { key: 'main' }, [React.createElement(PageView, { key: 'page' }, [React.createElement(ReactRouter.Router, { key: 'router' }, [React.createElement(ReactRouter.Route, { key: 'index-route', path: '/', component: EventsView }), React.createElement(ReactRouter.Route, {
+        React.render(React.createElement(Main, { key: 'main' }, [React.createElement(PageView, { key: 'page' }, [React.createElement(ReactRouter.Router, { key: 'router' }, [React.createElement(ReactRouter.Route, { key: 'index-route', path: '/', component: EventsApplicationProvider }), React.createElement(ReactRouter.Route, {
             key: 'event-route',
             path: 'event/:eventId',
             component: EventView
