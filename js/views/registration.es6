@@ -174,16 +174,16 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
 
             return DOM.div({key: 'registration-root'}, [
                 React.createElement(ReactBootstrap.Pager, {key: 'pager-root'}, [
-                    React.createElement(ReactBootstrap.PageItem, {
-                        key: 'previous',
-                        previous: true,
-                        href: `#event/${eventId}/configuration`
-                    }, [
-                        React.createElement(ReactBootstrap.Glyphicon, {
-                            key: 'glyph',
-                            glyph: 'menu-left'
-                        }), ' ', "Configuration"
-                    ]),
+                    //React.createElement(ReactBootstrap.PageItem, {
+                    //    key: 'previous',
+                    //    previous: true,
+                    //    href: `#event/${eventId}/configuration`
+                    //}, [
+                    //    React.createElement(ReactBootstrap.Glyphicon, {
+                    //        key: 'glyph',
+                    //        glyph: 'menu-left'
+                    //    }), ' ', "Configuration"
+                    //]),
                     React.createElement(ReactBootstrap.PageItem, {
                         key: 'current',
                         href: `#event/${eventId}/registration`

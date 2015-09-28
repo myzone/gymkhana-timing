@@ -325,12 +325,14 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             component: EventView
         }, [React.createElement(ReactRouter.IndexRoute, {
             key: 'event-index-route',
-            component: ConfigurationView
-        }), React.createElement(ReactRouter.Route, {
-            key: 'event-configuration-route',
-            path: 'configuration',
-            component: ConfigurationView
-        }), React.createElement(ReactRouter.Route, {
+            component: RegistrationApplicationProvider
+        }),
+        //React.createElement(ReactRouter.Route, {
+        //    key: 'event-configuration-route',
+        //    path: 'configuration',
+        //    component: ConfigurationView
+        //}),
+        React.createElement(ReactRouter.Route, {
             key: 'event-registration-route',
             path: 'registration',
             component: RegistrationApplicationProvider
