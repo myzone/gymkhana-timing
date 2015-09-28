@@ -8,9 +8,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
-    var EventView = (function (_React$Component) {
-        _inherits(EventView, _React$Component);
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact) {
+    var EventView = (function (_Shuttle$React$Component) {
+        _inherits(EventView, _Shuttle$React$Component);
 
         function EventView() {
             _classCallCheck(this, EventView);
@@ -23,12 +23,12 @@ define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
             value: function render() {
                 var DOM = React.DOM;
 
-                return DOM.div({ key: 'event-root' }, [React.createElement(ReactBootstrap.PageHeader, { key: 'header' }, "Championship of Ukraine 2015"), DOM.div({ key: 'children' }, this.props.children)]);
+                return DOM.div({ key: 'event-root' }, [React.createElement(ReactBootstrap.PageHeader, { key: 'header' }, this.state.name), DOM.div({ key: 'children' }, this.props.children)]);
             }
         }]);
 
         return EventView;
-    })(React.Component);
+    })(Shuttle.React.Component);
 
     return EventView;
 });

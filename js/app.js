@@ -243,8 +243,42 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             return EventsApplicationProvider;
         })(React.Component);
 
-        var RegistrationApplicationProvider = (function (_React$Component3) {
-            _inherits(RegistrationApplicationProvider, _React$Component3);
+        var EventApplicationProvider = (function (_React$Component3) {
+            _inherits(EventApplicationProvider, _React$Component3);
+
+            function EventApplicationProvider() {
+                _classCallCheck(this, EventApplicationProvider);
+
+                _get(Object.getPrototypeOf(EventApplicationProvider.prototype), 'constructor', this).apply(this, arguments);
+            }
+
+            _createClass(EventApplicationProvider, [{
+                key: 'render',
+                value: function render() {
+                    var _this = this;
+
+                    var event = application.flatMap(function (application) {
+                        return application[_this.props.params.eventId];
+                    });
+
+                    return React.createElement(EventView, {
+                        key: 'view',
+                        params: this.props.params,
+                        name: event.flatMap(function (event) {
+                            return event.configuration;
+                        }).map(function (configuration) {
+                            return configuration.name;
+                        }),
+                        application: application
+                    }, this.props.children);
+                }
+            }]);
+
+            return EventApplicationProvider;
+        })(React.Component);
+
+        var RegistrationApplicationProvider = (function (_React$Component4) {
+            _inherits(RegistrationApplicationProvider, _React$Component4);
 
             function RegistrationApplicationProvider() {
                 _classCallCheck(this, RegistrationApplicationProvider);
@@ -255,10 +289,10 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             _createClass(RegistrationApplicationProvider, [{
                 key: 'render',
                 value: function render() {
-                    var _this = this;
+                    var _this2 = this;
 
                     var event = application.flatMap(function (application) {
-                        return application[_this.props.params.eventId];
+                        return application[_this2.props.params.eventId];
                     });
 
                     return React.createElement(RegistrationView, {
@@ -274,8 +308,8 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             return RegistrationApplicationProvider;
         })(React.Component);
 
-        var CompetitionApplicationProvider = (function (_React$Component4) {
-            _inherits(CompetitionApplicationProvider, _React$Component4);
+        var CompetitionApplicationProvider = (function (_React$Component5) {
+            _inherits(CompetitionApplicationProvider, _React$Component5);
 
             function CompetitionApplicationProvider() {
                 _classCallCheck(this, CompetitionApplicationProvider);
@@ -286,10 +320,10 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             _createClass(CompetitionApplicationProvider, [{
                 key: 'render',
                 value: function render() {
-                    var _this2 = this;
+                    var _this3 = this;
 
                     var event = application.flatMap(function (application) {
-                        return application[_this2.props.params.eventId];
+                        return application[_this3.props.params.eventId];
                     });
 
                     return React.createElement(CompetitionView, {
@@ -308,8 +342,8 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             return CompetitionApplicationProvider;
         })(React.Component);
 
-        var ResultsApplicationProvider = (function (_React$Component5) {
-            _inherits(ResultsApplicationProvider, _React$Component5);
+        var ResultsApplicationProvider = (function (_React$Component6) {
+            _inherits(ResultsApplicationProvider, _React$Component6);
 
             function ResultsApplicationProvider() {
                 _classCallCheck(this, ResultsApplicationProvider);
@@ -320,10 +354,10 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             _createClass(ResultsApplicationProvider, [{
                 key: 'render',
                 value: function render() {
-                    var _this3 = this;
+                    var _this4 = this;
 
                     var event = application.flatMap(function (application) {
-                        return application[_this3.props.params.eventId];
+                        return application[_this4.props.params.eventId];
                     });
 
                     return React.createElement(ResultsView, {
@@ -352,7 +386,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
         }), React.createElement(ReactRouter.Route, {
             key: 'event-route',
             path: 'event/:eventId',
-            component: EventView
+            component: EventApplicationProvider
         }, [React.createElement(ReactRouter.IndexRoute, {
             key: 'event-index-route',
             component: RegistrationApplicationProvider

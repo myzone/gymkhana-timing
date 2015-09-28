@@ -203,13 +203,29 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                 }
             }
 
-             class EventsApplicationProvider extends React.Component {
+            class EventsApplicationProvider extends React.Component {
                 render() {
                     return React.createElement(EventsView, {
                         key: 'view',
                         params: this.props.params,
                         events: application
                             .map(application => R.values(application)),
+                        application: application
+                    }, this.props.children);
+                }
+            }
+
+            class EventApplicationProvider extends React.Component {
+                render() {
+                    const event = application
+                        .flatMap(application => application[this.props.params.eventId]);
+
+                    return React.createElement(EventView, {
+                        key: 'view',
+                        params: this.props.params,
+                        name: event
+                            .flatMap(event => event.configuration)
+                            .map(configuration => configuration.name),
                         application: application
                     }, this.props.children);
                 }
@@ -276,7 +292,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         React.createElement(ReactRouter.Route, {
                             key: 'event-route',
                             path: 'event/:eventId',
-                            component: EventView
+                            component: EventApplicationProvider
                         }, [
                             React.createElement(ReactRouter.IndexRoute, {
                                 key: 'event-index-route',

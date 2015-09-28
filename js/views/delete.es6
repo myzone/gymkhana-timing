@@ -46,7 +46,8 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                             onClick: () => {
                                 this.props.application.set(R.dissoc(this.props.eventId, this.state.application));
 
-                                window.location.hash = `#/`;
+                                this.props.opened.set(false);
+                                window.location.hash = '#/';
                             }
                         }, "I understand the consequences, delete the event"),
                         React.createElement(ReactBootstrap.Button, {onClick: () => {
