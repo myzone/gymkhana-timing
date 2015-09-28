@@ -61,57 +61,122 @@ require.config({
 
 require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery', 'shuttle', 'shuttle-react'], function (React, ReactBootstrap, ReactRouter, R, moment, $, Shuttle, ShuttleReact) {
     require(['views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results'], function (PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView) {
-        var myzone = Shuttle.ref({
-            id: '3',
-            number: "43",
-            country: "ua",
-            name: "Vyacheslav Goldenshteyn1",
-            motorcycle: "Honda FMX 650",
-            group: "Group 3B",
-            birthday: "2015-09-01",
-            team: "Sommmmm Team"
-        });
+        var exampleApplication = function exampleApplication() {
+            var myzone = Shuttle.ref({
+                id: '3',
+                number: "43",
+                country: "ua",
+                name: "Vyacheslav Goldenshteyn1",
+                motorcycle: "Honda FMX 650",
+                group: "Group 3B",
+                birthday: "2015-09-01",
+                team: "Sommmmm Team"
+            });
 
-        var application = Shuttle.ref({
-            id: Shuttle.ref({
-                id: 'id',
-                configuration: Shuttle.ref({
-                    name: "Championship of Ukraine 2013"
-                }),
-                participants: Shuttle.ref([Shuttle.ref({
-                    id: '2',
-                    number: "43",
-                    country: "ua",
-                    name: "Vyacheslavzaza11 Goldenshteyn1",
-                    motorcycle: "Honda FMX 650",
-                    group: "Group 3B",
-                    birthday: "2015-09-01",
-                    team: "Sommmmm Team"
-                }), myzone]),
-                heats: Shuttle.ref([{
-                    id: "94",
-                    participant: myzone,
-                    number: 1,
-                    result: {
-                        type: 'TimedResult',
-                        time: moment.duration({
-                            minutes: 1,
-                            seconds: 25,
-                            milliseconds: 13
-                        }),
-                        penalties: [{
-                            name: '+1',
-                            type: 'critical',
-                            delay: moment.duration({ seconds: 1 })
-                        }, {
-                            name: '+1',
-                            type: 'critical',
-                            delay: moment.duration({ seconds: 1 })
-                        }]
-                    }
-                }])
-            })
-        });
+            return Shuttle.ref({
+                id: Shuttle.ref({
+                    id: 'id',
+                    configuration: Shuttle.ref({
+                        name: "Championship of Ukraine 2013"
+                    }),
+                    participants: Shuttle.ref([Shuttle.ref({
+                        id: '2',
+                        number: "43",
+                        country: "ua",
+                        name: "Vyacheslavzaza11 Goldenshteyn1",
+                        motorcycle: "Honda FMX 650",
+                        group: "Group 3B",
+                        birthday: "2015-09-01",
+                        team: "Sommmmm Team"
+                    }), myzone]),
+                    heats: Shuttle.ref([{
+                        id: "94",
+                        participant: myzone,
+                        number: 1,
+                        result: {
+                            type: 'TimedResult',
+                            time: moment.duration({
+                                minutes: 1,
+                                seconds: 25,
+                                milliseconds: 13
+                            }),
+                            penalties: [{
+                                name: '+1',
+                                type: 'critical',
+                                delay: moment.duration({ seconds: 1 })
+                            }, {
+                                name: '+1',
+                                type: 'critical',
+                                delay: moment.duration({ seconds: 1 })
+                            }]
+                        }
+                    }])
+                })
+            });
+        };
+
+        var loadApplication = function loadApplication() {
+            var savedData = JSON.parse(localStorage.getItem('application-data'));
+
+            var application = R.mapObj(function (event) {
+                return {
+                    id: event.id,
+                    configuration: Shuttle.ref({
+                        name: event.configuration.name
+                    }),
+                    participants: Shuttle.ref(R.map(function (participant) {
+                        return Shuttle.ref({
+                            id: participant.id,
+                            number: participant.number,
+                            country: participant.country,
+                            name: participant.name,
+                            motorcycle: participant.motorcycle,
+                            group: participant.group,
+                            birthday: participant.birthday,
+                            team: participant.team
+                        });
+                    }, event.participants)),
+                    heats: R.map(function (heat) {
+                        return {
+                            id: heat.id,
+                            participant: heat.participant,
+                            number: heat.number,
+                            result: {
+                                type: heat.result.type,
+                                time: heat.result.time ? moment.duration(heat.result.time) : undefined,
+                                penalties: heat.result.penalties ? R.map(function (penalty) {
+                                    return {
+                                        name: penalty.name,
+                                        type: penalty.type,
+                                        delay: moment.duration(penalty.delay)
+                                    };
+                                }, heat.result.penalties) : undefined
+                            }
+                        };
+                    }, event.heats)
+                };
+            }, savedData);
+
+            application = R.mapObj(function (event) {
+                event.heats = Shuttle.ref(R.map(function (heat) {
+                    heat.participant = R.find(function (participant) {
+                        return R.equals(participant.get(), heat.participant);
+                    }, event.participants.get());
+
+                    return heat;
+                }, event.heats));
+
+                return Shuttle.ref(event);
+            }, application);
+
+            return Shuttle.ref(application);
+        };
+
+        //const application = exampleApplication();
+        var application = loadApplication();
+        setInterval(function () {
+            localStorage.setItem('application-data', JSON.stringify(Shuttle.json(application)));
+        }, 1000);
 
         var Main = React.createClass({
             displayName: 'Main',
@@ -250,7 +315,11 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             return ResultsApplicationProvider;
         })(React.Component);
 
-        React.render(React.createElement(Main, { key: 'main' }, [React.createElement(PageView, { key: 'page' }, [React.createElement(ReactRouter.Router, { key: 'router' }, [React.createElement(ReactRouter.Route, { key: 'index-route', path: '/', component: EventsApplicationProvider }), React.createElement(ReactRouter.Route, {
+        React.render(React.createElement(Main, { key: 'main' }, [React.createElement(PageView, { key: 'page' }, [React.createElement(ReactRouter.Router, { key: 'router' }, [React.createElement(ReactRouter.Route, {
+            key: 'index-route',
+            path: '/',
+            component: EventsApplicationProvider
+        }), React.createElement(ReactRouter.Route, {
             key: 'event-route',
             path: 'event/:eventId',
             component: EventView
@@ -276,6 +345,8 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
         })])])])]), document.getElementById('root'));
 
         window.R = R;
+        window.s = Shuttle;
+        window.m = moment;
     });
 });
 

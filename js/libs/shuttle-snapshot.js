@@ -85,8 +85,8 @@ define(['ramda'], function (R) {
         };
         result.dependsOn = function (observable) {
             return dependencies.indexOf(observable) !== -1 || R.reduce(R.or, false, R.map(function (dependency) {
-                return dependency.dependsOn(observable);
-            }, Array.from(dependencies)));
+                    return dependency.dependsOn(observable);
+                }, Array.from(dependencies)));
         };
         result.log = function (mapper) {
             mapper = mapper || R.identity;
@@ -123,10 +123,30 @@ define(['ramda'], function (R) {
 
         return innerResult;
     };
+    var json = function (value) {
+        if (value instanceof Ref)
+            return json(value.get());
+
+        if (value instanceof Array)
+            return R.map(function (i) {
+                return json(i);
+            }, value);
+
+        if (value === null || value === undefined)
+            return value;
+
+        if (typeof value == 'object' && value.constructor == Object)
+            return R.mapObj(function (i) {
+                return json(i);
+            }, value);
+
+        return value;
+    };
 
     return {
         Ref: Ref,
         ref: ref,
-        combine: combine
+        combine: combine,
+        json: json
     };
 });

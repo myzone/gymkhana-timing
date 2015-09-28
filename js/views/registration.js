@@ -139,8 +139,6 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
             };
 
             this.listener = function (_, participant) {
-                console.log(participant);
-
                 if (participant.number.length != 0 || participant.country.length != 0 || participant.name.length != 0 || participant.motorcycle.length != 0 || participant.group.length != 0 || participant.team.length != 0) {
 
                     var last = _this2.last;
