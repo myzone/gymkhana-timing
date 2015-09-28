@@ -17,7 +17,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
 
             _get(Object.getPrototypeOf(CreateView.prototype), 'constructor', this).call(this, params);
 
-            this.state.name = "";
+            this.state.nameCopy = "";
         }
 
         _createClass(CreateView, [{
@@ -26,58 +26,40 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                 var _this = this;
 
                 var DOM = React.DOM;
-                var nameIsOk = this.validateName();
+                var nameCopyIsOk = this.validateNameCopy();
 
-                return React.createElement(ReactBootstrap.Modal, {
-                    show: this.props.opened
-                }, [React.createElement(ReactBootstrap.Panel, {
-                    header: DOM.h3({}, "Create new event"),
-                    bsStyle: 'primary',
+                return React.createElement(ReactBootstrap.Modal, { show: this.state.opened }, [React.createElement(ReactBootstrap.Panel, {
+                    header: DOM.h3({}, "Are you ABSOLUTELY sure?"),
+                    bsStyle: 'danger',
                     style: { marginBottom: '0' }
-                }, [DOM.form({ className: 'form-horizontal' }, [React.createElement(ReactBootstrap.Input, {
-                    label: "Name",
-
+                }, [DOM.form({ className: 'form-horizontal' }, [DOM.p({}, ["This action ", DOM.b({}, "CANNOT"), " be undone. This will permanently delete the ", DOM.b({}, this.props.eventName), " event."]), DOM.p(), DOM.p({}, "Please type in the name of the event to confirm."), React.createElement(ReactBootstrap.Input, {
                     type: 'text',
-                    labelClassName: 'col-md-1',
-                    wrapperClassName: 'col-md-11',
 
-                    bsStyle: nameIsOk ? 'success' : 'error',
+                    wrapperClassName: 'col-md-12',
+
+                    bsStyle: nameCopyIsOk ? 'warning' : 'error',
                     hasFeedback: true,
-                    defaultValue: this.state.name,
+                    defaultValue: "",
                     onChange: function onChange(e) {
-                        return _this.setState({ name: e.target.value });
+                        return _this.setState({ nameCopy: e.target.value });
                     }
                 })]), React.createElement(ReactBootstrap.ButtonGroup, { className: 'pull-right' }, [React.createElement(ReactBootstrap.Button, {
-                    bsStyle: nameIsOk ? 'primary' : 'submit',
-                    disabled: !nameIsOk,
+                    bsStyle: nameCopyIsOk ? 'danger' : 'warning',
+                    disabled: !nameCopyIsOk,
                     style: { opacity: '1' },
                     onClick: function onClick() {
-                        var eventId = Commons.guid();
-
-                        var application = Shuttle.ref({
-                            id: eventId,
-                            configuration: Shuttle.ref({
-                                name: _this.state.name
-                            }),
-                            participants: Shuttle.ref([]),
-                            heats: Shuttle.ref([])
-                        });
-                        _this.props.application.set(R.assoc(eventId, application, _this.state.application));
+                        _this.props.application.set(R.dissoc(_this.props.eventId, _this.state.application));
 
                         window.location.hash = '#/';
                     }
-                }, "Create"), React.createElement(ReactBootstrap.Button, { onClick: function onClick() {
-                        Commons.setQueryParams(R.dissoc('modal', Commons.getQueryParams()));
+                }, "I understand the consequences, delete the event"), React.createElement(ReactBootstrap.Button, { onClick: function onClick() {
+                        _this.props.opened.set(false);
                     } }, "Cancel")])])]);
             }
         }, {
-            key: 'validateName',
-            value: function validateName() {
-                var _this2 = this;
-
-                return !R.isEmpty(this.state.name) && !R.find(function (event) {
-                    return event.get().configuration.get().name == _this2.state.name;
-                }, R.values(this.state.application));
+            key: 'validateNameCopy',
+            value: function validateNameCopy() {
+                return this.props.eventName == this.state.nameCopy;
             }
         }]);
 
@@ -87,4 +69,4 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
     return CreateView;
 });
 
-//# sourceMappingURL=create.js.map
+//# sourceMappingURL=delete.js.map

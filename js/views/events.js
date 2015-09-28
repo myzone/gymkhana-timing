@@ -8,23 +8,35 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment) {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'views/delete'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment, DeleteView) {
     var Link2EventView = (function (_Shuttle$React$Component) {
         _inherits(Link2EventView, _Shuttle$React$Component);
 
-        function Link2EventView() {
+        function Link2EventView(params) {
             _classCallCheck(this, Link2EventView);
 
-            _get(Object.getPrototypeOf(Link2EventView.prototype), 'constructor', this).apply(this, arguments);
+            _get(Object.getPrototypeOf(Link2EventView.prototype), 'constructor', this).call(this, params);
+
+            this.opened = Shuttle.ref(false);
         }
 
         _createClass(Link2EventView, [{
             key: 'render',
             value: function render() {
-                return React.createElement(ReactBootstrap.ListGroupItem, {
-                    key: '0',
-                    href: '#/event/' + this.state.id
-                }, this.state.name);
+                var _this = this;
+
+                return React.createElement(ReactBootstrap.ListGroupItem, {}, [React.DOM.a({ href: '#/event/' + this.state.id }, this.state.name), React.createElement(ReactBootstrap.Button, {
+                    className: 'pull-right',
+                    bsSize: 'xsmall',
+                    onClick: function onClick() {
+                        return _this.opened.set(true);
+                    }
+                }, React.createElement(ReactBootstrap.Glyphicon, { key: 'glyph', glyph: 'trash' })), React.createElement(DeleteView, {
+                    opened: this.opened,
+                    eventName: this.state.name,
+                    eventId: this.state.id,
+                    application: this.props.application
+                })]);
             }
         }]);
 
@@ -43,6 +55,8 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         _createClass(EventsView, [{
             key: 'render',
             value: function render() {
+                var _this2 = this;
+
                 var events = R.map(function (event) {
                     return {
                         id: event.map(function (event) {
@@ -60,7 +74,8 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     return React.createElement(Link2EventView, {
                         key: event.id.get(),
                         id: event.id,
-                        name: event.name
+                        name: event.name,
+                        application: _this2.props.application
                     });
                 }, events)]);
             }

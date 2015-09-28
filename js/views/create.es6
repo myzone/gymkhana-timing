@@ -14,10 +14,11 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
             return React.createElement(ReactBootstrap.Modal, {
                 show: this.props.opened
             }, [
-                React.createElement(ReactBootstrap.Modal.Header, {}, [
-                    DOM.h3({}, "Create new event")
-                ]),
-                React.createElement(ReactBootstrap.Modal.Body, {}, [
+                React.createElement(ReactBootstrap.Panel, {
+                    header: DOM.h3({}, "Create new event"),
+                    bsStyle: 'primary',
+                    style: {marginBottom: '0'}
+                }, [
                     DOM.form({className: 'form-horizontal'}, [
                         React.createElement(ReactBootstrap.Input, {
                             label: "Name",
@@ -54,7 +55,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                             }
                         }, "Create"),
                         React.createElement(ReactBootstrap.Button, {onClick: () => {
-                            Commons.setQueryParams(R.assoc('modal', null, Commons.getQueryParams()))
+                            Commons.setQueryParams(R.dissoc('modal', Commons.getQueryParams()))
                         }}, "Cancel")
                     ])
                 ])

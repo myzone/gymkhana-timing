@@ -38,6 +38,7 @@ require.config({
         'views/competition': 'views/competition',
         'views/results': 'views/results',
         'views/create': 'views/create',
+        'views/delete': 'views/delete',
 
         'components/text-cell': 'views/components/text-cell',
         'components/date-cell': 'views/components/date-cell',
@@ -233,7 +234,8 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         params: this.props.params,
                         events: application.map(function (application) {
                             return R.values(application);
-                        })
+                        }),
+                        application: application
                     }, this.props.children);
                 }
             }]);
