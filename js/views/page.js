@@ -8,7 +8,21 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda'], function (React, ReactBootstrap, R) {
+define(['react', 'react-bootstrap', 'ramda', 'utils/commons', 'views/create'], function (React, ReactBootstrap, R, Commons, CreateView) {
+    var setModal = function setModal(modal) {
+        var setQueryParam = function setQueryParam(param, value) {
+            Commons.setQueryParams(R.assoc(param, value, Commons.getQueryParams()));
+        };
+
+        setQueryParam('modal', modal);
+    };
+
+    var Modal = {
+        NEW: "new",
+        EXPORT: "import",
+        IMPORT: "export"
+    };
+
     var Page = (function (_React$Component) {
         _inherits(Page, _React$Component);
 
@@ -22,12 +36,31 @@ define(['react', 'react-bootstrap', 'ramda'], function (React, ReactBootstrap, R
             key: 'render',
             value: function render() {
                 var DOM = React.DOM;
+                var modal = this.props.location.query.modal;
 
                 return DOM.div({ key: 'container', className: 'container' }, DOM.div({ key: 'row', className: 'row' }, [React.createElement(ReactBootstrap.Navbar, {
                     key: 'navigation-bar',
-                    brand: "Gymkhana timing",
+                    brand: DOM.a({ href: '#/' }, "Gymkhana timing"),
                     inverse: true
-                }, React.createElement(ReactBootstrap.Nav, { key: 'navigation-bar-inner', right: true }, [React.createElement(ReactBootstrap.NavItem, { key: 'new' }, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'file' }), ' New'), React.createElement(ReactBootstrap.NavItem, { key: 'import' }, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'import' }), ' Import'), React.createElement(ReactBootstrap.NavItem, { key: 'export' }, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'export' }), ' Export')])), this.props.children]));
+                }, React.createElement(ReactBootstrap.Nav, { key: 'navigation-bar-inner', right: true }, [React.createElement(ReactBootstrap.NavItem, {
+                    key: 'new',
+                    onClick: function onClick() {
+                        return setModal(Modal.NEW);
+                    }
+                }, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'file' }), ' New'), React.createElement(ReactBootstrap.NavItem, {
+                    key: 'import',
+                    onClick: function onClick() {
+                        return setModal(Modal.IMPORT);
+                    }
+                }, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'import' }), ' Import'), React.createElement(ReactBootstrap.NavItem, {
+                    key: 'export',
+                    onClick: function onClick() {
+                        return setModal(Modal.EXPORT);
+                    }
+                }, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'export' }), ' Export')])), React.createElement(CreateView, {
+                    application: this.props.application,
+                    opened: modal == Modal.NEW
+                }), this.props.children]));
             }
         }]);
 

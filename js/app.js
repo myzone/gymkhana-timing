@@ -37,6 +37,7 @@ require.config({
         'views/registration': 'views/registration',
         'views/competition': 'views/competition',
         'views/results': 'views/results',
+        'views/create': 'views/create',
 
         'components/text-cell': 'views/components/text-cell',
         'components/date-cell': 'views/components/date-cell',
@@ -60,7 +61,7 @@ require.config({
 });
 
 require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery', 'shuttle', 'shuttle-react'], function (React, ReactBootstrap, ReactRouter, R, moment, $, Shuttle, ShuttleReact) {
-    require(['views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results'], function (PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView) {
+    require(['views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results', 'views/create'], function (PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView, CreateView) {
         var exampleApplication = function exampleApplication() {
             var myzone = Shuttle.ref({
                 id: '3',
@@ -191,8 +192,32 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             }
         });
 
-        var EventsApplicationProvider = (function (_React$Component) {
-            _inherits(EventsApplicationProvider, _React$Component);
+        var PageApplicationProvider = (function (_React$Component) {
+            _inherits(PageApplicationProvider, _React$Component);
+
+            function PageApplicationProvider() {
+                _classCallCheck(this, PageApplicationProvider);
+
+                _get(Object.getPrototypeOf(PageApplicationProvider.prototype), 'constructor', this).apply(this, arguments);
+            }
+
+            _createClass(PageApplicationProvider, [{
+                key: 'render',
+                value: function render() {
+                    return React.createElement(PageView, {
+                        key: 'view',
+                        params: this.props.params,
+                        location: this.props.location,
+                        application: application
+                    }, this.props.children);
+                }
+            }]);
+
+            return PageApplicationProvider;
+        })(React.Component);
+
+        var EventsApplicationProvider = (function (_React$Component2) {
+            _inherits(EventsApplicationProvider, _React$Component2);
 
             function EventsApplicationProvider() {
                 _classCallCheck(this, EventsApplicationProvider);
@@ -209,15 +234,15 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         events: application.map(function (application) {
                             return R.values(application);
                         })
-                    });
+                    }, this.props.children);
                 }
             }]);
 
             return EventsApplicationProvider;
         })(React.Component);
 
-        var RegistrationApplicationProvider = (function (_React$Component2) {
-            _inherits(RegistrationApplicationProvider, _React$Component2);
+        var RegistrationApplicationProvider = (function (_React$Component3) {
+            _inherits(RegistrationApplicationProvider, _React$Component3);
 
             function RegistrationApplicationProvider() {
                 _classCallCheck(this, RegistrationApplicationProvider);
@@ -240,15 +265,15 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         participants: event.flatMap(function (event) {
                             return event.participants;
                         })
-                    });
+                    }, this.props.children);
                 }
             }]);
 
             return RegistrationApplicationProvider;
         })(React.Component);
 
-        var CompetitionApplicationProvider = (function (_React$Component3) {
-            _inherits(CompetitionApplicationProvider, _React$Component3);
+        var CompetitionApplicationProvider = (function (_React$Component4) {
+            _inherits(CompetitionApplicationProvider, _React$Component4);
 
             function CompetitionApplicationProvider() {
                 _classCallCheck(this, CompetitionApplicationProvider);
@@ -274,15 +299,15 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         heats: event.flatMap(function (event) {
                             return event.heats;
                         })
-                    });
+                    }, this.props.children);
                 }
             }]);
 
             return CompetitionApplicationProvider;
         })(React.Component);
 
-        var ResultsApplicationProvider = (function (_React$Component4) {
-            _inherits(ResultsApplicationProvider, _React$Component4);
+        var ResultsApplicationProvider = (function (_React$Component5) {
+            _inherits(ResultsApplicationProvider, _React$Component5);
 
             function ResultsApplicationProvider() {
                 _classCallCheck(this, ResultsApplicationProvider);
@@ -308,16 +333,19 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         heats: event.flatMap(function (event) {
                             return event.heats;
                         })
-                    });
+                    }, this.props.children);
                 }
             }]);
 
             return ResultsApplicationProvider;
         })(React.Component);
 
-        React.render(React.createElement(Main, { key: 'main' }, [React.createElement(PageView, { key: 'page' }, [React.createElement(ReactRouter.Router, { key: 'router' }, [React.createElement(ReactRouter.Route, {
-            key: 'index-route',
+        React.render(React.createElement(Main, { key: 'main' }, [React.createElement(ReactRouter.Router, { key: 'router' }, [React.createElement(ReactRouter.Route, {
+            key: 'page',
             path: '/',
+            component: PageApplicationProvider
+        }, [React.createElement(ReactRouter.IndexRoute, {
+            key: 'index-route',
             component: EventsApplicationProvider
         }), React.createElement(ReactRouter.Route, {
             key: 'event-route',

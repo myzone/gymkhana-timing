@@ -27,6 +27,7 @@ require.config({
         'views/registration': 'views/registration',
         'views/competition': 'views/competition',
         'views/results': 'views/results',
+        'views/create': 'views/create',
 
         'components/text-cell': 'views/components/text-cell',
         'components/date-cell': 'views/components/date-cell',
@@ -51,7 +52,7 @@ require.config({
 
 
 require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery', 'shuttle', 'shuttle-react'], (React, ReactBootstrap, ReactRouter, R, moment, $, Shuttle, ShuttleReact) => {
-    require(['views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results'], (PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView) => {
+    require(['views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results', 'views/create'], (PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView, CreateView) => {
             const exampleApplication = () => {
                 const myzone = Shuttle.ref({
                     id: '3',
@@ -165,6 +166,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                 localStorage.setItem('application-data', JSON.stringify(Shuttle.json(application)));
             }, 1000);
 
+
             const Main = React.createClass({
                 mixins: [Shuttle.React.Mixin],
                 render: function () {
@@ -189,14 +191,25 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                 }
             });
 
-            class EventsApplicationProvider extends React.Component {
+            class PageApplicationProvider extends React.Component {
+                render() {
+                    return React.createElement(PageView, {
+                        key: 'view',
+                        params: this.props.params,
+                        location: this.props.location,
+                        application: application
+                    }, this.props.children);
+                }
+            }
+
+             class EventsApplicationProvider extends React.Component {
                 render() {
                     return React.createElement(EventsView, {
                         key: 'view',
                         params: this.props.params,
                         events: application
                             .map(application => R.values(application))
-                    })
+                    }, this.props.children);
                 }
             }
 
@@ -210,7 +223,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         params: this.props.params,
                         participants: event
                             .flatMap(event => event.participants)
-                    })
+                    }, this.props.children);
                 }
             }
 
@@ -226,7 +239,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                             .flatMap(event => event.participants),
                         heats: event
                             .flatMap(event => event.heats)
-                    })
+                    }, this.props.children);
                 }
             }
 
@@ -242,16 +255,19 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                             .flatMap(event => event.participants),
                         heats: event
                             .flatMap(event => event.heats)
-                    })
+                    }, this.props.children);
                 }
             }
 
             React.render(React.createElement(Main, {key: 'main'}, [
-                React.createElement(PageView, {key: 'page'}, [
-                    React.createElement(ReactRouter.Router, {key: 'router'}, [
-                        React.createElement(ReactRouter.Route, {
+                React.createElement(ReactRouter.Router, {key: 'router'}, [
+                    React.createElement(ReactRouter.Route, {
+                        key: 'page',
+                        path: '/',
+                        component: PageApplicationProvider
+                    }, [
+                        React.createElement(ReactRouter.IndexRoute, {
                             key: 'index-route',
-                            path: '/',
                             component: EventsApplicationProvider
                         }),
 
