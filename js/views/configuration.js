@@ -8,16 +8,21 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'static-data/countries'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, countries) {
-    var countrySubArrays = R.splitEvery(10, countries);
-
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/toggle-cell', 'static-data/countries'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, ToggleCellView, countries) {
     var ConfigurationView = (function (_React$Component) {
         _inherits(ConfigurationView, _React$Component);
 
-        function ConfigurationView() {
+        function ConfigurationView(props) {
             _classCallCheck(this, ConfigurationView);
 
-            _get(Object.getPrototypeOf(ConfigurationView.prototype), 'constructor', this).apply(this, arguments);
+            _get(Object.getPrototypeOf(ConfigurationView.prototype), 'constructor', this).call(this, props);
+
+            this.countrySubArrays = R.splitEvery(10, R.map(function (country) {
+                return Shuttle.ref({
+                    selected: false,
+                    country: country
+                });
+            }, countries));
         }
 
         _createClass(ConfigurationView, [{
@@ -43,15 +48,30 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'static
                     onChange: function onChange(e) {
                         return _this.setState({ name: e.target.value });
                     }
-                }), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Countries")), DOM.div({ className: 'col-md-11' }, DOM.table({}))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Countries")), DOM.div({ className: 'col-md-11' }, DOM.table({ className: 'btn-array btn-block' }, [DOM.tbody({}, [R.map(function (countrySubArray) {
-                    return DOM.tr({ style: { width: '100%' } }, [R.map(function (country) {
-                        return DOM.td({}, React.createElement(ReactBootstrap.Button, {}, [DOM.img({
-                            key: 'image',
-                            style: { width: 'auto', height: '20px' },
-                            src: 'http://www.geonames.org/flags/x/' + country.countryCode + '.gif'
-                        })]));
+                }), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Countries")), DOM.div({ className: 'col-md-7' }, DOM.table({}))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Countries")), DOM.div({ className: 'btn-array col-md-7' }, [R.map(function (countrySubArray) {
+                    return DOM.div({ className: 'btn-array-row' }, [R.map(function (country) {
+                        return DOM.span({ className: 'btn-array-cell' }, React.createElement(ToggleCellView, {
+                            value: country,
+                            toggle: function toggle(item) {
+                                return R.assoc('selected', !item.selected, item);
+                            },
+                            active: function active(item) {
+                                return item.selected;
+                            },
+                            renderer: function renderer(item) {
+                                return React.createElement(ReactBootstrap.OverlayTrigger, {
+                                    placement: 'top',
+                                    delayShow: 750,
+                                    overlay: React.createElement(ReactBootstrap.Tooltip, {}, item.country.countryName)
+                                }, DOM.img({
+                                    key: 'image',
+                                    style: { height: '20px' },
+                                    src: 'http://www.geonames.org/flags/x/' + item.country.countryCode + '.gif'
+                                }));
+                            }
+                        }));
                     }, countrySubArray)]);
-                }, countrySubArrays)])]))])])])]);
+                }, this.countrySubArrays)])])])])]);
             }
         }]);
 

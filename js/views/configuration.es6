@@ -1,7 +1,17 @@
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'static-data/countries'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, countries) => {
-    const countrySubArrays = R.splitEvery(10, countries);
-
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/toggle-cell', 'static-data/countries'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, ToggleCellView, countries) => {
     class ConfigurationView extends React.Component {
+
+        countrySubArrays;
+
+        constructor(props) {
+            super(props);
+
+            this.countrySubArrays = R.splitEvery(10, R.map(country => Shuttle.ref({
+                selected: false,
+                country: country
+            }), countries));
+        }
+
         render() {
             const DOM = React.DOM;
 
@@ -32,23 +42,28 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'static
                         }),
                         DOM.div({className: 'form-group'}, [
                             DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Countries")),
-                            DOM.div({className: 'col-md-11'}, DOM.table({}))
+                            DOM.div({className: 'col-md-7'}, DOM.table({}))
                         ]),
                         DOM.div({className: 'form-group'}, [
                             DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Countries")),
-                            DOM.div({className: 'col-md-11'}, DOM.table({className: 'btn-array btn-block'}, [
-                                DOM.tbody({}, [
-                                    R.map(countrySubArray => DOM.tr({style: {width: '100%'}}, [
-                                        R.map(country => DOM.td({}, React.createElement(ReactBootstrap.Button, {}, [
-                                            DOM.img({
-                                                key: 'image',
-                                                style: {width: 'auto', height: '20px'},
-                                                src: `http://www.geonames.org/flags/x/${country.countryCode}.gif`
-                                            })
-                                        ])), countrySubArray)
-                                    ]), countrySubArrays)
-                                ])
-                            ]))
+                            DOM.div({className: 'btn-array col-md-7'}, [
+                                R.map(countrySubArray => DOM.div({className: 'btn-array-row'}, [
+                                    R.map(country => DOM.span({className: 'btn-array-cell'}, React.createElement(ToggleCellView, {
+                                        value: country,
+                                        toggle: item => R.assoc('selected', !item.selected, item),
+                                        active: item => item.selected,
+                                        renderer: item => React.createElement(ReactBootstrap.OverlayTrigger, {
+                                            placement: 'top',
+                                            delayShow: 750,
+                                            overlay: React.createElement(ReactBootstrap.Tooltip, {}, item.country.countryName)
+                                        }, DOM.img({
+                                            key: 'image',
+                                            style: {height: '20px'},
+                                            src: `http://www.geonames.org/flags/x/${item.country.countryCode}.gif`
+                                        }))
+                                    })), countrySubArray)
+                                ]), this.countrySubArrays)
+                            ])
                         ])
                     ])
                 ])
