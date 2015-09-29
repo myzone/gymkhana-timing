@@ -26,7 +26,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                 var renderer = this.props.renderer;
                 var overlay = React.createElement(ReactBootstrap.Popover, {
                     key: 'cell-popover'
-                }, [React.DOM.div({ className: 'with-scroll', style: { height: '240px', marginBottom: '5px' } }, React.createElement(ReactBootstrap.ListGroup, { key: 'cell-list' }, [R.addIndex(R.map)(function (item, i) {
+                }, [React.DOM.div({ className: 'with-scroll', style: { maxHeight: '240px', marginBottom: '5px' } }, React.createElement(ReactBootstrap.ListGroup, { key: 'cell-list' }, [R.addIndex(R.map)(function (item, i) {
                     return React.createElement(ReactBootstrap.ListGroupItem, {
                         key: i,
                         bsStyle: _this.state.value == item ? 'info' : 'default',

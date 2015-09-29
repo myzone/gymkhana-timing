@@ -57,7 +57,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                         var application = Shuttle.ref({
                             id: eventId,
                             configuration: Shuttle.ref({
-                                name: _this.state.name
+                                name: _this.state.name,
+                                penalties: {},
+                                countries: []
                             }),
                             participants: Shuttle.ref([]),
                             heats: Shuttle.ref([])
@@ -73,11 +75,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
         }, {
             key: 'validateName',
             value: function validateName() {
-                var _this2 = this;
-
-                return !R.isEmpty(this.state.name) && !R.find(function (event) {
-                    return event.get().configuration.get().name == _this2.state.name;
-                }, R.values(this.state.application));
+                return !R.isEmpty(this.state.name);
             }
         }]);
 

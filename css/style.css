@@ -95,6 +95,9 @@
 .with-scroll {
     overflow-y: scroll;
 }
+.with-scroll::-webkit-scrollbar {
+    display: none;
+}
 
 .middle-aligned {
     vertical-align: middle !important;

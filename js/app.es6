@@ -43,7 +43,8 @@ require.config({
 
         'utils/commons': 'utils/commons',
 
-        'static-data/countries': 'static-data/countries'
+        'static-data/countries': 'static-data/countries',
+        'static-data/penalty-type': 'static-data/penalty-type'
     },
     shim: {
         'datetime-picker': {
@@ -68,55 +69,16 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             moment.locale('en');
 
             const exampleApplication = () => {
-                const myzone = Shuttle.ref({
-                    id: '3',
-                    number: "43",
-                    country: "ua",
-                    name: "Vyacheslav Goldenshteyn1",
-                    motorcycle: "Honda FMX 650",
-                    group: "Group 3B",
-                    birthday: moment("2015-09-01"),
-                    team: "Sommmmm Team"
-                });
-
                 return Shuttle.ref({
                     id: Shuttle.ref({
                         id: 'id',
                         configuration: Shuttle.ref({
-                            name: "Championship of Ukraine 2013"
+                            name: "Championship of Ukraine 2013",
+                            penalties: {},
+                            countries: []
                         }),
-                        participants: Shuttle.ref([Shuttle.ref({
-                            id: '2',
-                            number: "43",
-                            country: "ua",
-                            name: "Vyacheslavzaza11 Goldenshteyn1",
-                            motorcycle: "Honda FMX 650",
-                            group: "Group 3B",
-                            birthday: moment("2015-09-01"),
-                            team: "Sommmmm Team"
-                        }), myzone]),
-                        heats: Shuttle.ref([{
-                            id: "94",
-                            participant: myzone,
-                            number: 1,
-                            result: {
-                                type: 'TimedResult',
-                                time: moment.duration({
-                                    minutes: 1,
-                                    seconds: 25,
-                                    milliseconds: 13
-                                }),
-                                penalties: [{
-                                    name: '+1',
-                                    type: 'critical',
-                                    delay: moment.duration({seconds: 1})
-                                }, {
-                                    name: '+1',
-                                    type: 'critical',
-                                    delay: moment.duration({seconds: 1})
-                                }]
-                            }
-                        }])
+                        participants: Shuttle.ref([]),
+                        heats: Shuttle.ref([])
                     })
                 });
             };
@@ -128,7 +90,15 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                     return {
                         id: event.id,
                         configuration: Shuttle.ref({
-                            name: event.configuration.name
+                            name: event.configuration.name,
+                            penalties: R.mapObj(penalty => Shuttle.ref({
+                                id: penalty.id,
+                                name: penalty.name,
+                                description: penalty.description,
+                                delay: moment.duration(penalty.delay),
+                                type: penalty.type
+                            }), event.configuration.penalties),
+                            countries: event.configuration.countries
                         }),
                         participants: Shuttle.ref(R.map(participant => Shuttle.ref({
                             id: participant.id,
@@ -245,6 +215,20 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                 }
             }
 
+            class ConfigurationApplicationProvider extends React.Component {
+                render() {
+                    const event = application
+                        .flatMap(application => application[this.props.params.eventId]);
+
+                    return React.createElement(ConfigurationView, {
+                        key: 'view',
+                        params: this.props.params,
+                        configuration: event
+                            .flatMap(event => event.configuration)
+                    }, this.props.children);
+                }
+            }
+
             class RegistrationApplicationProvider extends React.Component {
                 render() {
                     const event = application
@@ -315,7 +299,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                             React.createElement(ReactRouter.Route, {
                                 key: 'event-configuration-route',
                                 path: 'configuration',
-                                component: ConfigurationView
+                                component: ConfigurationApplicationProvider
                             }),
                             React.createElement(ReactRouter.Route, {
                                 key: 'event-registration-route',
