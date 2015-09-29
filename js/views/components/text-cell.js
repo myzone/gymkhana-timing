@@ -25,12 +25,12 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
 
                 return React.DOM.textarea({
                     key: 'cell-textarea',
-                    defaultValue: this.state.value,
+                    value: this.state.value,
                     className: this.props.className,
                     style: this.props.style,
                     maxLength: this.props.maxLength,
                     onChange: function onChange(event) {
-                        return _this.props.value.set(event.target.value);
+                        return _this.props.value.set(R.replace(/\n/g, '', event.target.value));
                     }
                 });
             }

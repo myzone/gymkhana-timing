@@ -8,11 +8,11 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
         render() {
             return React.DOM.textarea({
                 key: 'cell-textarea',
-                defaultValue: this.state.value,
+                value: this.state.value,
                 className: this.props.className,
                 style: this.props.style,
                 maxLength: this.props.maxLength,
-                onChange: (event) => this.props.value.set(event.target.value)
+                onChange: event => this.props.value.set(R.replace(/\n/g, '', event.target.value))
             })
         }
 
