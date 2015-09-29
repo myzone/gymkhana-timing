@@ -41,6 +41,8 @@ require.config({
         'views/results': 'views/results',
         'views/create': 'views/create',
         'views/delete': 'views/delete',
+        'views/import': 'views/import',
+        'views/export': 'views/export',
 
         'components/text-cell': 'views/components/text-cell',
         'components/date-cell': 'views/components/date-cell',

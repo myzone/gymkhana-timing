@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda', 'utils/commons', 'views/create'], function (React, ReactBootstrap, R, Commons, CreateView) {
+define(['react', 'react-bootstrap', 'ramda', 'utils/commons', 'views/create', 'views/import', 'views/export'], function (React, ReactBootstrap, R, Commons, CreateView, ImportView, ExportView) {
     var setModal = function setModal(modal) {
         var setQueryParam = function setQueryParam(param, value) {
             Commons.setQueryParams(R.assoc(param, value, Commons.getQueryParams()));
@@ -19,8 +19,8 @@ define(['react', 'react-bootstrap', 'ramda', 'utils/commons', 'views/create'], f
 
     var Modal = {
         NEW: "new",
-        EXPORT: "import",
-        IMPORT: "export"
+        EXPORT: "export",
+        IMPORT: "import"
     };
 
     var Page = (function (_React$Component) {
@@ -60,6 +60,12 @@ define(['react', 'react-bootstrap', 'ramda', 'utils/commons', 'views/create'], f
                 }, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'export' }), ' Export')])), React.createElement(CreateView, {
                     application: this.props.application,
                     opened: modal == Modal.NEW
+                }), React.createElement(ImportView, {
+                    application: this.props.application,
+                    opened: modal == Modal.IMPORT
+                }), React.createElement(ExportView, {
+                    application: this.props.application,
+                    opened: modal == Modal.EXPORT
                 }), this.props.children]));
             }
         }]);
