@@ -47,6 +47,7 @@ require.config({
         'components/text-cell': 'views/components/text-cell',
         'components/date-cell': 'views/components/date-cell',
         'components/select-cell': 'views/components/select-cell',
+        'components/toggle-cell': 'views/components/toggle-cell',
         'components/stopwatch-cell': 'views/components/stopwatch-cell',
         'components/editable-table': 'views/components/editable-table',
 
