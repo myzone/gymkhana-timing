@@ -1,8 +1,8 @@
 define(['ramda'], (R) => [
-    //{
-    //    "countryName": "Andorra",
-    //    "countryCode": "ad"
-    //},
+    {
+        "countryName": "Andorra",
+        "countryCode": "ad"
+    },
     {
         "countryName": "United Arab Emirates",
         "countryCode": "ae"

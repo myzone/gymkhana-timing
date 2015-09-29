@@ -38,6 +38,7 @@ require.config({
         'components/date-cell': 'views/components/date-cell',
         'components/select-cell': 'views/components/select-cell',
         'components/stopwatch-cell': 'views/components/stopwatch-cell',
+        'components/editable-table': 'views/components/editable-table',
 
         'utils/commons': 'utils/commons',
 

@@ -1,12 +1,10 @@
 "use strict";
 
 define(['ramda'], function (R) {
-    return [
-    //{
-    //    "countryName": "Andorra",
-    //    "countryCode": "ad"
-    //},
-    {
+    return [{
+        "countryName": "Andorra",
+        "countryCode": "ad"
+    }, {
         "countryName": "United Arab Emirates",
         "countryCode": "ae"
     }, {

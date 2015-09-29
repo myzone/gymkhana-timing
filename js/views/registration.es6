@@ -1,5 +1,32 @@
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'utils/commons'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment, TextCellView, DateCellView, SelectCellView, Commons) => {
-    class ParticipantView extends Shuttle.React.Component {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/editable-table', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'utils/commons'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment, EditableTableView, TextCellView, DateCellView, SelectCellView, Commons) => {
+    class ParticipantHeaderRenderer extends React.Component {
+
+        render() {
+            const DOM = React.DOM;
+
+            return DOM.tr({key: 'head-row'}, [
+                DOM.td({key: 'id-header'}, ""),
+                DOM.td({key: 'number-header'}, "#"),
+                DOM.th({key: 'country-header'}, "Country"),
+                DOM.th({key: 'name-header'}, "Name"),
+                DOM.th({key: 'motorcycle-header'}, "Motorcycle"),
+                DOM.th({key: 'group-header'}, "Group"),
+                DOM.th({key: 'birthday-header'}, "Birthday"),
+                DOM.th({key: 'team-header'}, "Team")
+            ]);
+        }
+
+    }
+
+    class ParticipantFooterRenderer extends React.Component {
+
+        render() {
+            return React.DOM.tr({key: 'foot-row'});
+        }
+
+    }
+
+    class ParticipantRenderer extends Shuttle.React.Component {
 
         number;
         country;
@@ -9,14 +36,10 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         birthday;
         team;
 
-        listener;
-        participant;
-        validation;
-
         constructor(props) {
             super(props);
 
-            const participant = this.state.participant;
+            const participant = this.state.item;
 
             this.number = Shuttle.ref(participant.number);
             this.country = Shuttle.ref(participant.country);
@@ -26,50 +49,43 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
             this.birthday = Shuttle.ref(participant.birthday);
             this.team = Shuttle.ref(participant.team);
 
-            this.listener = (_, participant) => this.props.participant.set(participant);
-            this.participant = Shuttle.combine([this.number, this.country, this.name, this.motorcycle, this.group, this.birthday, this.team], (number, country, name, motorcycle, group, birthday, team) => {
-                return {
-                    id: participant.id,
-                    number: number,
-                    country: country,
-                    name: name,
-                    motorcycle: motorcycle,
-                    group: group,
-                    birthday: birthday,
-                    team: team
-                }
-            });
+            Shuttle
+                .combine([this.number, this.country, this.name, this.motorcycle, this.group, this.birthday, this.team], (number, country, name, motorcycle, group, birthday, team) => {
+                    return {
+                        id: participant.id,
+                        number: number,
+                        country: country,
+                        name: name,
+                        motorcycle: motorcycle,
+                        group: group,
+                        birthday: birthday,
+                        team: team
+                    }
+                })
+                .addListener((_, computed) => this.props.item.set(computed));
         }
 
-        componentDidMount() {
-            super.componentDidMount();
-
-            this.participant.addListener(this.listener);
-        }
-
-        componentWillUnmount() {
-            this.participant.removeListener(this.listener);
-
-            super.componentWillUnmount();
+        getId() {
+            return this.state.participant.id;
         }
 
         render() {
             const DOM = React.DOM;
-            const onDelete = this.props.onDelete;
-            const validationStatus = this.state.participant.number.length != 0
-                && this.state.participant.country.length != 0
-                && this.state.participant.name.length != 0
-                && this.state.participant.motorcycle.length != 0
-                && this.state.participant.group.length != 0
-                && this.state.participant.team.length != 0;
+            const participant = this.state.item;
 
-            return DOM.tr({key: 'row', className: this.props.last ? "" : validationStatus ? 'list-group-item-success' : 'list-group-item-danger'}, [
-                DOM.td({key: 'trash', style: {width: '24px'}}, React.createElement(ReactBootstrap.Button, {
-                    key: 'button',
-                    disabled: this.props.last,
-                    bsSize: 'xsmall',
-                    onClick: onDelete
-                }, React.createElement(ReactBootstrap.Glyphicon, {key: 'glyph', glyph: 'trash'}))),
+            const validationStatus = !R.isEmpty(participant.number)
+                && !R.isEmpty(participant.country)
+                && !R.isEmpty(participant.name)
+                && !R.isEmpty(participant.motorcycle)
+                && !R.isEmpty(participant.group)
+                && !R.isEmpty(participant.team);
+
+            return DOM.tr({
+                key: 'row',
+                className: this.props.last ? "" : validationStatus ? 'list-group-item-success' : 'list-group-item-danger'
+            }, [
+                DOM.td({key: 'trash', style: {width: '24px'}}, this.props.deleteButton),
+
                 DOM.td({key: 'number', style: {width: '50px'}}, React.createElement(TextCellView, {
                     key: 'number-cell',
                     className: 'race-number',
@@ -122,7 +138,6 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     : React.createElement(ReactBootstrap.Glyphicon, {glyph: 'remove'}))
             ]);
         }
-
     }
 
 
@@ -200,40 +215,29 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     ])
                 ]),
 
-                React.createElement(ReactBootstrap.Table, {
-                    key: 'table',
-                    className: 'data-editable',
-                    responsive: true,
-                    hover: true,
-                    striped: true
-                }, [
-                    DOM.thead({key: 'table-head'}, DOM.tr({key: 'head-row'}, [
-                        DOM.td({key: 'id-header'}, ""),
-                        DOM.td({key: 'number-header'}, "#"),
-                        DOM.th({key: 'country-header'}, "Country"),
-                        DOM.th({key: 'name-header'}, "Name"),
-                        DOM.th({key: 'motorcycle-header'}, "Motorcycle"),
-                        DOM.th({key: 'group-header'}, "Group"),
-                        DOM.th({key: 'birthday-header'}, "Birthday"),
-                        DOM.th({key: 'team-header'}, "Team")
-                    ])),
-
-                    DOM.tbody({key: 'table-body'}, [
-                        R.append(React.createElement(ParticipantView, {
-                            key: this.last.get().id,
-                            participant: this.last,
-                            last: true,
-                            onDelete: () => {
-                            }
-                        }), R.map((participant) => React.createElement(ParticipantView, {
-                            key: participant.get().id,
-                            participant: participant,
-                            onDelete: () => {
-                                this.props.participants.set(R.filter((p) => p.get().id !== participant.get().id, this.state.participants))
-                            }
-                        }), this.state.participants))
-                    ])
-                ])
+                React.createElement(EditableTableView, {
+                    generateNextDefault: () => Shuttle.ref({
+                        id: Commons.guid(),
+                        number: "",
+                        country: "ua",
+                        name: "",
+                        motorcycle: "",
+                        group: "",
+                        birthday: moment(),
+                        team: ""
+                    }),
+                    items: this.props.participants,
+                    getId: participant => participant.id,
+                    isEmpty: participant => R.isEmpty(participant.number)
+                            && R.isEmpty(participant.country)
+                            && R.isEmpty(participant.name)
+                            && R.isEmpty(participant.motorcycle)
+                            && R.isEmpty(participant.group)
+                            && R.isEmpty(participant.team),
+                    headerRenderer: ParticipantHeaderRenderer,
+                    footerRenderer: ParticipantFooterRenderer,
+                    itemRenderer: ParticipantRenderer
+                })
             ]);
         }
     }

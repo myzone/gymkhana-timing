@@ -8,18 +8,58 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'utils/commons'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment, TextCellView, DateCellView, SelectCellView, Commons) {
-    var ParticipantView = (function (_Shuttle$React$Component) {
-        _inherits(ParticipantView, _Shuttle$React$Component);
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/editable-table', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'utils/commons'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment, EditableTableView, TextCellView, DateCellView, SelectCellView, Commons) {
+    var ParticipantHeaderRenderer = (function (_React$Component) {
+        _inherits(ParticipantHeaderRenderer, _React$Component);
 
-        function ParticipantView(props) {
+        function ParticipantHeaderRenderer() {
+            _classCallCheck(this, ParticipantHeaderRenderer);
+
+            _get(Object.getPrototypeOf(ParticipantHeaderRenderer.prototype), 'constructor', this).apply(this, arguments);
+        }
+
+        _createClass(ParticipantHeaderRenderer, [{
+            key: 'render',
+            value: function render() {
+                var DOM = React.DOM;
+
+                return DOM.tr({ key: 'head-row' }, [DOM.td({ key: 'id-header' }, ""), DOM.td({ key: 'number-header' }, "#"), DOM.th({ key: 'country-header' }, "Country"), DOM.th({ key: 'name-header' }, "Name"), DOM.th({ key: 'motorcycle-header' }, "Motorcycle"), DOM.th({ key: 'group-header' }, "Group"), DOM.th({ key: 'birthday-header' }, "Birthday"), DOM.th({ key: 'team-header' }, "Team")]);
+            }
+        }]);
+
+        return ParticipantHeaderRenderer;
+    })(React.Component);
+
+    var ParticipantFooterRenderer = (function (_React$Component2) {
+        _inherits(ParticipantFooterRenderer, _React$Component2);
+
+        function ParticipantFooterRenderer() {
+            _classCallCheck(this, ParticipantFooterRenderer);
+
+            _get(Object.getPrototypeOf(ParticipantFooterRenderer.prototype), 'constructor', this).apply(this, arguments);
+        }
+
+        _createClass(ParticipantFooterRenderer, [{
+            key: 'render',
+            value: function render() {
+                return React.DOM.tr({ key: 'foot-row' });
+            }
+        }]);
+
+        return ParticipantFooterRenderer;
+    })(React.Component);
+
+    var ParticipantRenderer = (function (_Shuttle$React$Component) {
+        _inherits(ParticipantRenderer, _Shuttle$React$Component);
+
+        function ParticipantRenderer(props) {
             var _this = this;
 
-            _classCallCheck(this, ParticipantView);
+            _classCallCheck(this, ParticipantRenderer);
 
-            _get(Object.getPrototypeOf(ParticipantView.prototype), 'constructor', this).call(this, props);
+            _get(Object.getPrototypeOf(ParticipantRenderer.prototype), 'constructor', this).call(this, props);
 
-            var participant = this.state.participant;
+            var participant = this.state.item;
 
             this.number = Shuttle.ref(participant.number);
             this.country = Shuttle.ref(participant.country);
@@ -29,10 +69,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
             this.birthday = Shuttle.ref(participant.birthday);
             this.team = Shuttle.ref(participant.team);
 
-            this.listener = function (_, participant) {
-                return _this.props.participant.set(participant);
-            };
-            this.participant = Shuttle.combine([this.number, this.country, this.name, this.motorcycle, this.group, this.birthday, this.team], function (number, country, name, motorcycle, group, birthday, team) {
+            Shuttle.combine([this.number, this.country, this.name, this.motorcycle, this.group, this.birthday, this.team], function (number, country, name, motorcycle, group, birthday, team) {
                 return {
                     id: participant.id,
                     number: number,
@@ -43,36 +80,28 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     birthday: birthday,
                     team: team
                 };
+            }).addListener(function (_, computed) {
+                return _this.props.item.set(computed);
             });
         }
 
-        _createClass(ParticipantView, [{
-            key: 'componentDidMount',
-            value: function componentDidMount() {
-                _get(Object.getPrototypeOf(ParticipantView.prototype), 'componentDidMount', this).call(this);
-
-                this.participant.addListener(this.listener);
-            }
-        }, {
-            key: 'componentWillUnmount',
-            value: function componentWillUnmount() {
-                this.participant.removeListener(this.listener);
-
-                _get(Object.getPrototypeOf(ParticipantView.prototype), 'componentWillUnmount', this).call(this);
+        _createClass(ParticipantRenderer, [{
+            key: 'getId',
+            value: function getId() {
+                return this.state.participant.id;
             }
         }, {
             key: 'render',
             value: function render() {
                 var DOM = React.DOM;
-                var onDelete = this.props.onDelete;
-                var validationStatus = this.state.participant.number.length != 0 && this.state.participant.country.length != 0 && this.state.participant.name.length != 0 && this.state.participant.motorcycle.length != 0 && this.state.participant.group.length != 0 && this.state.participant.team.length != 0;
+                var participant = this.state.item;
 
-                return DOM.tr({ key: 'row', className: this.props.last ? "" : validationStatus ? 'list-group-item-success' : 'list-group-item-danger' }, [DOM.td({ key: 'trash', style: { width: '24px' } }, React.createElement(ReactBootstrap.Button, {
-                    key: 'button',
-                    disabled: this.props.last,
-                    bsSize: 'xsmall',
-                    onClick: onDelete
-                }, React.createElement(ReactBootstrap.Glyphicon, { key: 'glyph', glyph: 'trash' }))), DOM.td({ key: 'number', style: { width: '50px' } }, React.createElement(TextCellView, {
+                var validationStatus = !R.isEmpty(participant.number) && !R.isEmpty(participant.country) && !R.isEmpty(participant.name) && !R.isEmpty(participant.motorcycle) && !R.isEmpty(participant.group) && !R.isEmpty(participant.team);
+
+                return DOM.tr({
+                    key: 'row',
+                    className: this.props.last ? "" : validationStatus ? 'list-group-item-success' : 'list-group-item-danger'
+                }, [DOM.td({ key: 'trash', style: { width: '24px' } }, this.props.deleteButton), DOM.td({ key: 'number', style: { width: '50px' } }, React.createElement(TextCellView, {
                     key: 'number-cell',
                     className: 'race-number',
                     style: { width: '50px' },
@@ -111,7 +140,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
             }
         }]);
 
-        return ParticipantView;
+        return ParticipantRenderer;
     })(Shuttle.React.Component);
 
     var RegistrationView = (function (_Shuttle$React$Component2) {
@@ -155,8 +184,6 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         _createClass(RegistrationView, [{
             key: 'render',
             value: function render() {
-                var _this3 = this;
-
                 var DOM = React.DOM;
 
                 var eventId = this.props.params.eventId;
@@ -178,28 +205,30 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 }, ["Competition", ' ', React.createElement(ReactBootstrap.Glyphicon, {
                     key: 'glyph',
                     glyph: 'menu-right'
-                })])]), React.createElement(ReactBootstrap.Table, {
-                    key: 'table',
-                    className: 'data-editable',
-                    responsive: true,
-                    hover: true,
-                    striped: true
-                }, [DOM.thead({ key: 'table-head' }, DOM.tr({ key: 'head-row' }, [DOM.td({ key: 'id-header' }, ""), DOM.td({ key: 'number-header' }, "#"), DOM.th({ key: 'country-header' }, "Country"), DOM.th({ key: 'name-header' }, "Name"), DOM.th({ key: 'motorcycle-header' }, "Motorcycle"), DOM.th({ key: 'group-header' }, "Group"), DOM.th({ key: 'birthday-header' }, "Birthday"), DOM.th({ key: 'team-header' }, "Team")])), DOM.tbody({ key: 'table-body' }, [R.append(React.createElement(ParticipantView, {
-                    key: this.last.get().id,
-                    participant: this.last,
-                    last: true,
-                    onDelete: function onDelete() {}
-                }), R.map(function (participant) {
-                    return React.createElement(ParticipantView, {
-                        key: participant.get().id,
-                        participant: participant,
-                        onDelete: function onDelete() {
-                            _this3.props.participants.set(R.filter(function (p) {
-                                return p.get().id !== participant.get().id;
-                            }, _this3.state.participants));
-                        }
-                    });
-                }, this.state.participants))])])]);
+                })])]), React.createElement(EditableTableView, {
+                    generateNextDefault: function generateNextDefault() {
+                        return Shuttle.ref({
+                            id: Commons.guid(),
+                            number: "",
+                            country: "ua",
+                            name: "",
+                            motorcycle: "",
+                            group: "",
+                            birthday: moment(),
+                            team: ""
+                        });
+                    },
+                    items: this.props.participants,
+                    getId: function getId(participant) {
+                        return participant.id;
+                    },
+                    isEmpty: function isEmpty(participant) {
+                        return R.isEmpty(participant.number) && R.isEmpty(participant.country) && R.isEmpty(participant.name) && R.isEmpty(participant.motorcycle) && R.isEmpty(participant.group) && R.isEmpty(participant.team);
+                    },
+                    headerRenderer: ParticipantHeaderRenderer,
+                    footerRenderer: ParticipantFooterRenderer,
+                    itemRenderer: ParticipantRenderer
+                })]);
             }
         }]);
 
