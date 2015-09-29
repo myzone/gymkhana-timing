@@ -35,7 +35,9 @@ require.config({
         'components/select-cell': 'views/components/select-cell',
         'components/stopwatch-cell': 'views/components/stopwatch-cell',
 
-        'utils/commons': 'utils/commons'
+        'utils/commons': 'utils/commons',
+
+        'static-data/countries': 'static-data/countries'
     },
     shim: {
         'justified': {
@@ -298,11 +300,11 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                                 key: 'event-index-route',
                                 component: RegistrationApplicationProvider
                             }),
-                            //React.createElement(ReactRouter.Route, {
-                            //    key: 'event-configuration-route',
-                            //    path: 'configuration',
-                            //    component: ConfigurationView
-                            //}),
+                            React.createElement(ReactRouter.Route, {
+                                key: 'event-configuration-route',
+                                path: 'configuration',
+                                component: ConfigurationView
+                            }),
                             React.createElement(ReactRouter.Route, {
                                 key: 'event-registration-route',
                                 path: 'registration',
@@ -327,9 +329,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             window.s = Shuttle;
             window.m = moment;
         }
-    )
-    ;
-})
-;
+    );
+});
 
 

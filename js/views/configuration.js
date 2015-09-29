@@ -8,7 +8,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'static-data/countries'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, countries) {
+    var countrySubArrays = R.splitEvery(10, countries);
+
     var ConfigurationView = (function (_React$Component) {
         _inherits(ConfigurationView, _React$Component);
 
@@ -21,16 +23,42 @@ define(['react', 'react-bootstrap'], function (React, ReactBootstrap) {
         _createClass(ConfigurationView, [{
             key: 'render',
             value: function render() {
+                var _this = this;
+
                 var DOM = React.DOM;
 
                 var eventId = this.props.params.eventId;
+                var nameIsOk = false;
 
-                return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/configuration' }, "Configuration"), React.createElement(ReactBootstrap.PageItem, { next: true, href: '#event/' + eventId + '/registration' }, ["Registration", ' ', React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-right' })])]), "Configuration"]);
+                return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/configuration' }, "Configuration"), React.createElement(ReactBootstrap.PageItem, { next: true, href: '#event/' + eventId + '/registration' }, ["Registration", ' ', React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-right' })])]), DOM.div({}, [DOM.form({ className: 'form-horizontal' }, [React.createElement(ReactBootstrap.Input, {
+                    label: "Name",
+
+                    type: 'text',
+                    labelClassName: 'col-md-1',
+                    wrapperClassName: 'col-md-7',
+
+                    bsStyle: nameIsOk ? 'success' : 'error',
+                    hasFeedback: true,
+                    defaultValue: "",
+                    onChange: function onChange(e) {
+                        return _this.setState({ name: e.target.value });
+                    }
+                }), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Countries")), DOM.div({ className: 'col-md-11' }, DOM.table({}))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Countries")), DOM.div({ className: 'col-md-11' }, DOM.table({ className: 'btn-array btn-block' }, [DOM.tbody({}, [R.map(function (countrySubArray) {
+                    return DOM.tr({ style: { width: '100%' } }, [R.map(function (country) {
+                        return DOM.td({}, React.createElement(ReactBootstrap.Button, {}, [DOM.img({
+                            key: 'image',
+                            style: { width: 'auto', height: '20px' },
+                            src: 'http://www.geonames.org/flags/x/' + country.countryCode + '.gif'
+                        })]));
+                    }, countrySubArray)]);
+                }, countrySubArrays)])]))])])])]);
             }
         }]);
 
         return ConfigurationView;
     })(React.Component);
+
+    window.c = countries;
 
     return ConfigurationView;
 });
