@@ -1,4 +1,4 @@
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'utils/commons'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, TextCellView, DateCellView, SelectCellView, Commons) => {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'utils/commons'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment, TextCellView, DateCellView, SelectCellView, Commons) => {
     class ParticipantView extends Shuttle.React.Component {
 
         number;
@@ -111,9 +111,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                 })),
                 DOM.td({
                     key: 'birthday',
-                    className: 'col-md-1'
+                    className: 'col-md-2'
                 }, React.createElement(DateCellView, {key: 'birthday-cell', value: this.birthday})),
-                DOM.td({key: 'team', className: 'col-md-2'}, React.createElement(TextCellView, {
+                DOM.td({key: 'team', className: 'col-md-1'}, React.createElement(TextCellView, {
                     key: 'team-cell',
                     value: this.team
                 })),
@@ -142,7 +142,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                     name: "",
                     motorcycle: "",
                     group: "",
-                    birthday: "2015-09-01",
+                    birthday: moment(),
                     team: ""
                 });
                 this.last.addListener(this.listener);

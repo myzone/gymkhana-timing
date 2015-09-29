@@ -14,6 +14,8 @@ require.config({
         'shuttle': 'libs/shuttle-snapshot',
         'shuttle-react': 'libs/shuttle-react-snapshot',
 
+        'datetime-picker': 'libs/bootstrap-datetimepicker-4.17.37.min',
+
         'photoswipe': 'libs/photoswipe-4.1.0',
         'photoswipe-ui': 'libs/photoswipe-ui-default-4.1.0',
 
@@ -40,6 +42,9 @@ require.config({
         'static-data/countries': 'static-data/countries'
     },
     shim: {
+        'datetime-picker': {
+            deps: ['jquery']
+        },
         'justified': {
             deps: ['jquery']
         },
@@ -56,6 +61,8 @@ require.config({
 
 require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery', 'shuttle', 'shuttle-react'], (React, ReactBootstrap, ReactRouter, R, moment, $, Shuttle, ShuttleReact) => {
     require(['views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results', 'views/create'], (PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView, CreateView) => {
+            moment.locale('en');
+
             const exampleApplication = () => {
                 const myzone = Shuttle.ref({
                     id: '3',
@@ -64,7 +71,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                     name: "Vyacheslav Goldenshteyn1",
                     motorcycle: "Honda FMX 650",
                     group: "Group 3B",
-                    birthday: "2015-09-01",
+                    birthday: moment("2015-09-01"),
                     team: "Sommmmm Team"
                 });
 
@@ -81,7 +88,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                             name: "Vyacheslavzaza11 Goldenshteyn1",
                             motorcycle: "Honda FMX 650",
                             group: "Group 3B",
-                            birthday: "2015-09-01",
+                            birthday: moment("2015-09-01"),
                             team: "Sommmmm Team"
                         }), myzone]),
                         heats: Shuttle.ref([{
@@ -126,7 +133,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                             name: participant.name,
                             motorcycle: participant.motorcycle,
                             group: participant.group,
-                            birthday: participant.birthday,
+                            birthday: moment(participant.birthday),
                             team: participant.team
                         }), event.participants)),
                         heats: R.map(heat => {
@@ -181,6 +188,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         }, [
                             'css/style.css',
                             'css/bootstrap.css',
+                            'css/bootstrap-datetimepicker-4.17.37.css',
                             'css/photoswipe.css',
                             'css/photoswipe-default-skin.css',
                             'css/jquery.justified.css',

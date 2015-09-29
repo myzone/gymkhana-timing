@@ -139,3 +139,27 @@
 .selected-heat-row-additional > td {
     border-top: none !important;
 }
+
+.btn-array tr:first-child > td:first-child .btn {
+    border-top-left-radius: 4px;
+}
+
+.btn-array tr:last-child > td:first-child .btn {
+    border-bottom-left-radius: 4px;
+}
+
+.btn-array tr:first-child > td:last-child .btn {
+    border-top-right-radius: 4px;
+}
+
+.btn-array tr:last-child > td:last-child .btn {
+    border-bottom-right-radius: 4px;
+}
+
+.btn-array tr .btn {
+    border-radius: 0;
+    width: 100%;
+}
+
+
+

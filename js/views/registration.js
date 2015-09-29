@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'utils/commons'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, TextCellView, DateCellView, SelectCellView, Commons) {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'utils/commons'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment, TextCellView, DateCellView, SelectCellView, Commons) {
     var ParticipantView = (function (_Shuttle$React$Component) {
         _inherits(ParticipantView, _Shuttle$React$Component);
 
@@ -103,8 +103,8 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                     value: this.group
                 })), DOM.td({
                     key: 'birthday',
-                    className: 'col-md-1'
-                }, React.createElement(DateCellView, { key: 'birthday-cell', value: this.birthday })), DOM.td({ key: 'team', className: 'col-md-2' }, React.createElement(TextCellView, {
+                    className: 'col-md-2'
+                }, React.createElement(DateCellView, { key: 'birthday-cell', value: this.birthday })), DOM.td({ key: 'team', className: 'col-md-1' }, React.createElement(TextCellView, {
                     key: 'team-cell',
                     value: this.team
                 })), DOM.td({ key: 'validation' }, this.props.last ? "" : validationStatus ? React.createElement(ReactBootstrap.Glyphicon, { glyph: 'ok' }) : React.createElement(ReactBootstrap.Glyphicon, { glyph: 'remove' }))]);
@@ -132,7 +132,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                     name: "",
                     motorcycle: "",
                     group: "",
-                    birthday: "2015-09-01",
+                    birthday: moment(),
                     team: ""
                 });
                 _this2.last.addListener(_this2.listener);

@@ -24,6 +24,8 @@ require.config({
         'shuttle': 'libs/shuttle-snapshot',
         'shuttle-react': 'libs/shuttle-react-snapshot',
 
+        'datetime-picker': 'libs/bootstrap-datetimepicker-4.17.37.min',
+
         'photoswipe': 'libs/photoswipe-4.1.0',
         'photoswipe-ui': 'libs/photoswipe-ui-default-4.1.0',
 
@@ -45,9 +47,14 @@ require.config({
         'components/select-cell': 'views/components/select-cell',
         'components/stopwatch-cell': 'views/components/stopwatch-cell',
 
-        'utils/commons': 'utils/commons'
+        'utils/commons': 'utils/commons',
+
+        'static-data/countries': 'static-data/countries'
     },
     shim: {
+        'datetime-picker': {
+            deps: ['jquery']
+        },
         'justified': {
             deps: ['jquery']
         },
@@ -63,6 +70,8 @@ require.config({
 
 require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery', 'shuttle', 'shuttle-react'], function (React, ReactBootstrap, ReactRouter, R, moment, $, Shuttle, ShuttleReact) {
     require(['views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results', 'views/create'], function (PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView, CreateView) {
+        moment.locale('en');
+
         var exampleApplication = function exampleApplication() {
             var myzone = Shuttle.ref({
                 id: '3',
@@ -71,7 +80,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                 name: "Vyacheslav Goldenshteyn1",
                 motorcycle: "Honda FMX 650",
                 group: "Group 3B",
-                birthday: "2015-09-01",
+                birthday: moment("2015-09-01"),
                 team: "Sommmmm Team"
             });
 
@@ -88,7 +97,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         name: "Vyacheslavzaza11 Goldenshteyn1",
                         motorcycle: "Honda FMX 650",
                         group: "Group 3B",
-                        birthday: "2015-09-01",
+                        birthday: moment("2015-09-01"),
                         team: "Sommmmm Team"
                     }), myzone]),
                     heats: Shuttle.ref([{
@@ -134,7 +143,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                             name: participant.name,
                             motorcycle: participant.motorcycle,
                             group: participant.group,
-                            birthday: participant.birthday,
+                            birthday: moment(participant.birthday),
                             team: participant.team
                         });
                     }, event.participants)),
@@ -189,7 +198,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
 
                 return DOM.div({ key: 'main-root' }, [R.addIndex(R.map)(function (stylesheet, i) {
                     return DOM.link({ key: i, rel: 'stylesheet', href: stylesheet });
-                }, ['css/style.css', 'css/bootstrap.css', 'css/photoswipe.css', 'css/photoswipe-default-skin.css', 'css/jquery.justified.css', 'css/vis.min.css', 'css/c3.css', 'css/timeline.css']), this.props.children]);
+                }, ['css/style.css', 'css/bootstrap.css', 'css/bootstrap-datetimepicker-4.17.37.css', 'css/photoswipe.css', 'css/photoswipe-default-skin.css', 'css/jquery.justified.css', 'css/vis.min.css', 'css/c3.css', 'css/timeline.css']), this.props.children]);
             }
         });
 
@@ -390,13 +399,11 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
         }, [React.createElement(ReactRouter.IndexRoute, {
             key: 'event-index-route',
             component: RegistrationApplicationProvider
-        }),
-        //React.createElement(ReactRouter.Route, {
-        //    key: 'event-configuration-route',
-        //    path: 'configuration',
-        //    component: ConfigurationView
-        //}),
-        React.createElement(ReactRouter.Route, {
+        }), React.createElement(ReactRouter.Route, {
+            key: 'event-configuration-route',
+            path: 'configuration',
+            component: ConfigurationView
+        }), React.createElement(ReactRouter.Route, {
             key: 'event-registration-route',
             path: 'registration',
             component: RegistrationApplicationProvider
