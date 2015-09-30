@@ -12,7 +12,8 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
 
             return React.createElement(ReactBootstrap.Modal, {
                 bsSize: "large",
-                show: this.props.opened
+                show: this.props.opened,
+                onHide: () => {}
             }, [
                 React.createElement(ReactBootstrap.Panel, {
                     header: DOM.h3({}, "Import"),
@@ -23,7 +24,8 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                         style: {
                             width: '100%',
                             height: '70vh'
-                        }
+                        },
+                        autoFocus: true,
                     }),
                     React.createElement(ReactBootstrap.ButtonGroup, {className: 'pull-right'}, [
                         React.createElement(ReactBootstrap.Button, {

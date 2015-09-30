@@ -12,7 +12,8 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
             const nameIsOk = this.validateName();
 
             return React.createElement(ReactBootstrap.Modal, {
-                show: this.props.opened
+                show: this.props.opened,
+                onHide: () => {}
             }, [
                 React.createElement(ReactBootstrap.Panel, {
                     header: DOM.h3({}, "Create new event"),
@@ -22,7 +23,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                     DOM.form({className: 'form-horizontal'}, [
                         React.createElement(ReactBootstrap.Input, {
                             label: "Name",
-
+                            autoFocus: true,
                             type: 'text',
                             labelClassName: 'col-md-1',
                             wrapperClassName: 'col-md-11',

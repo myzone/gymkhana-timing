@@ -27,7 +27,8 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
 
                 return React.createElement(ReactBootstrap.Modal, {
                     bsSize: "large",
-                    show: this.props.opened
+                    show: this.props.opened,
+                    onHide: function onHide() {}
                 }, [React.createElement(ReactBootstrap.Panel, {
                     header: DOM.h3({}, "Export"),
                     bsStyle: 'primary',
