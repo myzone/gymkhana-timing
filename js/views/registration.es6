@@ -110,7 +110,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     renderer: (item) => DOM.img({
                         key: 'image',
                         width: '32px',
-                        src: `http://www.geonames.org/flags/x/${item}.gif`
+                        src: `http://www.geonames.org/flags/m/${item}.png`
                     })
                 }))),
                 DOM.td({key: 'name', className: 'col-md-4'}, React.createElement(TextCellView, {

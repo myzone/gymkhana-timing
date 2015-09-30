@@ -1,1002 +1,1252 @@
 define(['ramda'], (R) => [
     {
-        "countryName": "Andorra",
-        "countryCode": "ad"
+        "continentName": "Europe",
+        "countryCode": "AD",
+        "countryName": "Andorra"
     },
     {
-        "countryName": "United Arab Emirates",
-        "countryCode": "ae"
+        "continentName": "Asia",
+        "countryCode": "AE",
+        "countryName": "United Arab Emirates"
     },
     {
-        "countryName": "Afghanistan",
-        "countryCode": "af"
+        "continentName": "Asia",
+        "countryCode": "AF",
+        "countryName": "Afghanistan"
     },
     {
-        "countryName": "Antigua and Barbuda",
-        "countryCode": "ag"
+        "continentName": "North America",
+        "countryCode": "AG",
+        "countryName": "Antigua and Barbuda"
     },
     {
-        "countryName": "Anguilla",
-        "countryCode": "ai"
+        "continentName": "North America",
+        "countryCode": "AI",
+        "countryName": "Anguilla"
     },
     {
-        "countryName": "Albania",
-        "countryCode": "al"
+        "continentName": "Europe",
+        "countryCode": "AL",
+        "countryName": "Albania"
     },
     {
-        "countryName": "Armenia",
-        "countryCode": "am"
+        "continentName": "Asia",
+        "countryCode": "AM",
+        "countryName": "Armenia"
     },
     {
-        "countryName": "Angola",
-        "countryCode": "ao"
+        "continentName": "Africa",
+        "countryCode": "AO",
+        "countryName": "Angola"
     },
     {
-        "countryName": "Antarctica",
-        "countryCode": "aq"
+        "continentName": "Antarctica",
+        "countryCode": "AQ",
+        "countryName": "Antarctica"
     },
     {
-        "countryName": "Argentina",
-        "countryCode": "ar"
+        "continentName": "South America",
+        "countryCode": "AR",
+        "countryName": "Argentina"
     },
     {
-        "countryName": "American Samoa",
-        "countryCode": "as"
+        "continentName": "Oceania",
+        "countryCode": "AS",
+        "countryName": "American Samoa"
     },
     {
-        "countryName": "Austria",
-        "countryCode": "at"
+        "continentName": "Europe",
+        "countryCode": "AT",
+        "countryName": "Austria"
     },
     {
-        "countryName": "Australia",
-        "countryCode": "au"
+        "continentName": "Oceania",
+        "countryCode": "AU",
+        "countryName": "Australia"
     },
     {
-        "countryName": "Aruba",
-        "countryCode": "aw"
+        "continentName": "North America",
+        "countryCode": "AW",
+        "countryName": "Aruba"
     },
     {
-        "countryName": "Åland",
-        "countryCode": "ax"
+        "continentName": "Europe",
+        "countryCode": "AX",
+        "countryName": "Åland"
     },
     {
-        "countryName": "Azerbaijan",
-        "countryCode": "az"
+        "continentName": "Asia",
+        "countryCode": "AZ",
+        "countryName": "Azerbaijan"
     },
     {
-        "countryName": "Bosnia and Herzegovina",
-        "countryCode": "ba"
+        "continentName": "Europe",
+        "countryCode": "BA",
+        "countryName": "Bosnia and Herzegovina"
     },
     {
-        "countryName": "Barbados",
-        "countryCode": "bb"
+        "continentName": "North America",
+        "countryCode": "BB",
+        "countryName": "Barbados"
     },
     {
-        "countryName": "Bangladesh",
-        "countryCode": "bd"
+        "continentName": "Asia",
+        "countryCode": "BD",
+        "countryName": "Bangladesh"
     },
     {
-        "countryName": "Belgium",
-        "countryCode": "be"
+        "continentName": "Europe",
+        "countryCode": "BE",
+        "countryName": "Belgium"
     },
     {
-        "countryName": "Burkina Faso",
-        "countryCode": "bf"
+        "continentName": "Africa",
+        "countryCode": "BF",
+        "countryName": "Burkina Faso"
     },
     {
-        "countryName": "Bulgaria",
-        "countryCode": "bg"
+        "continentName": "Europe",
+        "countryCode": "BG",
+        "countryName": "Bulgaria"
     },
     {
-        "countryName": "Bahrain",
-        "countryCode": "bh"
+        "continentName": "Asia",
+        "countryCode": "BH",
+        "countryName": "Bahrain"
     },
     {
-        "countryName": "Burundi",
-        "countryCode": "bi"
+        "continentName": "Africa",
+        "countryCode": "BI",
+        "countryName": "Burundi"
     },
     {
-        "countryName": "Benin",
-        "countryCode": "bj"
+        "continentName": "Africa",
+        "countryCode": "BJ",
+        "countryName": "Benin"
     },
     {
-        "countryName": "Saint Barthélemy",
-        "countryCode": "bl"
+        "continentName": "North America",
+        "countryCode": "BL",
+        "countryName": "Saint Barthélemy"
     },
     {
-        "countryName": "Bermuda",
-        "countryCode": "bm"
+        "continentName": "North America",
+        "countryCode": "BM",
+        "countryName": "Bermuda"
     },
     {
-        "countryName": "Brunei",
-        "countryCode": "bn"
+        "continentName": "Asia",
+        "countryCode": "BN",
+        "countryName": "Brunei"
     },
     {
-        "countryName": "Bolivia",
-        "countryCode": "bo"
+        "continentName": "South America",
+        "countryCode": "BO",
+        "countryName": "Bolivia"
     },
     {
-        "countryName": "Bonaire",
-        "countryCode": "bq"
+        "continentName": "North America",
+        "countryCode": "BQ",
+        "countryName": "Bonaire"
     },
     {
-        "countryName": "Brazil",
-        "countryCode": "br"
+        "continentName": "South America",
+        "countryCode": "BR",
+        "countryName": "Brazil"
     },
     {
-        "countryName": "Bahamas",
-        "countryCode": "bs"
+        "continentName": "North America",
+        "countryCode": "BS",
+        "countryName": "Bahamas"
     },
     {
-        "countryName": "Bhutan",
-        "countryCode": "bt"
+        "continentName": "Asia",
+        "countryCode": "BT",
+        "countryName": "Bhutan"
     },
     {
-        "countryName": "Bouvet Island",
-        "countryCode": "bv"
+        "continentName": "Antarctica",
+        "countryCode": "BV",
+        "countryName": "Bouvet Island"
     },
     {
-        "countryName": "Botswana",
-        "countryCode": "bw"
+        "continentName": "Africa",
+        "countryCode": "BW",
+        "countryName": "Botswana"
     },
     {
-        "countryName": "Belarus",
-        "countryCode": "by"
+        "continentName": "Europe",
+        "countryCode": "BY",
+        "countryName": "Belarus"
     },
     {
-        "countryName": "Belize",
-        "countryCode": "bz"
+        "continentName": "North America",
+        "countryCode": "BZ",
+        "countryName": "Belize"
     },
     {
-        "countryName": "Canada",
-        "countryCode": "ca"
+        "continentName": "North America",
+        "countryCode": "CA",
+        "countryName": "Canada"
     },
     {
-        "countryName": "Cocos [Keeling] Islands",
-        "countryCode": "cc"
+        "continentName": "Asia",
+        "countryCode": "CC",
+        "countryName": "Cocos [Keeling] Islands"
     },
     {
-        "countryName": "Democratic Republic of the Congo",
-        "countryCode": "cd"
+        "continentName": "Africa",
+        "countryCode": "CD",
+        "countryName": "Democratic Republic of the Congo"
     },
     {
-        "countryName": "Central African Republic",
-        "countryCode": "cf"
+        "continentName": "Africa",
+        "countryCode": "CF",
+        "countryName": "Central African Republic"
     },
     {
-        "countryName": "Republic of the Congo",
-        "countryCode": "cg"
+        "continentName": "Africa",
+        "countryCode": "CG",
+        "countryName": "Republic of the Congo"
     },
     {
-        "countryName": "Switzerland",
-        "countryCode": "ch"
+        "continentName": "Europe",
+        "countryCode": "CH",
+        "countryName": "Switzerland"
     },
     {
-        "countryName": "Ivory Coast",
-        "countryCode": "ci"
+        "continentName": "Africa",
+        "countryCode": "CI",
+        "countryName": "Ivory Coast"
     },
     {
-        "countryName": "Cook Islands",
-        "countryCode": "ck"
+        "continentName": "Oceania",
+        "countryCode": "CK",
+        "countryName": "Cook Islands"
     },
     {
-        "countryName": "Chile",
-        "countryCode": "cl"
+        "continentName": "South America",
+        "countryCode": "CL",
+        "countryName": "Chile"
     },
     {
-        "countryName": "Cameroon",
-        "countryCode": "cm"
+        "continentName": "Africa",
+        "countryCode": "CM",
+        "countryName": "Cameroon"
     },
     {
-        "countryName": "China",
-        "countryCode": "cn"
+        "continentName": "Asia",
+        "countryCode": "CN",
+        "countryName": "China"
     },
     {
-        "countryName": "Colombia",
-        "countryCode": "co"
+        "continentName": "South America",
+        "countryCode": "CO",
+        "countryName": "Colombia"
     },
     {
-        "countryName": "Costa Rica",
-        "countryCode": "cr"
+        "continentName": "North America",
+        "countryCode": "CR",
+        "countryName": "Costa Rica"
     },
     {
-        "countryName": "Cuba",
-        "countryCode": "cu"
+        "continentName": "North America",
+        "countryCode": "CU",
+        "countryName": "Cuba"
     },
     {
-        "countryName": "Cape Verde",
-        "countryCode": "cv"
+        "continentName": "Africa",
+        "countryCode": "CV",
+        "countryName": "Cape Verde"
     },
     {
-        "countryName": "Curacao",
-        "countryCode": "cw"
+        "continentName": "North America",
+        "countryCode": "CW",
+        "countryName": "Curacao"
     },
     {
-        "countryName": "Christmas Island",
-        "countryCode": "cx"
+        "continentName": "Asia",
+        "countryCode": "CX",
+        "countryName": "Christmas Island"
     },
     {
-        "countryName": "Cyprus",
-        "countryCode": "cy"
+        "continentName": "Europe",
+        "countryCode": "CY",
+        "countryName": "Cyprus"
     },
     {
-        "countryName": "Czech Republic",
-        "countryCode": "cz"
+        "continentName": "Europe",
+        "countryCode": "CZ",
+        "countryName": "Czech Republic"
     },
     {
-        "countryName": "Germany",
-        "countryCode": "de"
+        "continentName": "Europe",
+        "countryCode": "DE",
+        "countryName": "Germany"
     },
     {
-        "countryName": "Djibouti",
-        "countryCode": "dj"
+        "continentName": "Africa",
+        "countryCode": "DJ",
+        "countryName": "Djibouti"
     },
     {
-        "countryName": "Denmark",
-        "countryCode": "dk"
+        "continentName": "Europe",
+        "countryCode": "DK",
+        "countryName": "Denmark"
     },
     {
-        "countryName": "Dominica",
-        "countryCode": "dm"
+        "continentName": "North America",
+        "countryCode": "DM",
+        "countryName": "Dominica"
     },
     {
-        "countryName": "Dominican Republic",
-        "countryCode": "do"
+        "continentName": "North America",
+        "countryCode": "DO",
+        "countryName": "Dominican Republic"
     },
     {
-        "countryName": "Algeria",
-        "countryCode": "dz"
+        "continentName": "Africa",
+        "countryCode": "DZ",
+        "countryName": "Algeria"
     },
     {
-        "countryName": "Ecuador",
-        "countryCode": "ec"
+        "continentName": "South America",
+        "countryCode": "EC",
+        "countryName": "Ecuador"
     },
     {
-        "countryName": "Estonia",
-        "countryCode": "ee"
+        "continentName": "Europe",
+        "countryCode": "EE",
+        "countryName": "Estonia"
     },
     {
-        "countryName": "Egypt",
-        "countryCode": "eg"
+        "continentName": "Africa",
+        "countryCode": "EG",
+        "countryName": "Egypt"
     },
     {
-        "countryName": "Western Sahara",
-        "countryCode": "eh"
+        "continentName": "Africa",
+        "countryCode": "EH",
+        "countryName": "Western Sahara"
     },
     {
-        "countryName": "Eritrea",
-        "countryCode": "er"
+        "continentName": "Africa",
+        "countryCode": "ER",
+        "countryName": "Eritrea"
     },
     {
-        "countryName": "Spain",
-        "countryCode": "es"
+        "continentName": "Europe",
+        "countryCode": "ES",
+        "countryName": "Spain"
     },
     {
-        "countryName": "Ethiopia",
-        "countryCode": "et"
+        "continentName": "Africa",
+        "countryCode": "ET",
+        "countryName": "Ethiopia"
     },
     {
-        "countryName": "Finland",
-        "countryCode": "fi"
+        "continentName": "Europe",
+        "countryCode": "FI",
+        "countryName": "Finland"
     },
     {
-        "countryName": "Fiji",
-        "countryCode": "fj"
+        "continentName": "Oceania",
+        "countryCode": "FJ",
+        "countryName": "Fiji"
     },
     {
-        "countryName": "Falkland Islands",
-        "countryCode": "fk"
+        "continentName": "South America",
+        "countryCode": "FK",
+        "countryName": "Falkland Islands"
     },
     {
-        "countryName": "Micronesia",
-        "countryCode": "fm"
+        "continentName": "Oceania",
+        "countryCode": "FM",
+        "countryName": "Micronesia"
     },
     {
-        "countryName": "Faroe Islands",
-        "countryCode": "fo"
+        "continentName": "Europe",
+        "countryCode": "FO",
+        "countryName": "Faroe Islands"
     },
     {
-        "countryName": "France",
-        "countryCode": "fr"
+        "continentName": "Europe",
+        "countryCode": "FR",
+        "countryName": "France"
     },
     {
-        "countryName": "Gabon",
-        "countryCode": "ga"
+        "continentName": "Africa",
+        "countryCode": "GA",
+        "countryName": "Gabon"
     },
     {
-        "countryName": "United Kingdom",
-        "countryCode": "gb"
+        "continentName": "Europe",
+        "countryCode": "GB",
+        "countryName": "United Kingdom"
     },
     {
-        "countryName": "Grenada",
-        "countryCode": "gd"
+        "continentName": "North America",
+        "countryCode": "GD",
+        "countryName": "Grenada"
     },
     {
-        "countryName": "Georgia",
-        "countryCode": "ge"
+        "continentName": "Asia",
+        "countryCode": "GE",
+        "countryName": "Georgia"
     },
     {
-        "countryName": "French Guiana",
-        "countryCode": "gf"
+        "continentName": "South America",
+        "countryCode": "GF",
+        "countryName": "French Guiana"
     },
     {
-        "countryName": "Guernsey",
-        "countryCode": "gg"
+        "continentName": "Europe",
+        "countryCode": "GG",
+        "countryName": "Guernsey"
     },
     {
-        "countryName": "Ghana",
-        "countryCode": "gh"
+        "continentName": "Africa",
+        "countryCode": "GH",
+        "countryName": "Ghana"
     },
     {
-        "countryName": "Gibraltar",
-        "countryCode": "gi"
+        "continentName": "Europe",
+        "countryCode": "GI",
+        "countryName": "Gibraltar"
     },
     {
-        "countryName": "Greenland",
-        "countryCode": "gl"
+        "continentName": "North America",
+        "countryCode": "GL",
+        "countryName": "Greenland"
     },
     {
-        "countryName": "Gambia",
-        "countryCode": "gm"
+        "continentName": "Africa",
+        "countryCode": "GM",
+        "countryName": "Gambia"
     },
     {
-        "countryName": "Guinea",
-        "countryCode": "gn"
+        "continentName": "Africa",
+        "countryCode": "GN",
+        "countryName": "Guinea"
     },
     {
-        "countryName": "Guadeloupe",
-        "countryCode": "gp"
+        "continentName": "North America",
+        "countryCode": "GP",
+        "countryName": "Guadeloupe"
     },
     {
-        "countryName": "Equatorial Guinea",
-        "countryCode": "gq"
+        "continentName": "Africa",
+        "countryCode": "GQ",
+        "countryName": "Equatorial Guinea"
     },
     {
-        "countryName": "Greece",
-        "countryCode": "gr"
+        "continentName": "Europe",
+        "countryCode": "GR",
+        "countryName": "Greece"
     },
     {
-        "countryName": "South Georgia and the South Sandwich Islands",
-        "countryCode": "gs"
+        "continentName": "Antarctica",
+        "countryCode": "GS",
+        "countryName": "South Georgia and the South Sandwich Islands"
     },
     {
-        "countryName": "Guatemala",
-        "countryCode": "gt"
+        "continentName": "North America",
+        "countryCode": "GT",
+        "countryName": "Guatemala"
     },
     {
-        "countryName": "Guam",
-        "countryCode": "gu"
+        "continentName": "Oceania",
+        "countryCode": "GU",
+        "countryName": "Guam"
     },
     {
-        "countryName": "Guinea-Bissau",
-        "countryCode": "gw"
+        "continentName": "Africa",
+        "countryCode": "GW",
+        "countryName": "Guinea-Bissau"
     },
     {
-        "countryName": "Guyana",
-        "countryCode": "gy"
+        "continentName": "South America",
+        "countryCode": "GY",
+        "countryName": "Guyana"
     },
     {
-        "countryName": "Hong Kong",
-        "countryCode": "hk"
+        "continentName": "Asia",
+        "countryCode": "HK",
+        "countryName": "Hong Kong"
     },
     {
-        "countryName": "Heard Island and McDonald Islands",
-        "countryCode": "hm"
+        "continentName": "Antarctica",
+        "countryCode": "HM",
+        "countryName": "Heard Island and McDonald Islands"
     },
     {
-        "countryName": "Honduras",
-        "countryCode": "hn"
+        "continentName": "North America",
+        "countryCode": "HN",
+        "countryName": "Honduras"
     },
     {
-        "countryName": "Croatia",
-        "countryCode": "hr"
+        "continentName": "Europe",
+        "countryCode": "HR",
+        "countryName": "Croatia"
     },
     {
-        "countryName": "Haiti",
-        "countryCode": "ht"
+        "continentName": "North America",
+        "countryCode": "HT",
+        "countryName": "Haiti"
     },
     {
-        "countryName": "Hungary",
-        "countryCode": "hu"
+        "continentName": "Europe",
+        "countryCode": "HU",
+        "countryName": "Hungary"
     },
     {
-        "countryName": "Indonesia",
-        "countryCode": "id"
+        "continentName": "Asia",
+        "countryCode": "ID",
+        "countryName": "Indonesia"
     },
     {
-        "countryName": "Ireland",
-        "countryCode": "ie"
+        "continentName": "Europe",
+        "countryCode": "IE",
+        "countryName": "Ireland"
     },
     {
-        "countryName": "Israel",
-        "countryCode": "il"
+        "continentName": "Asia",
+        "countryCode": "IL",
+        "countryName": "Israel"
     },
     {
-        "countryName": "Isle of Man",
-        "countryCode": "im"
+        "continentName": "Europe",
+        "countryCode": "IM",
+        "countryName": "Isle of Man"
     },
     {
-        "countryName": "India",
-        "countryCode": "in"
+        "continentName": "Asia",
+        "countryCode": "IN",
+        "countryName": "India"
     },
     {
-        "countryName": "British Indian Ocean Territory",
-        "countryCode": "io"
+        "continentName": "Asia",
+        "countryCode": "IO",
+        "countryName": "British Indian Ocean Territory"
     },
     {
-        "countryName": "Iraq",
-        "countryCode": "iq"
+        "continentName": "Asia",
+        "countryCode": "IQ",
+        "countryName": "Iraq"
     },
     {
-        "countryName": "Iran",
-        "countryCode": "ir"
+        "continentName": "Asia",
+        "countryCode": "IR",
+        "countryName": "Iran"
     },
     {
-        "countryName": "Iceland",
-        "countryCode": "is"
+        "continentName": "Europe",
+        "countryCode": "IS",
+        "countryName": "Iceland"
     },
     {
-        "countryName": "Italy",
-        "countryCode": "it"
+        "continentName": "Europe",
+        "countryCode": "IT",
+        "countryName": "Italy"
     },
     {
-        "countryName": "Jersey",
-        "countryCode": "je"
+        "continentName": "Europe",
+        "countryCode": "JE",
+        "countryName": "Jersey"
     },
     {
-        "countryName": "Jamaica",
-        "countryCode": "jm"
+        "continentName": "North America",
+        "countryCode": "JM",
+        "countryName": "Jamaica"
     },
     {
-        "countryName": "Jordan",
-        "countryCode": "jo"
+        "continentName": "Asia",
+        "countryCode": "JO",
+        "countryName": "Jordan"
     },
     {
-        "countryName": "Japan",
-        "countryCode": "jp"
+        "continentName": "Asia",
+        "countryCode": "JP",
+        "countryName": "Japan"
     },
     {
-        "countryName": "Kenya",
-        "countryCode": "ke"
+        "continentName": "Africa",
+        "countryCode": "KE",
+        "countryName": "Kenya"
     },
     {
-        "countryName": "Kyrgyzstan",
-        "countryCode": "kg"
+        "continentName": "Asia",
+        "countryCode": "KG",
+        "countryName": "Kyrgyzstan"
     },
     {
-        "countryName": "Cambodia",
-        "countryCode": "kh"
+        "continentName": "Asia",
+        "countryCode": "KH",
+        "countryName": "Cambodia"
     },
     {
-        "countryName": "Kiribati",
-        "countryCode": "ki"
+        "continentName": "Oceania",
+        "countryCode": "KI",
+        "countryName": "Kiribati"
     },
     {
-        "countryName": "Comoros",
-        "countryCode": "km"
+        "continentName": "Africa",
+        "countryCode": "KM",
+        "countryName": "Comoros"
     },
     {
-        "countryName": "Saint Kitts and Nevis",
-        "countryCode": "kn"
+        "continentName": "North America",
+        "countryCode": "KN",
+        "countryName": "Saint Kitts and Nevis"
     },
     {
-        "countryName": "North Korea",
-        "countryCode": "kp"
+        "continentName": "Asia",
+        "countryCode": "KP",
+        "countryName": "North Korea"
     },
     {
-        "countryName": "South Korea",
-        "countryCode": "kr"
+        "continentName": "Asia",
+        "countryCode": "KR",
+        "countryName": "South Korea"
     },
     {
-        "countryName": "Kuwait",
-        "countryCode": "kw"
+        "continentName": "Asia",
+        "countryCode": "KW",
+        "countryName": "Kuwait"
     },
     {
-        "countryName": "Cayman Islands",
-        "countryCode": "ky"
+        "continentName": "North America",
+        "countryCode": "KY",
+        "countryName": "Cayman Islands"
     },
     {
-        "countryName": "Kazakhstan",
-        "countryCode": "kz"
+        "continentName": "Asia",
+        "countryCode": "KZ",
+        "countryName": "Kazakhstan"
     },
     {
-        "countryName": "Laos",
-        "countryCode": "la"
+        "continentName": "Asia",
+        "countryCode": "LA",
+        "countryName": "Laos"
     },
     {
-        "countryName": "Lebanon",
-        "countryCode": "lb"
+        "continentName": "Asia",
+        "countryCode": "LB",
+        "countryName": "Lebanon"
     },
     {
-        "countryName": "Saint Lucia",
-        "countryCode": "lc"
+        "continentName": "North America",
+        "countryCode": "LC",
+        "countryName": "Saint Lucia"
     },
     {
-        "countryName": "Liechtenstein",
-        "countryCode": "li"
+        "continentName": "Europe",
+        "countryCode": "LI",
+        "countryName": "Liechtenstein"
     },
     {
-        "countryName": "Sri Lanka",
-        "countryCode": "lk"
+        "continentName": "Asia",
+        "countryCode": "LK",
+        "countryName": "Sri Lanka"
     },
     {
-        "countryName": "Liberia",
-        "countryCode": "lr"
+        "continentName": "Africa",
+        "countryCode": "LR",
+        "countryName": "Liberia"
     },
     {
-        "countryName": "Lesotho",
-        "countryCode": "ls"
+        "continentName": "Africa",
+        "countryCode": "LS",
+        "countryName": "Lesotho"
     },
     {
-        "countryName": "Lithuania",
-        "countryCode": "lt"
+        "continentName": "Europe",
+        "countryCode": "LT",
+        "countryName": "Lithuania"
     },
     {
-        "countryName": "Luxembourg",
-        "countryCode": "lu"
+        "continentName": "Europe",
+        "countryCode": "LU",
+        "countryName": "Luxembourg"
     },
     {
-        "countryName": "Latvia",
-        "countryCode": "lv"
+        "continentName": "Europe",
+        "countryCode": "LV",
+        "countryName": "Latvia"
     },
     {
-        "countryName": "Libya",
-        "countryCode": "ly"
+        "continentName": "Africa",
+        "countryCode": "LY",
+        "countryName": "Libya"
     },
     {
-        "countryName": "Morocco",
-        "countryCode": "ma"
+        "continentName": "Africa",
+        "countryCode": "MA",
+        "countryName": "Morocco"
     },
     {
-        "countryName": "Monaco",
-        "countryCode": "mc"
+        "continentName": "Europe",
+        "countryCode": "MC",
+        "countryName": "Monaco"
     },
     {
-        "countryName": "Moldova",
-        "countryCode": "md"
+        "continentName": "Europe",
+        "countryCode": "MD",
+        "countryName": "Moldova"
     },
     {
-        "countryName": "Montenegro",
-        "countryCode": "me"
+        "continentName": "Europe",
+        "countryCode": "ME",
+        "countryName": "Montenegro"
     },
     {
-        "countryName": "Saint Martin",
-        "countryCode": "mf"
+        "continentName": "North America",
+        "countryCode": "MF",
+        "countryName": "Saint Martin"
     },
     {
-        "countryName": "Madagascar",
-        "countryCode": "mg"
+        "continentName": "Africa",
+        "countryCode": "MG",
+        "countryName": "Madagascar"
     },
     {
-        "countryName": "Marshall Islands",
-        "countryCode": "mh"
+        "continentName": "Oceania",
+        "countryCode": "MH",
+        "countryName": "Marshall Islands"
     },
     {
-        "countryName": "Macedonia",
-        "countryCode": "mk"
+        "continentName": "Europe",
+        "countryCode": "MK",
+        "countryName": "Macedonia"
     },
     {
-        "countryName": "Mali",
-        "countryCode": "ml"
+        "continentName": "Africa",
+        "countryCode": "ML",
+        "countryName": "Mali"
     },
     {
-        "countryName": "Myanmar [Burma]",
-        "countryCode": "mm"
+        "continentName": "Asia",
+        "countryCode": "MM",
+        "countryName": "Myanmar [Burma]"
     },
     {
-        "countryName": "Mongolia",
-        "countryCode": "mn"
+        "continentName": "Asia",
+        "countryCode": "MN",
+        "countryName": "Mongolia"
     },
     {
-        "countryName": "Macao",
-        "countryCode": "mo"
+        "continentName": "Asia",
+        "countryCode": "MO",
+        "countryName": "Macao"
     },
     {
-        "countryName": "Northern Mariana Islands",
-        "countryCode": "mp"
+        "continentName": "Oceania",
+        "countryCode": "MP",
+        "countryName": "Northern Mariana Islands"
     },
     {
-        "countryName": "Martinique",
-        "countryCode": "mq"
+        "continentName": "North America",
+        "countryCode": "MQ",
+        "countryName": "Martinique"
     },
     {
-        "countryName": "Mauritania",
-        "countryCode": "mr"
+        "continentName": "Africa",
+        "countryCode": "MR",
+        "countryName": "Mauritania"
     },
     {
-        "countryName": "Montserrat",
-        "countryCode": "ms"
+        "continentName": "North America",
+        "countryCode": "MS",
+        "countryName": "Montserrat"
     },
     {
-        "countryName": "Malta",
-        "countryCode": "mt"
+        "continentName": "Europe",
+        "countryCode": "MT",
+        "countryName": "Malta"
     },
     {
-        "countryName": "Mauritius",
-        "countryCode": "mu"
+        "continentName": "Africa",
+        "countryCode": "MU",
+        "countryName": "Mauritius"
     },
     {
-        "countryName": "Maldives",
-        "countryCode": "mv"
+        "continentName": "Asia",
+        "countryCode": "MV",
+        "countryName": "Maldives"
     },
     {
-        "countryName": "Malawi",
-        "countryCode": "mw"
+        "continentName": "Africa",
+        "countryCode": "MW",
+        "countryName": "Malawi"
     },
     {
-        "countryName": "Mexico",
-        "countryCode": "mx"
+        "continentName": "North America",
+        "countryCode": "MX",
+        "countryName": "Mexico"
     },
     {
-        "countryName": "Malaysia",
-        "countryCode": "my"
+        "continentName": "Asia",
+        "countryCode": "MY",
+        "countryName": "Malaysia"
     },
     {
-        "countryName": "Mozambique",
-        "countryCode": "mz"
+        "continentName": "Africa",
+        "countryCode": "MZ",
+        "countryName": "Mozambique"
     },
     {
-        "countryName": "Namibia",
-        "countryCode": "na"
+        "continentName": "Africa",
+        "countryCode": "NA",
+        "countryName": "Namibia"
     },
     {
-        "countryName": "New Caledonia",
-        "countryCode": "nc"
+        "continentName": "Oceania",
+        "countryCode": "NC",
+        "countryName": "New Caledonia"
     },
     {
-        "countryName": "Niger",
-        "countryCode": "ne"
+        "continentName": "Africa",
+        "countryCode": "NE",
+        "countryName": "Niger"
     },
     {
-        "countryName": "Norfolk Island",
-        "countryCode": "nf"
+        "continentName": "Oceania",
+        "countryCode": "NF",
+        "countryName": "Norfolk Island"
     },
     {
-        "countryName": "Nigeria",
-        "countryCode": "ng"
+        "continentName": "Africa",
+        "countryCode": "NG",
+        "countryName": "Nigeria"
     },
     {
-        "countryName": "Nicaragua",
-        "countryCode": "ni"
+        "continentName": "North America",
+        "countryCode": "NI",
+        "countryName": "Nicaragua"
     },
     {
-        "countryName": "Netherlands",
-        "countryCode": "nl"
+        "continentName": "Europe",
+        "countryCode": "NL",
+        "countryName": "Netherlands"
     },
     {
-        "countryName": "Norway",
-        "countryCode": "no"
+        "continentName": "Europe",
+        "countryCode": "NO",
+        "countryName": "Norway"
     },
     {
-        "countryName": "Nepal",
-        "countryCode": "np"
+        "continentName": "Asia",
+        "countryCode": "NP",
+        "countryName": "Nepal"
     },
     {
-        "countryName": "Nauru",
-        "countryCode": "nr"
+        "continentName": "Oceania",
+        "countryCode": "NR",
+        "countryName": "Nauru"
     },
     {
-        "countryName": "Niue",
-        "countryCode": "nu"
+        "continentName": "Oceania",
+        "countryCode": "NU",
+        "countryName": "Niue"
     },
     {
-        "countryName": "New Zealand",
-        "countryCode": "nz"
+        "continentName": "Oceania",
+        "countryCode": "NZ",
+        "countryName": "New Zealand"
     },
     {
-        "countryName": "Oman",
-        "countryCode": "om"
+        "continentName": "Asia",
+        "countryCode": "OM",
+        "countryName": "Oman"
     },
     {
-        "countryName": "Panama",
-        "countryCode": "pa"
+        "continentName": "North America",
+        "countryCode": "PA",
+        "countryName": "Panama"
     },
     {
-        "countryName": "Peru",
-        "countryCode": "pe"
+        "continentName": "South America",
+        "countryCode": "PE",
+        "countryName": "Peru"
     },
     {
-        "countryName": "French Polynesia",
-        "countryCode": "pf"
+        "continentName": "Oceania",
+        "countryCode": "PF",
+        "countryName": "French Polynesia"
     },
     {
-        "countryName": "Papua New Guinea",
-        "countryCode": "pg"
+        "continentName": "Oceania",
+        "countryCode": "PG",
+        "countryName": "Papua New Guinea"
     },
     {
-        "countryName": "Philippines",
-        "countryCode": "ph"
+        "continentName": "Asia",
+        "countryCode": "PH",
+        "countryName": "Philippines"
     },
     {
-        "countryName": "Pakistan",
-        "countryCode": "pk"
+        "continentName": "Asia",
+        "countryCode": "PK",
+        "countryName": "Pakistan"
     },
     {
-        "countryName": "Poland",
-        "countryCode": "pl"
+        "continentName": "Europe",
+        "countryCode": "PL",
+        "countryName": "Poland"
     },
     {
-        "countryName": "Saint Pierre and Miquelon",
-        "countryCode": "pm"
+        "continentName": "North America",
+        "countryCode": "PM",
+        "countryName": "Saint Pierre and Miquelon"
     },
     {
-        "countryName": "Pitcairn Islands",
-        "countryCode": "pn"
+        "continentName": "Oceania",
+        "countryCode": "PN",
+        "countryName": "Pitcairn Islands"
     },
     {
-        "countryName": "Puerto Rico",
-        "countryCode": "pr"
+        "continentName": "North America",
+        "countryCode": "PR",
+        "countryName": "Puerto Rico"
     },
     {
-        "countryName": "Palestine",
-        "countryCode": "ps"
+        "continentName": "Asia",
+        "countryCode": "PS",
+        "countryName": "Palestine"
     },
     {
-        "countryName": "Portugal",
-        "countryCode": "pt"
+        "continentName": "Europe",
+        "countryCode": "PT",
+        "countryName": "Portugal"
     },
     {
-        "countryName": "Palau",
-        "countryCode": "pw"
+        "continentName": "Oceania",
+        "countryCode": "PW",
+        "countryName": "Palau"
     },
     {
-        "countryName": "Paraguay",
-        "countryCode": "py"
+        "continentName": "South America",
+        "countryCode": "PY",
+        "countryName": "Paraguay"
     },
     {
-        "countryName": "Qatar",
-        "countryCode": "qa"
+        "continentName": "Asia",
+        "countryCode": "QA",
+        "countryName": "Qatar"
     },
     {
-        "countryName": "Réunion",
-        "countryCode": "re"
+        "continentName": "Africa",
+        "countryCode": "RE",
+        "countryName": "Réunion"
     },
     {
-        "countryName": "Romania",
-        "countryCode": "ro"
+        "continentName": "Europe",
+        "countryCode": "RO",
+        "countryName": "Romania"
     },
     {
-        "countryName": "Serbia",
-        "countryCode": "rs"
+        "continentName": "Europe",
+        "countryCode": "RS",
+        "countryName": "Serbia"
     },
     {
-        "countryName": "Russia",
-        "countryCode": "ru"
+        "continentName": "Europe",
+        "countryCode": "RU",
+        "countryName": "Russia"
     },
     {
-        "countryName": "Rwanda",
-        "countryCode": "rw"
+        "continentName": "Africa",
+        "countryCode": "RW",
+        "countryName": "Rwanda"
     },
     {
-        "countryName": "Saudi Arabia",
-        "countryCode": "sa"
+        "continentName": "Asia",
+        "countryCode": "SA",
+        "countryName": "Saudi Arabia"
     },
     {
-        "countryName": "Solomon Islands",
-        "countryCode": "sb"
+        "continentName": "Oceania",
+        "countryCode": "SB",
+        "countryName": "Solomon Islands"
     },
     {
-        "countryName": "Seychelles",
-        "countryCode": "sc"
+        "continentName": "Africa",
+        "countryCode": "SC",
+        "countryName": "Seychelles"
     },
     {
-        "countryName": "Sudan",
-        "countryCode": "sd"
+        "continentName": "Africa",
+        "countryCode": "SD",
+        "countryName": "Sudan"
     },
     {
-        "countryName": "Sweden",
-        "countryCode": "se"
+        "continentName": "Europe",
+        "countryCode": "SE",
+        "countryName": "Sweden"
     },
     {
-        "countryName": "Singapore",
-        "countryCode": "sg"
+        "continentName": "Asia",
+        "countryCode": "SG",
+        "countryName": "Singapore"
     },
     {
-        "countryName": "Saint Helena",
-        "countryCode": "sh"
+        "continentName": "Africa",
+        "countryCode": "SH",
+        "countryName": "Saint Helena"
     },
     {
-        "countryName": "Slovenia",
-        "countryCode": "si"
+        "continentName": "Europe",
+        "countryCode": "SI",
+        "countryName": "Slovenia"
     },
     {
-        "countryName": "Svalbard and Jan Mayen",
-        "countryCode": "sj"
+        "continentName": "Europe",
+        "countryCode": "SJ",
+        "countryName": "Svalbard and Jan Mayen"
     },
     {
-        "countryName": "Slovakia",
-        "countryCode": "sk"
+        "continentName": "Europe",
+        "countryCode": "SK",
+        "countryName": "Slovakia"
     },
     {
-        "countryName": "Sierra Leone",
-        "countryCode": "sl"
+        "continentName": "Africa",
+        "countryCode": "SL",
+        "countryName": "Sierra Leone"
     },
     {
-        "countryName": "San Marino",
-        "countryCode": "sm"
+        "continentName": "Europe",
+        "countryCode": "SM",
+        "countryName": "San Marino"
     },
     {
-        "countryName": "Senegal",
-        "countryCode": "sn"
+        "continentName": "Africa",
+        "countryCode": "SN",
+        "countryName": "Senegal"
     },
     {
-        "countryName": "Somalia",
-        "countryCode": "so"
+        "continentName": "Africa",
+        "countryCode": "SO",
+        "countryName": "Somalia"
     },
     {
-        "countryName": "Suriname",
-        "countryCode": "sr"
+        "continentName": "South America",
+        "countryCode": "SR",
+        "countryName": "Suriname"
     },
     {
-        "countryName": "South Sudan",
-        "countryCode": "ss"
+        "continentName": "Africa",
+        "countryCode": "SS",
+        "countryName": "South Sudan"
     },
     {
-        "countryName": "São Tomé and Príncipe",
-        "countryCode": "st"
+        "continentName": "Africa",
+        "countryCode": "ST",
+        "countryName": "São Tomé and Príncipe"
     },
     {
-        "countryName": "El Salvador",
-        "countryCode": "sv"
+        "continentName": "North America",
+        "countryCode": "SV",
+        "countryName": "El Salvador"
     },
     {
-        "countryName": "Sint Maarten",
-        "countryCode": "sx"
+        "continentName": "North America",
+        "countryCode": "SX",
+        "countryName": "Sint Maarten"
     },
     {
-        "countryName": "Syria",
-        "countryCode": "sy"
+        "continentName": "Asia",
+        "countryCode": "SY",
+        "countryName": "Syria"
     },
     {
-        "countryName": "Swaziland",
-        "countryCode": "sz"
+        "continentName": "Africa",
+        "countryCode": "SZ",
+        "countryName": "Swaziland"
     },
     {
-        "countryName": "Turks and Caicos Islands",
-        "countryCode": "tc"
+        "continentName": "North America",
+        "countryCode": "TC",
+        "countryName": "Turks and Caicos Islands"
     },
     {
-        "countryName": "Chad",
-        "countryCode": "td"
+        "continentName": "Africa",
+        "countryCode": "TD",
+        "countryName": "Chad"
     },
     {
-        "countryName": "French Southern Territories",
-        "countryCode": "tf"
+        "continentName": "Antarctica",
+        "countryCode": "TF",
+        "countryName": "French Southern Territories"
     },
     {
-        "countryName": "Togo",
-        "countryCode": "tg"
+        "continentName": "Africa",
+        "countryCode": "TG",
+        "countryName": "Togo"
     },
     {
-        "countryName": "Thailand",
-        "countryCode": "th"
+        "continentName": "Asia",
+        "countryCode": "TH",
+        "countryName": "Thailand"
     },
     {
-        "countryName": "Tajikistan",
-        "countryCode": "tj"
+        "continentName": "Asia",
+        "countryCode": "TJ",
+        "countryName": "Tajikistan"
     },
     {
-        "countryName": "Tokelau",
-        "countryCode": "tk"
+        "continentName": "Oceania",
+        "countryCode": "TK",
+        "countryName": "Tokelau"
     },
     {
-        "countryName": "East Timor",
-        "countryCode": "tl"
+        "continentName": "Oceania",
+        "countryCode": "TL",
+        "countryName": "East Timor"
     },
     {
-        "countryName": "Turkmenistan",
-        "countryCode": "tm"
+        "continentName": "Asia",
+        "countryCode": "TM",
+        "countryName": "Turkmenistan"
     },
     {
-        "countryName": "Tunisia",
-        "countryCode": "tn"
+        "continentName": "Africa",
+        "countryCode": "TN",
+        "countryName": "Tunisia"
     },
     {
-        "countryName": "Tonga",
-        "countryCode": "to"
+        "continentName": "Oceania",
+        "countryCode": "TO",
+        "countryName": "Tonga"
     },
     {
-        "countryName": "Turkey",
-        "countryCode": "tr"
+        "continentName": "Asia",
+        "countryCode": "TR",
+        "countryName": "Turkey"
     },
     {
-        "countryName": "Trinidad and Tobago",
-        "countryCode": "tt"
+        "continentName": "North America",
+        "countryCode": "TT",
+        "countryName": "Trinidad and Tobago"
     },
     {
-        "countryName": "Tuvalu",
-        "countryCode": "tv"
+        "continentName": "Oceania",
+        "countryCode": "TV",
+        "countryName": "Tuvalu"
     },
     {
-        "countryName": "Taiwan",
-        "countryCode": "tw"
+        "continentName": "Asia",
+        "countryCode": "TW",
+        "countryName": "Taiwan"
     },
     {
-        "countryName": "Tanzania",
-        "countryCode": "tz"
+        "continentName": "Africa",
+        "countryCode": "TZ",
+        "countryName": "Tanzania"
     },
     {
-        "countryName": "Ukraine",
-        "countryCode": "ua"
+        "continentName": "Europe",
+        "countryCode": "UA",
+        "countryName": "Ukraine"
     },
     {
-        "countryName": "Uganda",
-        "countryCode": "ug"
+        "continentName": "Africa",
+        "countryCode": "UG",
+        "countryName": "Uganda"
     },
     {
-        "countryName": "U.S. Minor Outlying Islands",
-        "countryCode": "um"
+        "continentName": "Oceania",
+        "countryCode": "UM",
+        "countryName": "U.S. Minor Outlying Islands"
     },
     {
-        "countryName": "United States",
-        "countryCode": "us"
+        "continentName": "North America",
+        "countryCode": "US",
+        "countryName": "United States"
     },
     {
-        "countryName": "Uruguay",
-        "countryCode": "uy"
+        "continentName": "South America",
+        "countryCode": "UY",
+        "countryName": "Uruguay"
     },
     {
-        "countryName": "Uzbekistan",
-        "countryCode": "uz"
+        "continentName": "Asia",
+        "countryCode": "UZ",
+        "countryName": "Uzbekistan"
     },
     {
-        "countryName": "Vatican City",
-        "countryCode": "va"
+        "continentName": "Europe",
+        "countryCode": "VA",
+        "countryName": "Vatican City"
     },
     {
-        "countryName": "Saint Vincent and the Grenadines",
-        "countryCode": "vc"
+        "continentName": "North America",
+        "countryCode": "VC",
+        "countryName": "Saint Vincent and the Grenadines"
     },
     {
-        "countryName": "Venezuela",
-        "countryCode": "ve"
+        "continentName": "South America",
+        "countryCode": "VE",
+        "countryName": "Venezuela"
     },
     {
-        "countryName": "British Virgin Islands",
-        "countryCode": "vg"
+        "continentName": "North America",
+        "countryCode": "VG",
+        "countryName": "British Virgin Islands"
     },
     {
-        "countryName": "U.S. Virgin Islands",
-        "countryCode": "vi"
+        "continentName": "North America",
+        "countryCode": "VI",
+        "countryName": "U.S. Virgin Islands"
     },
     {
-        "countryName": "Vietnam",
-        "countryCode": "vn"
+        "continentName": "Asia",
+        "countryCode": "VN",
+        "countryName": "Vietnam"
     },
     {
-        "countryName": "Vanuatu",
-        "countryCode": "vu"
+        "continentName": "Oceania",
+        "countryCode": "VU",
+        "countryName": "Vanuatu"
     },
     {
-        "countryName": "Wallis and Futuna",
-        "countryCode": "wf"
+        "continentName": "Oceania",
+        "countryCode": "WF",
+        "countryName": "Wallis and Futuna"
     },
     {
-        "countryName": "Samoa",
-        "countryCode": "ws"
+        "continentName": "Oceania",
+        "countryCode": "WS",
+        "countryName": "Samoa"
     },
     {
-        "countryName": "Kosovo",
-        "countryCode": "xk"
+        "continentName": "Europe",
+        "countryCode": "XK",
+        "countryName": "Kosovo"
     },
     {
-        "countryName": "Yemen",
-        "countryCode": "ye"
+        "continentName": "Asia",
+        "countryCode": "YE",
+        "countryName": "Yemen"
     },
     {
-        "countryName": "Mayotte",
-        "countryCode": "yt"
+        "continentName": "Africa",
+        "countryCode": "YT",
+        "countryName": "Mayotte"
     },
     {
-        "countryName": "South Africa",
-        "countryCode": "za"
+        "continentName": "Africa",
+        "countryCode": "ZA",
+        "countryName": "South Africa"
     },
     {
-        "countryName": "Zambia",
-        "countryCode": "zm"
+        "continentName": "Africa",
+        "countryCode": "ZM",
+        "countryName": "Zambia"
     },
     {
-        "countryName": "Zimbabwe",
-        "countryCode": "zw"
+        "continentName": "Africa",
+        "countryCode": "ZW",
+        "countryName": "Zimbabwe"
     }
 ]);

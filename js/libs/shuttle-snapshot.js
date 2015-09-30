@@ -50,14 +50,17 @@ define(['ramda'], function (R) {
 
             var innerResult = ref(innerState.currentMapped ? innerState.currentMapped.get() : null);
             innerResult.addListener(function (oldState, newState) {
-                innerState.currentMapped.set(newState);
+                if (innerState.currentMapped) {
+                    innerState.currentMapped.set(newState);
+                }
             });
 
             var listener = function (oldState, newState) {
                 innerResult.set(newState);
             };
-            if (innerState.currentMapped)
+            if (innerState.currentMapped) {
                 innerState.currentMapped.addListener(listener);
+            }
 
             result.addListener(function (oldState, newState) {
                 var oldMapped = oldState ? mapper(oldState) : null;

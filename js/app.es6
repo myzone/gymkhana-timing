@@ -199,10 +199,29 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                 }
             }
 
+            const getEvent = eventId => application => {
+                const event = application[eventId];
+
+                if (!event)
+                    return Shuttle.ref({
+                        id: '',
+                        configuration: Shuttle.ref({
+                            name: '',
+                            penalties: {},
+                            countries: []
+                        }),
+                        participants: Shuttle.ref([]),
+                        heats: Shuttle.ref([])
+                    });
+
+                return event;
+            };
+
+
             class EventApplicationProvider extends React.Component {
                 render() {
                     const event = application
-                        .flatMap(application => application[this.props.params.eventId]);
+                        .flatMap(getEvent(this.props.params.eventId));
 
                     return React.createElement(EventView, {
                         key: 'view',
@@ -218,7 +237,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             class ConfigurationApplicationProvider extends React.Component {
                 render() {
                     const event = application
-                        .flatMap(application => application[this.props.params.eventId]);
+                        .flatMap(getEvent(this.props.params.eventId));
 
                     return React.createElement(ConfigurationView, {
                         key: 'view',
@@ -232,7 +251,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             class RegistrationApplicationProvider extends React.Component {
                 render() {
                     const event = application
-                        .flatMap(application => application[this.props.params.eventId]);
+                        .flatMap(getEvent(this.props.params.eventId));
 
                     return React.createElement(RegistrationView, {
                         key: 'view',
@@ -246,7 +265,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             class CompetitionApplicationProvider extends React.Component {
                 render() {
                     const event = application
-                        .flatMap(application => application[this.props.params.eventId]);
+                        .flatMap(getEvent(this.props.params.eventId));
 
                     return React.createElement(CompetitionView, {
                         key: 'view',
@@ -262,7 +281,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             class ResultsApplicationProvider extends React.Component {
                 render() {
                     const event = application
-                        .flatMap(application => application[this.props.params.eventId]);
+                        .flatMap(getEvent(this.props.params.eventId));
 
                     return React.createElement(ResultsView, {
                         key: 'view',

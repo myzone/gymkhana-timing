@@ -228,6 +228,25 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             return EventsApplicationProvider;
         })(React.Component);
 
+        var getEvent = function getEvent(eventId) {
+            return function (application) {
+                var event = application[eventId];
+
+                if (!event) return Shuttle.ref({
+                    id: '',
+                    configuration: Shuttle.ref({
+                        name: '',
+                        penalties: {},
+                        countries: []
+                    }),
+                    participants: Shuttle.ref([]),
+                    heats: Shuttle.ref([])
+                });
+
+                return event;
+            };
+        };
+
         var EventApplicationProvider = (function (_React$Component3) {
             _inherits(EventApplicationProvider, _React$Component3);
 
@@ -240,11 +259,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             _createClass(EventApplicationProvider, [{
                 key: 'render',
                 value: function render() {
-                    var _this = this;
-
-                    var event = application.flatMap(function (application) {
-                        return application[_this.props.params.eventId];
-                    });
+                    var event = application.flatMap(getEvent(this.props.params.eventId));
 
                     return React.createElement(EventView, {
                         key: 'view',
@@ -274,11 +289,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             _createClass(ConfigurationApplicationProvider, [{
                 key: 'render',
                 value: function render() {
-                    var _this2 = this;
-
-                    var event = application.flatMap(function (application) {
-                        return application[_this2.props.params.eventId];
-                    });
+                    var event = application.flatMap(getEvent(this.props.params.eventId));
 
                     return React.createElement(ConfigurationView, {
                         key: 'view',
@@ -305,11 +316,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             _createClass(RegistrationApplicationProvider, [{
                 key: 'render',
                 value: function render() {
-                    var _this3 = this;
-
-                    var event = application.flatMap(function (application) {
-                        return application[_this3.props.params.eventId];
-                    });
+                    var event = application.flatMap(getEvent(this.props.params.eventId));
 
                     return React.createElement(RegistrationView, {
                         key: 'view',
@@ -336,11 +343,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             _createClass(CompetitionApplicationProvider, [{
                 key: 'render',
                 value: function render() {
-                    var _this4 = this;
-
-                    var event = application.flatMap(function (application) {
-                        return application[_this4.props.params.eventId];
-                    });
+                    var event = application.flatMap(getEvent(this.props.params.eventId));
 
                     return React.createElement(CompetitionView, {
                         key: 'view',
@@ -370,11 +373,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             _createClass(ResultsApplicationProvider, [{
                 key: 'render',
                 value: function render() {
-                    var _this5 = this;
-
-                    var event = application.flatMap(function (application) {
-                        return application[_this5.props.params.eventId];
-                    });
+                    var event = application.flatMap(getEvent(this.props.params.eventId));
 
                     return React.createElement(ResultsView, {
                         key: 'view',

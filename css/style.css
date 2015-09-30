@@ -153,6 +153,8 @@
 
 .btn-array-cell {
     display: table-cell;
+    vertical-align: middle;
+    align-content: center;
 }
 
 .btn-array .btn-array-row:first-child .btn-array-cell:first-child .btn {
