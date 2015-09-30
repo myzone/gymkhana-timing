@@ -20,7 +20,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         }
 
         render() {
-            return React.createElement(this.props.renderer, {
+            return React.createElement(this.props.renderer, R.merge({
                 item: this.itemProxy,
                 deleteButton: React.createElement(ReactBootstrap.Button, {
                     key: 'button',
@@ -28,7 +28,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     bsSize: 'xsmall',
                     onClick: this.props.onDelete
                 }, React.createElement(ReactBootstrap.Glyphicon, {key: 'glyph', glyph: 'trash'}))
-            });
+            }, this.props.rendererProps));
         }
     }
 
@@ -78,6 +78,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                             key: this.props.getId(item.get()),
                             item: item,
                             renderer: this.props.itemRenderer,
+                            rendererProps: this.props.props,
                             onDelete: () => {
                                 this.props.items.set(R.filter(i => i.get().id !== item.get().id, this.state.items))
                             }
@@ -86,6 +87,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                             key: this.props.getId(this.last.get()),
                             item: this.last,
                             renderer: this.props.itemRenderer,
+                            rendererProps: this.props.props,
                             last: true,
                             onDelete: () => {}
                         })

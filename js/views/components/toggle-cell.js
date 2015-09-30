@@ -28,8 +28,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                 var active = this.props.active;
 
                 return React.createElement(ReactBootstrap.Button, {
+                    className: this.props.className,
                     style: this.props.style,
-                    bsStyle: active(this.state.value) ? 'primary' : 'default',
+                    bsStyle: active(this.state.value) ? 'info' : 'default',
                     onClick: function onClick() {
                         return _this.props.value.set(toggle(_this.state.value));
                     }

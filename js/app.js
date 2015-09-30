@@ -50,6 +50,7 @@ require.config({
         'components/toggle-cell': 'views/components/toggle-cell',
         'components/stopwatch-cell': 'views/components/stopwatch-cell',
         'components/editable-table': 'views/components/editable-table',
+        'components/country-flag': 'views/components/country-flag',
 
         'utils/commons': 'utils/commons',
 
@@ -323,6 +324,11 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         params: this.props.params,
                         participants: event.flatMap(function (event) {
                             return event.participants;
+                        }),
+                        countries: event.flatMap(function (event) {
+                            return event.configuration;
+                        }).map(function (configuration) {
+                            return configuration.countries;
                         })
                     }, this.props.children);
                 }

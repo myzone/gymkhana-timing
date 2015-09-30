@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/editable-table', 'components/text-cell', 'components/select-cell', 'components/stopwatch-cell', 'components/toggle-cell', 'utils/commons', 'static-data/countries', 'static-data/penalty-type'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, EditableTableView, TextCellView, SelectCellView, StopwatchCellView, ToggleCellView, Commons, countries, PenaltyType) {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/editable-table', 'components/text-cell', 'components/select-cell', 'components/stopwatch-cell', 'components/toggle-cell', 'components/country-flag', 'utils/commons', 'static-data/countries', 'static-data/penalty-type'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, EditableTableView, TextCellView, SelectCellView, StopwatchCellView, ToggleCellView, CountryFlagView, Commons, countries, PenaltyType) {
     var PenaltiesHeaderRenderer = (function (_React$Component) {
         _inherits(PenaltiesHeaderRenderer, _React$Component);
 
@@ -175,7 +175,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
             this.penalties = Shuttle.ref(R.values(configuration.penalties));
             this.countries = Shuttle.ref(configuration.countries);
 
-            this.countrySubArrays = R.mapObj(R.compose(R.splitEvery(10), R.map(function (country) {
+            this.countrySubArrays = R.mapObj(R.compose(R.splitEvery(8), R.map(function (country) {
                 var item = Shuttle.ref({
                     selected: R.findIndex(R.equals(country), configuration.countries) > -1,
                     country: country
@@ -242,7 +242,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                     footerRenderer: PenaltiesFooterRenderer,
                     itemRenderer: PenaltyRenderer
                 }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Countries")), DOM.div({ className: 'col-md-7' }, R.flatten(R.values(R.mapObjIndexed(function (countrySubArrays, continentName) {
-                    return [DOM.h4({ className: 'col-md-7' }, continentName), DOM.div({ className: 'btn-array col-md-7' }, [R.map(function (countrySubArray) {
+                    return [DOM.h4({ className: 'col-md-7' }, continentName), DOM.div({ className: 'btn-array', style: { width: '100%' } }, [R.map(function (countrySubArray) {
                         return DOM.div({ className: 'btn-array-row' }, [R.map(function (country) {
                             return DOM.span({ className: 'btn-array-cell' }, React.createElement(ToggleCellView, {
                                 value: country,
@@ -253,32 +253,13 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                                     return item.selected;
                                 },
                                 style: {
-                                    width: '80px',
+                                    width: '100%',
                                     height: '40px'
                                 },
                                 renderer: function renderer(item) {
-                                    return React.createElement(ReactBootstrap.OverlayTrigger, {
-                                        placement: 'top',
-                                        delayShow: 750,
-                                        overlay: React.createElement(ReactBootstrap.Tooltip, {}, item.country.countryName)
-                                    }, DOM.div({ style: { marginTop: '-2px' } }, [DOM.div({
-                                        key: 'image',
-                                        style: {
-                                            height: '30px',
-                                            background: 'url(http://www.geonames.org/flags/m/' + R.toLower(item.country.countryCode) + '.png) center',
-                                            backgroundRepeat: 'no-repeat',
-                                            backgroundSize: 'auto 30px'
-                                        }
-                                    }), DOM.div({
-                                        style: {
-                                            marginTop: '-33px',
-                                            lineHeight: '36px',
-                                            fontSize: '34px',
-                                            fontWeight: '100',
-                                            color: 'black',
-                                            textShadow: '1px 1px 1px rgba(255, 255, 255, 0.3), -1px -1px 1px rgba(255, 255, 255, 0.3), 1px -1px 1px rgba(255, 255, 255, 0.3), -1px 1px 1px rgba(255, 255, 255, 0.3)'
-                                        }
-                                    }, item.country.countryCode)]));
+                                    return React.createElement(CountryFlagView, {
+                                        country: item.country
+                                    });
                                 }
                             }));
                         }, countrySubArray)]);

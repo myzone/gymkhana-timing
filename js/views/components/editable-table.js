@@ -38,7 +38,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         }, {
             key: 'render',
             value: function render() {
-                return React.createElement(this.props.renderer, {
+                return React.createElement(this.props.renderer, R.merge({
                     item: this.itemProxy,
                     deleteButton: React.createElement(ReactBootstrap.Button, {
                         key: 'button',
@@ -46,7 +46,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                         bsSize: 'xsmall',
                         onClick: this.props.onDelete
                     }, React.createElement(ReactBootstrap.Glyphicon, { key: 'glyph', glyph: 'trash' }))
-                });
+                }, this.props.rendererProps));
             }
         }]);
 
@@ -101,6 +101,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                         key: _this3.props.getId(item.get()),
                         item: item,
                         renderer: _this3.props.itemRenderer,
+                        rendererProps: _this3.props.props,
                         onDelete: function onDelete() {
                             _this3.props.items.set(R.filter(function (i) {
                                 return i.get().id !== item.get().id;
@@ -111,6 +112,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     key: this.props.getId(this.last.get()),
                     item: this.last,
                     renderer: this.props.itemRenderer,
+                    rendererProps: this.props.props,
                     last: true,
                     onDelete: function onDelete() {}
                 })])]), DOM.tfoot({ key: 'table-foot' }, React.createElement(this.props.footerRenderer, {}))]);

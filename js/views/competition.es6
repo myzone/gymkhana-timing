@@ -1,4 +1,4 @@
-define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-durations', 'shuttle', 'shuttle-react', 'components/stopwatch-cell', 'utils/commons'], (React, ReactRouter, ReactBootstrap, R, moment, momentDurations, Shuttle, ShuttleReact, StopwatchCellView, Commons) => {
+define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-durations', 'shuttle', 'shuttle-react', 'components/stopwatch-cell', 'components/country-flag', 'utils/commons'], (React, ReactRouter, ReactBootstrap, R, moment, momentDurations, Shuttle, ShuttleReact, StopwatchCellView, CountryFlagView, Commons) => {
     const HEATS_COUNT = 2;
     const PENALTY_STYLES = {
         negligible: 'default',
@@ -222,10 +222,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                 onClick: () => this.props.onToggle()
             }, [
                 DOM.td({className: 'important middle-aligned'}, DOM.span({className: 'race-number'}, participant.number)),
-                DOM.td({className: 'middle-aligned'}, DOM.img({
-                    className: 'country',
-                    src: `http://www.geonames.org/flags/x/${participant.country}.gif`
-                })),
+                DOM.td({className: 'important middle-aligned'}, React.createElement(CountryFlagView, {country: participant.country})),
                 DOM.td({className: 'important middle-aligned'}, participant.name),
                 DOM.td({className: 'middle-aligned'}, participant.motorcycle),
                 DOM.td({className: 'middle-aligned'}, participant.group),

@@ -1,4 +1,4 @@
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/editable-table', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'utils/commons'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment, EditableTableView, TextCellView, DateCellView, SelectCellView, Commons) => {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/editable-table', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'components/country-flag', 'utils/commons'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment, EditableTableView, TextCellView, DateCellView, SelectCellView, CountryFlagView, Commons) => {
     class ParticipantHeaderRenderer extends React.Component {
 
         render() {
@@ -65,10 +65,6 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 .addListener((_, computed) => this.props.item.set(computed));
         }
 
-        getId() {
-            return this.state.participant.id;
-        }
-
         render() {
             const DOM = React.DOM;
             const participant = this.state.item;
@@ -99,19 +95,15 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 }, React.createElement(SelectCellView, {
                     key: 'country-cell',
                     value: this.country,
-                    items: [
-                        "ua",
-                        "ru",
-                        "by",
-                        "pl",
-                        "md",
-                        "ro"
-                    ],
-                    renderer: (item) => DOM.img({
-                        key: 'image',
-                        width: '32px',
-                        src: `http://www.geonames.org/flags/m/${item}.png`
-                    })
+                    items: this.state.countries,
+                    renderer: (country) => DOM.div({
+                        style: {
+                            display: 'inline-block',
+                            width: '40px'
+                        }
+                    }, country ? React.createElement(CountryFlagView, {
+                        country: country
+                    }) : '')
                 }))),
                 DOM.td({key: 'name', className: 'col-md-4'}, React.createElement(TextCellView, {
                     key: 'name-cell',
@@ -219,7 +211,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     generateNextDefault: () => Shuttle.ref({
                         id: Commons.guid(),
                         number: "",
-                        country: "ua",
+                        country: null,
                         name: "",
                         motorcycle: "",
                         group: "",
@@ -227,13 +219,16 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                         team: ""
                     }),
                     items: this.props.participants,
+                    props: {
+                        countries: this.props.countries
+                    },
                     getId: participant => participant.id,
                     isEmpty: participant => R.isEmpty(participant.number)
-                            && R.isEmpty(participant.country)
-                            && R.isEmpty(participant.name)
-                            && R.isEmpty(participant.motorcycle)
-                            && R.isEmpty(participant.group)
-                            && R.isEmpty(participant.team),
+                    && R.isEmpty(participant.country)
+                    && R.isEmpty(participant.name)
+                    && R.isEmpty(participant.motorcycle)
+                    && R.isEmpty(participant.group)
+                    && R.isEmpty(participant.team),
                     headerRenderer: ParticipantHeaderRenderer,
                     footerRenderer: ParticipantFooterRenderer,
                     itemRenderer: ParticipantRenderer

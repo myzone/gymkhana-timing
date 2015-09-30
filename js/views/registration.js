@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/editable-table', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'utils/commons'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment, EditableTableView, TextCellView, DateCellView, SelectCellView, Commons) {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/editable-table', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'components/country-flag', 'utils/commons'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment, EditableTableView, TextCellView, DateCellView, SelectCellView, CountryFlagView, Commons) {
     var ParticipantHeaderRenderer = (function (_React$Component) {
         _inherits(ParticipantHeaderRenderer, _React$Component);
 
@@ -86,11 +86,6 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         }
 
         _createClass(ParticipantRenderer, [{
-            key: 'getId',
-            value: function getId() {
-                return this.state.participant.id;
-            }
-        }, {
             key: 'render',
             value: function render() {
                 var DOM = React.DOM;
@@ -113,13 +108,16 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 }, React.createElement(SelectCellView, {
                     key: 'country-cell',
                     value: this.country,
-                    items: ["ua", "ru", "by", "pl", "md", "ro"],
-                    renderer: function renderer(item) {
-                        return DOM.img({
-                            key: 'image',
-                            width: '32px',
-                            src: 'http://www.geonames.org/flags/m/' + item + '.png'
-                        });
+                    items: this.state.countries,
+                    renderer: function renderer(country) {
+                        return DOM.div({
+                            style: {
+                                display: 'inline-block',
+                                width: '40px'
+                            }
+                        }, country ? React.createElement(CountryFlagView, {
+                            country: country
+                        }) : '');
                     }
                 }))), DOM.td({ key: 'name', className: 'col-md-4' }, React.createElement(TextCellView, {
                     key: 'name-cell',
@@ -210,7 +208,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                         return Shuttle.ref({
                             id: Commons.guid(),
                             number: "",
-                            country: "ua",
+                            country: null,
                             name: "",
                             motorcycle: "",
                             group: "",
@@ -219,6 +217,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                         });
                     },
                     items: this.props.participants,
+                    props: {
+                        countries: this.props.countries
+                    },
                     getId: function getId(participant) {
                         return participant.id;
                     },
