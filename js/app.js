@@ -96,8 +96,8 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
         var loadApplication = function loadApplication() {
             var savedData = JSON.parse(localStorage.getItem('application-data'));
 
-            var application = R.mapObj(function (event) {
-                return {
+            return Shuttle.ref(R.mapObj(function (event) {
+                return Shuttle.ref({
                     id: event.id,
                     configuration: Shuttle.ref({
                         name: event.configuration.name,
@@ -124,40 +124,20 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                             team: participant.team
                         });
                     }, event.participants)),
-                    heats: R.map(function (heat) {
-                        return {
+                    heats: Shuttle.ref(R.map(function (heat) {
+                        return R.identity({
                             id: heat.id,
                             participant: heat.participant,
                             number: heat.number,
                             result: {
                                 type: heat.result.type,
                                 time: heat.result.time ? moment.duration(heat.result.time) : undefined,
-                                penalties: heat.result.penalties ? R.map(function (penalty) {
-                                    return {
-                                        name: penalty.name,
-                                        type: penalty.type,
-                                        delay: moment.duration(penalty.delay)
-                                    };
-                                }, heat.result.penalties) : undefined
+                                penalties: heat.result.penalties
                             }
-                        };
-                    }, event.heats)
-                };
-            }, savedData);
-
-            application = R.mapObj(function (event) {
-                event.heats = Shuttle.ref(R.map(function (heat) {
-                    heat.participant = R.find(function (participant) {
-                        return R.equals(participant.get(), heat.participant);
-                    }, event.participants.get());
-
-                    return heat;
-                }, event.heats));
-
-                return Shuttle.ref(event);
-            }, application);
-
-            return Shuttle.ref(application);
+                        });
+                    }, event.heats))
+                });
+            }, savedData));
         };
 
         //const application = exampleApplication();
@@ -359,6 +339,11 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         }),
                         heats: event.flatMap(function (event) {
                             return event.heats;
+                        }),
+                        penaltyTypes: event.flatMap(function (event) {
+                            return event.configuration;
+                        }).map(function (configuration) {
+                            return configuration.penalties;
                         })
                     }, this.props.children);
                 }
@@ -389,6 +374,11 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         }),
                         heats: event.flatMap(function (event) {
                             return event.heats;
+                        }),
+                        penaltyTypes: event.flatMap(function (event) {
+                            return event.configuration;
+                        }).map(function (configuration) {
+                            return configuration.penalties;
                         })
                     }, this.props.children);
                 }

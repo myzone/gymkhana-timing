@@ -93,12 +93,20 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
             const secondPlace = this.state.secondPlace;
             const thirdPlace = this.state.thirdPlace;
 
-
             return DOM.table({style: {width: '100%'}}, DOM.tr({}, [
                 DOM.td({style: {width: '250px'}}),
-                secondPlace ? React.createElement(SecondPlaceView, {name: secondPlace.name, number: secondPlace.number}) : DOM.td(),
-                firstPlace ? React.createElement(FirstPlaceView, {name: firstPlace.name, number: firstPlace.number}) : DOM.td(),
-                thirdPlace ? React.createElement(ThirdPlaceView, {name: thirdPlace.name, number: thirdPlace.number}) : DOM.td(),
+                secondPlace ? React.createElement(SecondPlaceView, {
+                    name: secondPlace.name,
+                    number: secondPlace.number
+                }) : DOM.td(),
+                firstPlace ? React.createElement(FirstPlaceView, {
+                    name: firstPlace.name,
+                    number: firstPlace.number
+                }) : DOM.td(),
+                thirdPlace ? React.createElement(ThirdPlaceView, {
+                    name: thirdPlace.name,
+                    number: thirdPlace.number
+                }) : DOM.td(),
                 DOM.td({style: {width: '250px'}})
             ]));
         }
@@ -109,17 +117,28 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
             const DOM = React.DOM;
             const eventId = this.props.params.eventId;
 
-            const totalTime = (heat) => R.reduce((time, delay) => time.add(delay), moment.duration(heat.result.time), R.map(penalty => penalty.delay, heat.result.penalties));
-            const winners = this.props.heats
-                .map(heats => R.filter(heat => heat.result.type == 'TimedResult', heats))
-                .map(heats => R.map(heat => {
-                    return {
+            const totalTime = (heat) => R.reduce((time, delay) => time.add(delay), moment.duration(heat.result.time), R.map(penalty => this.props.penaltyTypes.get()[penalty].get().delay, heat.result.penalties));
+            const winnerIds = this.props.heats
+                .map(R.compose(
+                    R.map(heat => heat.participant),
+                    R.sortBy(heat => heat.bestTime),
+                    R.values,
+                    R.mapObjIndexed((heats, participant) => R.identity({
+                        participant: participant,
+                        bestTime: R.reduce(R.min, Infinity, R.map(heat => heat.totalTime, heats))
+                    })),
+                    R.groupBy(heat => heat.participant),
+                    R.map(heat => R.identity({
                         participant: heat.participant,
                         totalTime: totalTime(heat)
-                    }
-                }, heats))
-                .map(heats => R.sortBy(heat => -heat.totalTime, heats))
-                .map(heats => R.map(heat => heat.participant, heats));
+                    })),
+                    R.filter(heat => heat.result.type == 'TimedResult')
+                ));
+
+            const winners = Shuttle
+                .combine([winnerIds, this.props.participants], (winnerIds, participants) => {
+                    return R.map(winnerId => R.find(participant => R.equals(winnerId, participant.get().id), participants), winnerIds);
+                });
 
             return DOM.div({}, [
                 React.createElement(ReactBootstrap.Pager, {}, [
@@ -133,9 +152,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 ]),
 
                 React.createElement(WinnersView, {
-                    firstPlace: winners.flatMap(winners => winners.length > 0 ? winners[0] : null),
-                    secondPlace: winners.flatMap(winners => winners.length > 1 ? winners[1] : null),
-                    thirdPlace: winners.flatMap(winners => winners.length > 2 ? winners[2] : null)
+                    firstPlace: winners.flatMap(winners => winners.length > 0 ? winners[0] : Shuttle.ref(null)),
+                    secondPlace: winners.flatMap(winners => winners.length > 1 ? winners[1] : Shuttle.ref(null)),
+                    thirdPlace: winners.flatMap(winners => winners.length > 2 ? winners[2] : Shuttle.ref(null))
                 })
             ]);
         }

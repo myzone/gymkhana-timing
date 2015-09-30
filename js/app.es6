@@ -87,62 +87,40 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             const loadApplication = () => {
                 const savedData = JSON.parse(localStorage.getItem('application-data'));
 
-                let application = R.mapObj(event => {
-                    return {
-                        id: event.id,
-                        configuration: Shuttle.ref({
-                            name: event.configuration.name,
-                            penalties: R.mapObj(penalty => Shuttle.ref({
-                                id: penalty.id,
-                                name: penalty.name,
-                                description: penalty.description,
-                                delay: moment.duration(penalty.delay),
-                                type: penalty.type
-                            }), event.configuration.penalties),
-                            countries: event.configuration.countries
-                        }),
-                        participants: Shuttle.ref(R.map(participant => Shuttle.ref({
-                            id: participant.id,
-                            number: participant.number,
-                            country: participant.country,
-                            name: participant.name,
-                            motorcycle: participant.motorcycle,
-                            group: participant.group,
-                            birthday: moment(participant.birthday),
-                            team: participant.team
-                        }), event.participants)),
-                        heats: R.map(heat => {
-                            return {
-                                id: heat.id,
-                                participant: heat.participant,
-                                number: heat.number,
-                                result: {
-                                    type: heat.result.type,
-                                    time: heat.result.time ? moment.duration(heat.result.time) : undefined,
-                                    penalties: heat.result.penalties ? R.map(penalty => {
-                                        return {
-                                            name: penalty.name,
-                                            type: penalty.type,
-                                            delay: moment.duration(penalty.delay)
-                                        };
-                                    }, heat.result.penalties) : undefined
-                                }
-                            };
-                        }, event.heats)
-                    }
-                }, savedData);
-
-                application = R.mapObj(event => {
-                    event.heats = Shuttle.ref(R.map(heat => {
-                        heat.participant = R.find((participant) => R.equals(participant.get(), heat.participant), event.participants.get());
-
-                        return heat;
-                    }, event.heats));
-
-                    return Shuttle.ref(event);
-                }, application);
-
-                return Shuttle.ref(application);
+                return Shuttle.ref(R.mapObj(event => Shuttle.ref({
+                    id: event.id,
+                    configuration: Shuttle.ref({
+                        name: event.configuration.name,
+                        penalties: R.mapObj(penalty => Shuttle.ref({
+                            id: penalty.id,
+                            name: penalty.name,
+                            description: penalty.description,
+                            delay: moment.duration(penalty.delay),
+                            type: penalty.type
+                        }), event.configuration.penalties),
+                        countries: event.configuration.countries
+                    }),
+                    participants: Shuttle.ref(R.map(participant => Shuttle.ref({
+                        id: participant.id,
+                        number: participant.number,
+                        country: participant.country,
+                        name: participant.name,
+                        motorcycle: participant.motorcycle,
+                        group: participant.group,
+                        birthday: moment(participant.birthday),
+                        team: participant.team
+                    }), event.participants)),
+                    heats: Shuttle.ref(R.map(heat => R.identity({
+                        id: heat.id,
+                        participant: heat.participant,
+                        number: heat.number,
+                        result: {
+                            type: heat.result.type,
+                            time: heat.result.time ? moment.duration(heat.result.time) : undefined,
+                            penalties: heat.result.penalties
+                        }
+                    }), event.heats))
+                }), savedData));
             };
 
             //const application = exampleApplication();
@@ -277,7 +255,10 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         participants: event
                             .flatMap(event => event.participants),
                         heats: event
-                            .flatMap(event => event.heats)
+                            .flatMap(event => event.heats),
+                        penaltyTypes: event
+                            .flatMap(event => event.configuration)
+                            .map(configuration => configuration.penalties)
                     }, this.props.children);
                 }
             }
@@ -293,7 +274,10 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         participants: event
                             .flatMap(event => event.participants),
                         heats: event
-                            .flatMap(event => event.heats)
+                            .flatMap(event => event.heats),
+                        penaltyTypes: event
+                            .flatMap(event => event.configuration)
+                            .map(configuration => configuration.penalties)
                     }, this.props.children);
                 }
             }

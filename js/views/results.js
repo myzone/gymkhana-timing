@@ -120,7 +120,16 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 var secondPlace = this.state.secondPlace;
                 var thirdPlace = this.state.thirdPlace;
 
-                return DOM.table({ style: { width: '100%' } }, DOM.tr({}, [DOM.td({ style: { width: '250px' } }), secondPlace ? React.createElement(SecondPlaceView, { name: secondPlace.name, number: secondPlace.number }) : DOM.td(), firstPlace ? React.createElement(FirstPlaceView, { name: firstPlace.name, number: firstPlace.number }) : DOM.td(), thirdPlace ? React.createElement(ThirdPlaceView, { name: thirdPlace.name, number: thirdPlace.number }) : DOM.td(), DOM.td({ style: { width: '250px' } })]));
+                return DOM.table({ style: { width: '100%' } }, DOM.tr({}, [DOM.td({ style: { width: '250px' } }), secondPlace ? React.createElement(SecondPlaceView, {
+                    name: secondPlace.name,
+                    number: secondPlace.number
+                }) : DOM.td(), firstPlace ? React.createElement(FirstPlaceView, {
+                    name: firstPlace.name,
+                    number: firstPlace.number
+                }) : DOM.td(), thirdPlace ? React.createElement(ThirdPlaceView, {
+                    name: thirdPlace.name,
+                    number: thirdPlace.number
+                }) : DOM.td(), DOM.td({ style: { width: '250px' } })]));
             }
         }]);
 
@@ -139,6 +148,8 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         _createClass(ResultsView, [{
             key: 'render',
             value: function render() {
+                var _this = this;
+
                 var DOM = React.DOM;
                 var eventId = this.props.params.eventId;
 
@@ -146,28 +157,37 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     return R.reduce(function (time, delay) {
                         return time.add(delay);
                     }, moment.duration(heat.result.time), R.map(function (penalty) {
-                        return penalty.delay;
+                        return _this.props.penaltyTypes.get()[penalty].get().delay;
                     }, heat.result.penalties));
                 };
-                var winners = this.props.heats.map(function (heats) {
-                    return R.filter(function (heat) {
-                        return heat.result.type == 'TimedResult';
-                    }, heats);
-                }).map(function (heats) {
-                    return R.map(function (heat) {
-                        return {
-                            participant: heat.participant,
-                            totalTime: totalTime(heat)
-                        };
-                    }, heats);
-                }).map(function (heats) {
-                    return R.sortBy(function (heat) {
-                        return -heat.totalTime;
-                    }, heats);
-                }).map(function (heats) {
-                    return R.map(function (heat) {
-                        return heat.participant;
-                    }, heats);
+                var winnerIds = this.props.heats.map(R.compose(R.map(function (heat) {
+                    return heat.participant;
+                }), R.sortBy(function (heat) {
+                    return heat.bestTime;
+                }), R.values, R.mapObjIndexed(function (heats, participant) {
+                    return R.identity({
+                        participant: participant,
+                        bestTime: R.reduce(R.min, Infinity, R.map(function (heat) {
+                            return heat.totalTime;
+                        }, heats))
+                    });
+                }), R.groupBy(function (heat) {
+                    return heat.participant;
+                }), R.map(function (heat) {
+                    return R.identity({
+                        participant: heat.participant,
+                        totalTime: totalTime(heat)
+                    });
+                }), R.filter(function (heat) {
+                    return heat.result.type == 'TimedResult';
+                })));
+
+                var winners = Shuttle.combine([winnerIds, this.props.participants], function (winnerIds, participants) {
+                    return R.map(function (winnerId) {
+                        return R.find(function (participant) {
+                            return R.equals(winnerId, participant.get().id);
+                        }, participants);
+                    }, winnerIds);
                 });
 
                 return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, {
@@ -175,13 +195,13 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     href: '#event/' + eventId + '/competition'
                 }, [React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-left' }), ' ', "Competition"]), React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/results' }, "Results")]), React.createElement(WinnersView, {
                     firstPlace: winners.flatMap(function (winners) {
-                        return winners.length > 0 ? winners[0] : null;
+                        return winners.length > 0 ? winners[0] : Shuttle.ref(null);
                     }),
                     secondPlace: winners.flatMap(function (winners) {
-                        return winners.length > 1 ? winners[1] : null;
+                        return winners.length > 1 ? winners[1] : Shuttle.ref(null);
                     }),
                     thirdPlace: winners.flatMap(function (winners) {
-                        return winners.length > 2 ? winners[2] : null;
+                        return winners.length > 2 ? winners[2] : Shuttle.ref(null);
                     })
                 })]);
             }

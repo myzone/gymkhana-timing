@@ -214,9 +214,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                                 items: this.penalties,
                                 getId: penalty => penalty.id,
                                 isEmpty: penalty => R.isEmpty(penalty.name)
-                                && R.isEmpty(penalty.description)
-                                && R.isEmpty(penalty.delay)
-                                && R.isEmpty(penalty.type),
+                                    && R.isEmpty(penalty.description)
+                                    && R.isNil(penalty.delay)
+                                    && R.isEmpty(penalty.type),
                                 headerRenderer: PenaltiesHeaderRenderer,
                                 footerRenderer: PenaltiesFooterRenderer,
                                 itemRenderer: PenaltyRenderer

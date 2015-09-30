@@ -27,7 +27,8 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     disabled: this.props.last,
                     bsSize: 'xsmall',
                     onClick: this.props.onDelete
-                }, React.createElement(ReactBootstrap.Glyphicon, {key: 'glyph', glyph: 'trash'}))
+                }, React.createElement(ReactBootstrap.Glyphicon, {key: 'glyph', glyph: 'trash'})),
+                last: this.props.last
             }, this.props.rendererProps));
         }
     }
