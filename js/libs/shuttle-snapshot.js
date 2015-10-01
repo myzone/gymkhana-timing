@@ -1,155 +1,183 @@
+'use strict';
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
 define(['ramda'], function (R) {
-    var Ref = function (initialState, dependencies) {
-        var listeners = new Set();
-        var dependencies = dependencies || [];
-        var state = {
-            value: initialState
-        };
+    var Ref = (function () {
+        function Ref(initialState, dependencies) {
+            _classCallCheck(this, Ref);
 
-        var result = this;
-        result.get = function () {
-            return state.value;
-        };
-        result.set = function (newState) {
-            var oldState = state.value;
-            state.value = newState;
+            this.listeners = new Set();
+            this.dependencies = dependencies;
+            this.value = initialState;
+        }
 
-
-            if (!R.equals(oldState, newState)) {
-                listeners.forEach(function (listener) {
-                    listener(oldState, newState);
-                });
+        _createClass(Ref, [{
+            key: 'get',
+            value: function get() {
+                return this.value;
             }
-        };
-        result.filter = function (filterer, defaultState) {
-            var innerResult = ref(filterer(state.value)
-                ? state.value
-                : defaultState, [result]);
+        }, {
+            key: 'set',
+            value: function set(newState) {
+                var oldState = this.value;
+                this.value = newState;
 
-            result.addListener(function (newState) {
-                if (filterer(newState)) {
+                if (!R.equals(oldState, newState)) {
+                    this.listeners.forEach(function (listener) {
+                        return listener(oldState, newState);
+                    });
+                }
+            }
+        }, {
+            key: 'filter',
+            value: function filter(filterer, defaultState) {
+                var innerResult = new Ref(filterer(this.value) ? this.value : defaultState, [this]);
+
+                this.addListener(function (oldState, newState) {
+                    if (filterer(newState)) {
+                        innerResult.set(newState);
+                    }
+                });
+
+                return innerResult;
+            }
+        }, {
+            key: 'map',
+            value: function map(mapper) {
+                var innerResult = new Ref(mapper(this.value), [this]);
+
+                this.addListener(function (oldState, newState) {
+                    return innerResult.set(mapper(newState));
+                });
+
+                return innerResult;
+            }
+        }, {
+            key: 'flatMap',
+            value: function flatMap(mapper) {
+                var currentMapped = mapper(this.value);
+
+                var innerResult = new Ref(currentMapped ? currentMapped.get() : null, [this]);
+
+                innerResult.addListener(function (oldState, newState) {
+                    if (currentMapped) {
+                        currentMapped.set(newState);
+                    }
+                });
+
+                var listener = function listener(oldState, newState) {
                     innerResult.set(newState);
+                };
+                if (currentMapped) {
+                    currentMapped.addListener(listener);
                 }
-            });
 
-            return innerResult;
-        };
-        result.map = function (mapper) {
-            var innerResult = ref(mapper(state.value), [result]);
+                this.addListener(function (oldState, newState) {
+                    var oldMapped = oldState ? mapper(oldState) : null;
+                    var newMapped = newState ? mapper(newState) : null;
 
-            result.addListener(function (oldState, newState) {
-                innerResult.set(mapper(newState));
-            });
+                    if (oldMapped) oldMapped.removeListener(listener);
 
-            return innerResult;
-        };
-        result.flatMap = function (mapper) {
-            var innerState = {
-                currentMapped: mapper(state.value)
-            };
+                    if (newMapped) newMapped.addListener(listener);
 
-            var innerResult = ref(innerState.currentMapped ? innerState.currentMapped.get() : null);
-            innerResult.addListener(function (oldState, newState) {
-                if (innerState.currentMapped) {
-                    innerState.currentMapped.set(newState);
-                }
-            });
-
-            var listener = function (oldState, newState) {
-                innerResult.set(newState);
-            };
-            if (innerState.currentMapped) {
-                innerState.currentMapped.addListener(listener);
-            }
-
-            result.addListener(function (oldState, newState) {
-                var oldMapped = oldState ? mapper(oldState) : null;
-                var newMapped = newState ? mapper(newState) : null;
-
-                if (oldMapped)
-                    oldMapped.removeListener(listener);
-
-                if (newMapped)
-                    newMapped.addListener(listener);
-
-                innerState.currentMapped = newMapped;
-                listener(oldMapped ? oldMapped.get() : null, newMapped ? newMapped.get() : null);
-            });
-
-            return innerResult;
-        };
-        result.addListener = function (listener) {
-            listeners.add(listener);
-
-            //listener(state.value, state.value);
-        };
-        result.removeListener = function (listener) {
-            listeners.delete(listener);
-        };
-        result.dependsOn = function (observable) {
-            return dependencies.indexOf(observable) !== -1 || R.reduce(R.or, false, R.map(function (dependency) {
-                    return dependency.dependsOn(observable);
-                }, Array.from(dependencies)));
-        };
-        result.log = function (mapper) {
-            mapper = mapper || R.identity;
-
-            result.addListener(function (oldState, newState) {
-                console.log({
-                    oldState: mapper(oldState),
-                    newState: mapper(newState)
+                    currentMapped = newMapped;
+                    listener(oldMapped ? oldMapped.get() : null, newMapped ? newMapped.get() : null);
                 });
-            });
 
-            return result;
-        };
+                return innerResult;
+            }
+        }, {
+            key: 'addListener',
+            value: function addListener(listener) {
+                this.listeners.add(listener);
+            }
+        }, {
+            key: 'removeListener',
+            value: function removeListener(listener) {
+                this.listeners['delete'](listener);
+            }
+        }, {
+            key: 'log',
+            value: function log(mapper) {
+                mapper = mapper || R.identity;
 
-        return result;
+                this.addListener(function (oldState, newState) {
+                    console.log({
+                        oldState: mapper(oldState),
+                        newState: mapper(newState)
+                    });
+                });
+
+                return this;
+            }
+        }]);
+
+        return Ref;
+    })();
+
+    var ref = function ref(initialState) {
+        return new Ref(initialState, []);
     };
-    var ref = function (initialState, dependencies) {
-        return new Ref(initialState, dependencies);
-    };
-    var combine = function (observables, combiner) {
-        var args = function () {
+    var combine = function combine(observables, combiner) {
+        var args = function args() {
             return R.map(function (observable) {
                 return observable.get();
             }, observables);
         };
+        var dependencies = function dependencies(observables) {
+            var flatDependencyTree = function flatDependencyTree(observables) {
+                return R.concat(observables, R.map(flatDependencyTree, R.map(function (observable) {
+                    return observable.dependencies;
+                }, observables)));
+            };
 
-        var innerResult = ref(R.apply(combiner, args()), observables);
+            return R.intersection(observables, R.uniq(flatDependencyTree(observables)));
+        };
+
+        var realDependencies = dependencies(observables);
+        var innerResult = new Ref(R.apply(combiner, args()), realDependencies);
 
         R.forEach(function (observable) {
-            observable.addListener(function () {
-                innerResult.set(R.apply(combiner, args()));
-            })
-        }, observables);
+            return observable.addListener(function () {
+                return innerResult.set(R.apply(combiner, args()));
+            });
+        }, realDependencies);
 
         return innerResult;
     };
-    var json = function (value) {
-        if (value instanceof Ref)
-            return json(value.get());
+    var json = function json(_x) {
+        var _again = true;
 
-        if (value instanceof Array)
-            return R.map(function (i) {
-                return json(i);
-            }, value);
+        _function: while (_again) {
+            var observable = _x;
+            _again = false;
 
-        if (value === null || value === undefined)
-            return value;
+            if (R.isNil(observable)) return observable;
 
-        if (typeof value == 'object' && value.constructor == Object)
-            return R.mapObj(function (i) {
-                return json(i);
-            }, value);
+            if (observable instanceof Ref) {
+                _x = observable.get();
+                _again = true;
+                continue _function;
+            }
 
-        return value;
+            if (observable instanceof Array) return R.map(json, observable);
+
+            if (typeof observable == 'object' && observable.constructor == Object) return R.mapObj(json, observable);
+
+            return observable;
+        }
     };
 
     return {
         Ref: Ref,
+
         ref: ref,
         combine: combine,
         json: json
     };
 });
+
+//# sourceMappingURL=shuttle-snapshot.js.map
