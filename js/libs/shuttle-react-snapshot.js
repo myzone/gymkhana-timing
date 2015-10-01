@@ -23,7 +23,6 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
                 return _this.setState(_this.computeState(_this.props, _this.state));
             };
             this.state = this.computeState(this.props, {});
-            this.lastState = this.state;
         }
 
         // publish
@@ -55,12 +54,19 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
         }, {
             key: 'componentWillReceiveProps',
             value: function componentWillReceiveProps(props) {
-                this.setState(this.computeState(props, this.lastState));
+                this.setState(this.computeState(props, this.state));
             }
         }, {
             key: 'componentDidUpdate',
             value: function componentDidUpdate(prevProps, prevState) {
-                this.lastState = prevState;
+                var _this4 = this;
+
+                R.forEach(function (shuttleProp) {
+                    return shuttleProp.value.removeListener(_this4.updateListener);
+                }, this.getShuttleProps(prevProps));
+                R.forEach(function (shuttleProp) {
+                    return shuttleProp.value.addListener(_this4.updateListener);
+                }, this.getShuttleProps(this.props));
             }
         }, {
             key: 'computeState',
@@ -74,15 +80,15 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
         }, {
             key: 'getShuttleProps',
             value: function getShuttleProps(props) {
-                var _this4 = this;
+                var _this5 = this;
 
                 return R.filter(function (prop) {
                     return prop.value instanceof Shuttle.Ref;
                 }, R.map(function (key) {
-                    return {
+                    return R.identity({
                         key: key,
-                        value: _this4.props[key]
-                    };
+                        value: _this5.props[key]
+                    });
                 }, Object.keys(props)));
             }
         }]);

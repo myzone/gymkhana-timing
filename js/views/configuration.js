@@ -208,7 +208,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                     penalties: penalties,
                     countries: countries
                 });
-            }).log().addListener(function (_, computed) {
+            }).addListener(function (_, computed) {
                 return _this3.props.configuration.set(computed);
             });
         }

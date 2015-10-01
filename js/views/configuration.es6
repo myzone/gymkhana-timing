@@ -176,7 +176,6 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                     penalties: penalties,
                     countries: countries
                 }))
-                .log()
                 .addListener((_, computed) => this.props.configuration.set(computed));
         }
 

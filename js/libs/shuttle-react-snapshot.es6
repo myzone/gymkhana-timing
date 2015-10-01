@@ -2,14 +2,14 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
     class ShuttleReactComponent extends React.Component {
 
         updateListener;
-        lastState;
 
         constructor(props) {
             super(props);
 
-            this.updateListener = (a, b) => this.setState(this.computeState(this.props, this.state));
+            this.updateListener = (a, b) => {
+                return this.setState(this.computeState(this.props, this.state))
+            };
             this.state = this.computeState(this.props, {});
-            this.lastState = this.state;
         }
 
         componentDidMount() {
@@ -26,11 +26,12 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
         //}
 
         componentWillReceiveProps(props) {
-            this.setState(this.computeState(props, this.lastState));
+            this.setState(this.computeState(props, this.state));
         }
 
         componentDidUpdate(prevProps, prevState) {
-            this.lastState = prevState;
+            R.forEach(shuttleProp => shuttleProp.value.removeListener(this.updateListener), this.getShuttleProps(prevProps));
+            R.forEach(shuttleProp => shuttleProp.value.addListener(this.updateListener), this.getShuttleProps(this.props));
         }
 
         computeState(props, state) {
@@ -42,12 +43,10 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
         }
 
         getShuttleProps(props) {
-            return R.filter(prop => prop.value instanceof Shuttle.Ref, R.map(key => {
-                return {
-                    key: key,
-                    value: this.props[key]
-                };
-            }, Object.keys(props)))
+            return R.filter(prop => prop.value instanceof Shuttle.Ref, R.map(key => R.identity({
+                key: key,
+                value: this.props[key]
+            }), Object.keys(props)))
         }
 
     }

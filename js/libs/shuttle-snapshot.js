@@ -4,10 +4,12 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-define(['ramda'], function (R) {
+define(['ramda', 'utils/commons'], function (R, Commons) {
     var Ref = (function () {
         function Ref(initialState, dependencies) {
             _classCallCheck(this, Ref);
+
+            this.guid = Commons.guid();
 
             this.listeners = new Set();
             this.dependencies = dependencies;
@@ -58,36 +60,33 @@ define(['ramda'], function (R) {
         }, {
             key: 'flatMap',
             value: function flatMap(mapper) {
-                var currentMapped = mapper(this.value);
+                var proxy = new Ref(mapper(this.value), [this]);
+                this.addListener(function (oldState, newState) {
+                    proxy.set(mapper(newState));
+                });
 
-                var innerResult = new Ref(currentMapped ? currentMapped.get() : null, [this]);
-
-                innerResult.addListener(function (oldState, newState) {
-                    if (currentMapped) {
-                        currentMapped.set(newState);
-                    }
+                var result = new Ref(proxy.get() ? proxy.get().get() : null, [proxy]);
+                result.addListener(function (oldState, newState) {
+                    proxy.get().set(newState);
                 });
 
                 var listener = function listener(oldState, newState) {
-                    innerResult.set(newState);
+                    result.set(newState);
                 };
-                if (currentMapped) {
-                    currentMapped.addListener(listener);
-                }
 
-                this.addListener(function (oldState, newState) {
-                    var oldMapped = oldState ? mapper(oldState) : null;
-                    var newMapped = newState ? mapper(newState) : null;
+                proxy.addListener(function (oldState, newState) {
+                    if (oldState) oldState.removeListener(listener);
 
-                    if (oldMapped) oldMapped.removeListener(listener);
+                    if (newState) newState.addListener(listener);
 
-                    if (newMapped) newMapped.addListener(listener);
-
-                    currentMapped = newMapped;
-                    listener(oldMapped ? oldMapped.get() : null, newMapped ? newMapped.get() : null);
+                    listener(oldState ? oldState.get() : null, newState ? newState.get() : null);
                 });
 
-                return innerResult;
+                if (proxy.get()) {
+                    proxy.get().addListener(listener);
+                }
+
+                return result;
             }
         }, {
             key: 'addListener',

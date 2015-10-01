@@ -1,4 +1,4 @@
-define(['ramda'], (R) => {
+define(['ramda', 'utils/commons'], (R, Commons) => {
     class Ref {
 
         listeners;
@@ -6,6 +6,8 @@ define(['ramda'], (R) => {
         value;
 
         constructor(initialState, dependencies) {
+            this.guid = Commons.guid();
+
             this.listeners = new Set();
             this.dependencies = dependencies;
             this.value = initialState
@@ -48,43 +50,41 @@ define(['ramda'], (R) => {
         };
 
         flatMap(mapper) {
-            let currentMapped = mapper(this.value);
-
-            const innerResult = new Ref(currentMapped ? currentMapped.get() : null, [this]);
-
-            innerResult.addListener((oldState, newState) => {
-                if (currentMapped) {
-                    currentMapped.set(newState);
-                }
+            const proxy = new Ref(mapper(this.value), [this]);
+            this.addListener((oldState, newState) => {
+                proxy.set(mapper(newState));
             });
 
-            const listener = function (oldState, newState) {
-                innerResult.set(newState);
+            const result = new Ref(proxy.get() ? proxy.get().get() : null, [proxy]);
+            result.addListener((oldState, newState) => {
+                proxy.get().set(newState);
+            });
+
+            const listener = (oldState, newState) => {
+                result.set(newState);
             };
-            if (currentMapped) {
-                currentMapped.addListener(listener);
+
+            proxy.addListener((oldState, newState) => {
+                if (oldState)
+                    oldState.removeListener(listener);
+
+                if (newState)
+                    newState.addListener(listener);
+
+                listener(oldState ? oldState.get() : null, newState ? newState.get() : null);
+            });
+
+            if (proxy.get()) {
+                proxy.get().addListener(listener);
             }
 
-            this.addListener((oldState, newState) => {
-                const oldMapped = oldState ? mapper(oldState) : null;
-                const newMapped = newState ? mapper(newState) : null;
-
-                if (oldMapped)
-                    oldMapped.removeListener(listener);
-
-                if (newMapped)
-                    newMapped.addListener(listener);
-
-                currentMapped = newMapped;
-                listener(oldMapped ? oldMapped.get() : null, newMapped ? newMapped.get() : null);
-            });
-
-            return innerResult;
+            return result;
         }
 
         addListener(listener) {
             this.listeners.add(listener);
         }
+
         removeListener(listener) {
             this.listeners.delete(listener);
         }
