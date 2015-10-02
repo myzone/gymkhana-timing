@@ -53,45 +53,45 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         _inherits(ParticipantRenderer, _Shuttle$React$Component);
 
         function ParticipantRenderer(props) {
-            var _this = this;
-
             _classCallCheck(this, ParticipantRenderer);
 
             _get(Object.getPrototypeOf(ParticipantRenderer.prototype), 'constructor', this).call(this, props);
-
-            var participant = this.state.item;
-
-            this.number = Shuttle.ref(participant.number);
-            this.country = Shuttle.ref(participant.country);
-            this.name = Shuttle.ref(participant.name);
-            this.motorcycle = Shuttle.ref(participant.motorcycle);
-            this.group = Shuttle.ref(participant.group);
-            this.birthday = Shuttle.ref(participant.birthday);
-            this.team = Shuttle.ref(participant.team);
-
-            Shuttle.combine([this.number, this.country, this.name, this.motorcycle, this.group, this.birthday, this.team], function (number, country, name, motorcycle, group, birthday, team) {
-                return {
-                    id: participant.id,
-                    number: number,
-                    country: country,
-                    name: name,
-                    motorcycle: motorcycle,
-                    group: group,
-                    birthday: birthday,
-                    team: team
-                };
-            }).addListener(function (_, computed) {
-                return _this.props.item.set(computed);
-            });
         }
 
         _createClass(ParticipantRenderer, [{
             key: 'render',
             value: function render() {
-                var DOM = React.DOM;
-                var participant = this.state.item;
+                var _this = this;
 
+                var DOM = React.DOM;
+
+                var participant = this.state.item;
                 var validationStatus = !R.isEmpty(participant.number) && !R.isEmpty(participant.country) && !R.isEmpty(participant.name) && !R.isEmpty(participant.motorcycle) && !R.isEmpty(participant.group) && !R.isEmpty(participant.team);
+
+                var number = Shuttle.ref(participant.number);
+                var country = Shuttle.ref(participant.country);
+                var name = Shuttle.ref(participant.name);
+                var motorcycle = Shuttle.ref(participant.motorcycle);
+                var group = Shuttle.ref(participant.group);
+                var birthday = Shuttle.ref(participant.birthday);
+                var team = Shuttle.ref(participant.team);
+
+                Shuttle.combine([number, country, name, motorcycle, group, birthday, team], function (number, country, name, motorcycle, group, birthday, team) {
+                    return {
+                        id: participant.id,
+                        number: number,
+                        country: country,
+                        name: name,
+                        motorcycle: motorcycle,
+                        group: group,
+                        birthday: birthday,
+                        team: team
+                    };
+                }).addListener(function (_, computed) {
+                    return _this.props.item.set(computed);
+                });
+
+                console.log(participant);
 
                 return DOM.tr({
                     key: 'row',
@@ -101,13 +101,13 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     className: 'race-number',
                     style: { width: '50px' },
                     maxLength: 3,
-                    value: this.number
+                    value: number
                 })), DOM.td({ key: 'country', className: 'col-md-1' }, DOM.div({
                     key: 'country-inner',
                     style: { height: '20px' }
                 }, React.createElement(SelectCellView, {
                     key: 'country-cell',
-                    value: this.country,
+                    value: country,
                     items: this.state.countries,
                     renderer: function renderer(country) {
                         return DOM.div({
@@ -121,19 +121,19 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     }
                 }))), DOM.td({ key: 'name', className: 'col-md-4' }, React.createElement(TextCellView, {
                     key: 'name-cell',
-                    value: this.name
+                    value: name
                 })), DOM.td({
                     key: 'motorcycle',
                     className: 'col-md-2'
-                }, React.createElement(TextCellView, { key: 'motorcycle-cell', value: this.motorcycle })), DOM.td({ key: 'group', className: 'col-md-1' }, React.createElement(TextCellView, {
+                }, React.createElement(TextCellView, { key: 'motorcycle-cell', value: motorcycle })), DOM.td({ key: 'group', className: 'col-md-1' }, React.createElement(TextCellView, {
                     key: 'group-cell',
-                    value: this.group
+                    value: group
                 })), DOM.td({
                     key: 'birthday',
                     className: 'col-md-2'
-                }, React.createElement(DateCellView, { key: 'birthday-cell', value: this.birthday })), DOM.td({ key: 'team', className: 'col-md-1' }, React.createElement(TextCellView, {
+                }, React.createElement(DateCellView, { key: 'birthday-cell', value: birthday })), DOM.td({ key: 'team', className: 'col-md-1' }, React.createElement(TextCellView, {
                     key: 'team-cell',
-                    value: this.team
+                    value: team
                 })), DOM.td({ key: 'validation' }, this.props.last ? "" : validationStatus ? React.createElement(ReactBootstrap.Glyphicon, { glyph: 'ok' }) : React.createElement(ReactBootstrap.Glyphicon, { glyph: 'remove' }))]);
             }
         }]);

@@ -1,18 +1,16 @@
 define(['react', 'react-bootstrap', 'react-input-mask', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'moment-durations', 'utils/commons'], (React, ReactBootstrap, InputElement, R, Shuttle, ShuttleReact, moment, momentDurations, Commons) => {
     class StopwatchCellView extends Shuttle.React.Component {
 
-        constructor(props) {
-            super(props);
-        }
-
         render() {
             const duration = this.state.value;
+            const rendered =  duration ? duration.format('mm:ss.SSS', {trim: false}) : '__:__.___';
 
             return React.createElement(InputElement, {
                 mask: '99:99.999',
                 className: this.props.className,
                 style: this.props.style,
-                defaultValue: duration ? duration.format('mm:ss.SSS', {trim: false}) : '__:__.___',
+                value: !this.state.focused ? rendered : undefined,
+                defaultValue: this.state.focused ? rendered : undefined,
                 onChange: (event) => {
                     const val = event.target.value;
 
@@ -28,7 +26,9 @@ define(['react', 'react-bootstrap', 'react-input-mask', 'ramda', 'shuttle', 'shu
                     this.props.value.set(duration.asMilliseconds() != 0
                         ? duration
                         : null)
-                }
+                },
+                onFocus: () => this.setState({focused: true}),
+                onBlur: () => this.setState({focused: false})
             });
         }
 

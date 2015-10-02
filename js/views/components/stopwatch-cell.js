@@ -12,10 +12,10 @@ define(['react', 'react-bootstrap', 'react-input-mask', 'ramda', 'shuttle', 'shu
     var StopwatchCellView = (function (_Shuttle$React$Component) {
         _inherits(StopwatchCellView, _Shuttle$React$Component);
 
-        function StopwatchCellView(props) {
+        function StopwatchCellView() {
             _classCallCheck(this, StopwatchCellView);
 
-            _get(Object.getPrototypeOf(StopwatchCellView.prototype), 'constructor', this).call(this, props);
+            _get(Object.getPrototypeOf(StopwatchCellView.prototype), 'constructor', this).apply(this, arguments);
         }
 
         _createClass(StopwatchCellView, [{
@@ -24,12 +24,14 @@ define(['react', 'react-bootstrap', 'react-input-mask', 'ramda', 'shuttle', 'shu
                 var _this = this;
 
                 var duration = this.state.value;
+                var rendered = duration ? duration.format('mm:ss.SSS', { trim: false }) : '__:__.___';
 
                 return React.createElement(InputElement, {
                     mask: '99:99.999',
                     className: this.props.className,
                     style: this.props.style,
-                    defaultValue: duration ? duration.format('mm:ss.SSS', { trim: false }) : '__:__.___',
+                    value: !this.state.focused ? rendered : undefined,
+                    defaultValue: this.state.focused ? rendered : undefined,
                     onChange: function onChange(event) {
                         var val = event.target.value;
 
@@ -43,6 +45,12 @@ define(['react', 'react-bootstrap', 'react-input-mask', 'ramda', 'shuttle', 'shu
                             ms: replace_With0(res2[1])
                         });
                         _this.props.value.set(duration.asMilliseconds() != 0 ? duration : null);
+                    },
+                    onFocus: function onFocus() {
+                        return _this.setState({ focused: true });
+                    },
+                    onBlur: function onBlur() {
+                        return _this.setState({ focused: false });
                     }
                 });
             }

@@ -1,4 +1,4 @@
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/editable-table', 'components/text-cell', 'components/select-cell', 'components/stopwatch-cell', 'components/toggle-cell', 'components/country-flag', 'utils/commons', 'static-data/countries', 'static-data/penalty-type'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, EditableTableView, TextCellView, SelectCellView, StopwatchCellView, ToggleCellView, CountryFlagView, Commons, countries, PenaltyType) => {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/editable-table', 'components/text-cell', 'components/select-cell', 'components/stopwatch-cell', 'components/toggle-cell', 'components/country-flag', 'utils/commons', 'static-data/countries', 'static-data/penalty-type'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, EditableTableView, TextCellView, SelectCellView, StopwatchCellView, ToggleCellView, CountryFlagView, Commons, COUNTRIES, PenaltyType) => {
     class PenaltiesHeaderRenderer extends React.Component {
 
         render() {
@@ -25,23 +25,26 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
 
     class PenaltyRenderer extends Shuttle.React.Component {
 
-        name;
-        description;
-        delay;
-        type;
-
         constructor(props) {
             super(props);
+        }
 
+        render() {
+            const DOM = React.DOM;
             const penalty = this.state.item;
 
-            this.name = Shuttle.ref(penalty.name);
-            this.description = Shuttle.ref(penalty.description);
-            this.delay = Shuttle.ref(penalty.delay);
-            this.type = Shuttle.ref(penalty.type);
+            const validationStatus = !R.isEmpty(penalty.name)
+                && !R.isEmpty(penalty.description)
+                && !R.isNil(penalty.delay)
+                && !R.isEmpty(penalty.type);
+
+            const name = Shuttle.ref(penalty.name);
+            const description = Shuttle.ref(penalty.description);
+            const delay = Shuttle.ref(penalty.delay);
+            const type = Shuttle.ref(penalty.type);
 
             Shuttle
-                .combine([this.name, this.description, this.delay, this.type], (name, description, delay, type) => {
+                .combine([name, description, delay, type], (name, description, delay, type) => {
                     return {
                         id: penalty.id,
                         name: name,
@@ -51,16 +54,6 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                     }
                 })
                 .addListener((_, computed) => this.props.item.set(computed));
-        }
-
-        render() {
-            const DOM = React.DOM;
-            const participant = this.state.item;
-
-            const validationStatus = !R.isEmpty(participant.name)
-                && !R.isEmpty(participant.motorcycle)
-                && !R.isEmpty(participant.group)
-                && !R.isEmpty(participant.team);
 
             return DOM.tr({
                 key: 'row',
@@ -70,17 +63,17 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
 
                 DOM.td({key: 'name', className: 'col-md-2'}, React.createElement(TextCellView, {
                     key: 'name-cell',
-                    value: this.name
+                    value: name
                 })),
 
                 DOM.td({key: 'description', className: 'col-md-4'}, React.createElement(TextCellView, {
                     key: 'description-cell',
-                    value: this.description
+                    value: description
                 })),
 
                 DOM.td({key: 'delay', className: 'col-md-2'}, React.createElement(StopwatchCellView, {
                     key: 'delay-cell',
-                    value: this.delay
+                    value: delay
                 })),
 
                 DOM.td({key: 'type', className: 'col-md-3'}, DOM.div({
@@ -88,7 +81,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                     style: {height: '20px'}
                 }, React.createElement(SelectCellView, {
                     key: 'type-cell',
-                    value: this.type,
+                    value: type,
                     items: [
                         PenaltyType.NEGLIGIBLE,
                         PenaltyType.SIGNIFICANT,
@@ -132,24 +125,23 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
 
     }
 
-    class ConfigurationView extends React.Component {
-
-        name;
-        penalties;
-        countries;
-
-        countrySubArrays;
+    class ConfigurationView extends Shuttle.React.Component {
 
         constructor(props) {
             super(props);
+        }
 
-            const configuration = this.props.configuration.get();
+        render() {
+            const DOM = React.DOM;
+            const eventId = this.props.params.eventId;
 
-            this.name = Shuttle.ref(configuration.name);
-            this.penalties = Shuttle.ref(R.values(configuration.penalties));
-            this.countries = Shuttle.ref(configuration.countries);
+            const configuration = this.state.configuration;
 
-            this.countrySubArrays = R.mapObj(R.compose(R.splitEvery(8), R.map(country => {
+            const name = Shuttle.ref(configuration.name);
+            const penalties = Shuttle.ref(R.values(configuration.penalties));
+            const countries = Shuttle.ref(configuration.countries);
+
+            const countrySubArrays = R.mapObj(R.compose(R.splitEvery(8), R.map(country => {
                 const item = Shuttle.ref({
                     selected: R.findIndex(R.equals(country), configuration.countries) > -1,
                     country: country
@@ -157,31 +149,26 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
 
                 item.addListener((_, item) => {
                     if (item.selected) {
-                        this.countries.set(R.append(item.country, this.countries.get()))
+                        countries.set(R.append(item.country, countries.get()))
                     } else {
-                        const index = R.findIndex(R.equals(item.country), this.countries.get());
+                        const index = R.findIndex(R.equals(item.country), countries.get());
 
                         if (index > -1) {
-                            this.countries.set(R.remove(index, this.countries.get()))
+                            countries.set(R.remove(index, countries.get()))
                         }
                     }
                 });
 
                 return item;
-            })), R.groupBy(country => country.continentName, R.dropLast(0, countries)));
+            })), R.groupBy(country => country.continentName, R.dropLast(0, COUNTRIES)));
 
             Shuttle
-                .combine([this.name, this.penalties.map(R.reduce((result, item) => R.assoc(item.get().id, item, result), {})), this.countries.map(R.filter(i => i))], (name, penalties, countries) => R.identity({
+                .combine([name, penalties.map(R.reduce((result, item) => R.assoc(item.get().id, item, result), {})), countries.map(R.filter(i => i))], (name, penalties, countries) => R.identity({
                     name: name,
                     penalties: penalties,
                     countries: countries
                 }))
                 .addListener((_, computed) => this.props.configuration.set(computed));
-        }
-
-        render() {
-            const DOM = React.DOM;
-            const eventId = this.props.params.eventId;
 
             return DOM.div({}, [
                 React.createElement(ReactBootstrap.Pager, {}, [
@@ -196,7 +183,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                         DOM.div({className: 'form-group'}, [
                             DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Name")),
                             React.createElement(NameInput, {
-                                name: this.name
+                                name: name
                             })
                         ]),
 
@@ -210,7 +197,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                                     delay: null,
                                     type: ""
                                 }),
-                                items: this.penalties,
+                                items: penalties,
                                 getId: penalty => penalty.id,
                                 isEmpty: penalty => R.isEmpty(penalty.name)
                                     && R.isEmpty(penalty.description)
@@ -223,7 +210,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                         ]),
 
                         DOM.div({className: 'form-group'}, [
-                            DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Countries")),
+                            DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "COUNTRIES")),
                             DOM.div({className: 'col-md-7'}, R.flatten(R.values(R.mapObjIndexed((countrySubArrays, continentName) => [
                                 DOM.h4({className: 'col-md-7'}, continentName),
                                 DOM.div({className: 'btn-array', style: {width: '100%'}}, [
@@ -243,7 +230,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                                     ]), countrySubArrays)
                                 ])
 
-                            ], this.countrySubArrays))))
+                            ], countrySubArrays))))
                         ])
                     ])
                 ])
@@ -251,8 +238,6 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
         }
 
     }
-
-    window.c = countries;
 
     return ConfigurationView;
 });

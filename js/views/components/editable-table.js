@@ -12,34 +12,17 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
     var EditableTableRowView = (function (_React$Component) {
         _inherits(EditableTableRowView, _React$Component);
 
-        function EditableTableRowView(props) {
-            var _this = this;
-
+        function EditableTableRowView() {
             _classCallCheck(this, EditableTableRowView);
 
-            _get(Object.getPrototypeOf(EditableTableRowView.prototype), 'constructor', this).call(this, props);
-
-            this.listener = function (_, item) {
-                return _this.props.item.set(item);
-            };
-            this.itemProxy = Shuttle.ref(this.props.item.get());
+            _get(Object.getPrototypeOf(EditableTableRowView.prototype), 'constructor', this).apply(this, arguments);
         }
 
         _createClass(EditableTableRowView, [{
-            key: 'componentDidMount',
-            value: function componentDidMount() {
-                this.itemProxy.addListener(this.listener);
-            }
-        }, {
-            key: 'componentWillUnmount',
-            value: function componentWillUnmount() {
-                this.itemProxy.removeListener(this.listener);
-            }
-        }, {
             key: 'render',
             value: function render() {
                 return React.createElement(this.props.renderer, R.merge({
-                    item: this.itemProxy,
+                    item: this.props.item,
                     deleteButton: React.createElement(ReactBootstrap.Button, {
                         key: 'button',
                         disabled: this.props.last,
@@ -58,24 +41,24 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         _inherits(EditableTableView, _Shuttle$React$Component);
 
         function EditableTableView(props) {
-            var _this2 = this;
+            var _this = this;
 
             _classCallCheck(this, EditableTableView);
 
             _get(Object.getPrototypeOf(EditableTableView.prototype), 'constructor', this).call(this, props);
 
             var generateLast = function generateLast() {
-                _this2.last = _this2.props.generateNextDefault();
-                _this2.last.addListener(_this2.listener);
+                _this.last = _this.props.generateNextDefault();
+                _this.last.addListener(_this.listener);
             };
 
             this.listener = function (_, item) {
-                if (!_this2.props.isEmpty(item)) {
-                    var last = _this2.last;
+                if (!_this.props.isEmpty(item)) {
+                    var last = _this.last;
 
-                    last.removeListener(_this2.listener);
+                    last.removeListener(_this.listener);
 
-                    _this2.props.items.set(R.append(last, _this2.props.items.get()));
+                    _this.props.items.set(R.append(last, _this.props.items.get()));
 
                     generateLast();
                 }
@@ -87,7 +70,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         _createClass(EditableTableView, [{
             key: 'render',
             value: function render() {
-                var _this3 = this;
+                var _this2 = this;
 
                 var DOM = React.DOM;
 
@@ -99,14 +82,14 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     striped: true
                 }, [DOM.thead({ key: 'table-head' }, React.createElement(this.props.headerRenderer, {})), DOM.tbody({ key: 'table-body' }, [R.flatten([R.map(function (item) {
                     return React.createElement(EditableTableRowView, {
-                        key: _this3.props.getId(item.get()),
+                        key: _this2.props.getId(item.get()),
                         item: item,
-                        renderer: _this3.props.itemRenderer,
-                        rendererProps: _this3.props.props,
+                        renderer: _this2.props.itemRenderer,
+                        rendererProps: _this2.props.props,
                         onDelete: function onDelete() {
-                            _this3.props.items.set(R.filter(function (i) {
+                            _this2.props.items.set(R.filter(function (i) {
                                 return i.get().id !== item.get().id;
-                            }, _this3.state.items));
+                            }, _this2.state.items));
                         }
                     });
                 }, this.state.items), React.createElement(EditableTableRowView, {

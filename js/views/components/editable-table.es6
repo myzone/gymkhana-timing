@@ -1,27 +1,9 @@
 define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/text-cell', 'components/date-cell', 'components/select-cell', 'utils/commons'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment, TextCellView, DateCellView, SelectCellView, Commons) => {
     class EditableTableRowView extends React.Component {
 
-        listener;
-        itemProxy;
-
-        constructor(props) {
-            super(props);
-
-            this.listener = (_, item) => this.props.item.set(item);
-            this.itemProxy = Shuttle.ref(this.props.item.get());
-        }
-
-        componentDidMount() {
-            this.itemProxy.addListener(this.listener);
-        }
-
-        componentWillUnmount() {
-            this.itemProxy.removeListener(this.listener);
-        }
-
         render() {
             return React.createElement(this.props.renderer, R.merge({
-                item: this.itemProxy,
+                item: this.props.item,
                 deleteButton: React.createElement(ReactBootstrap.Button, {
                     key: 'button',
                     disabled: this.props.last,

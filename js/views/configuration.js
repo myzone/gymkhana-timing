@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/editable-table', 'components/text-cell', 'components/select-cell', 'components/stopwatch-cell', 'components/toggle-cell', 'components/country-flag', 'utils/commons', 'static-data/countries', 'static-data/penalty-type'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, EditableTableView, TextCellView, SelectCellView, StopwatchCellView, ToggleCellView, CountryFlagView, Commons, countries, PenaltyType) {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/editable-table', 'components/text-cell', 'components/select-cell', 'components/stopwatch-cell', 'components/toggle-cell', 'components/country-flag', 'utils/commons', 'static-data/countries', 'static-data/penalty-type'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, EditableTableView, TextCellView, SelectCellView, StopwatchCellView, ToggleCellView, CountryFlagView, Commons, COUNTRIES, PenaltyType) {
     var PenaltiesHeaderRenderer = (function (_React$Component) {
         _inherits(PenaltiesHeaderRenderer, _React$Component);
 
@@ -53,58 +53,56 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
         _inherits(PenaltyRenderer, _Shuttle$React$Component);
 
         function PenaltyRenderer(props) {
-            var _this = this;
-
             _classCallCheck(this, PenaltyRenderer);
 
             _get(Object.getPrototypeOf(PenaltyRenderer.prototype), 'constructor', this).call(this, props);
-
-            var penalty = this.state.item;
-
-            this.name = Shuttle.ref(penalty.name);
-            this.description = Shuttle.ref(penalty.description);
-            this.delay = Shuttle.ref(penalty.delay);
-            this.type = Shuttle.ref(penalty.type);
-
-            Shuttle.combine([this.name, this.description, this.delay, this.type], function (name, description, delay, type) {
-                return {
-                    id: penalty.id,
-                    name: name,
-                    description: description,
-                    delay: delay,
-                    type: type
-                };
-            }).addListener(function (_, computed) {
-                return _this.props.item.set(computed);
-            });
         }
 
         _createClass(PenaltyRenderer, [{
             key: 'render',
             value: function render() {
-                var DOM = React.DOM;
-                var participant = this.state.item;
+                var _this = this;
 
-                var validationStatus = !R.isEmpty(participant.name) && !R.isEmpty(participant.motorcycle) && !R.isEmpty(participant.group) && !R.isEmpty(participant.team);
+                var DOM = React.DOM;
+                var penalty = this.state.item;
+
+                var validationStatus = !R.isEmpty(penalty.name) && !R.isEmpty(penalty.description) && !R.isNil(penalty.delay) && !R.isEmpty(penalty.type);
+
+                var name = Shuttle.ref(penalty.name);
+                var description = Shuttle.ref(penalty.description);
+                var delay = Shuttle.ref(penalty.delay);
+                var type = Shuttle.ref(penalty.type);
+
+                Shuttle.combine([name, description, delay, type], function (name, description, delay, type) {
+                    return {
+                        id: penalty.id,
+                        name: name,
+                        description: description,
+                        delay: delay,
+                        type: type
+                    };
+                }).addListener(function (_, computed) {
+                    return _this.props.item.set(computed);
+                });
 
                 return DOM.tr({
                     key: 'row',
                     className: this.props.last ? "" : validationStatus ? 'list-group-item-success' : 'list-group-item-danger'
                 }, [DOM.td({ key: 'trash', style: { width: '24px' } }, this.props.deleteButton), DOM.td({ key: 'name', className: 'col-md-2' }, React.createElement(TextCellView, {
                     key: 'name-cell',
-                    value: this.name
+                    value: name
                 })), DOM.td({ key: 'description', className: 'col-md-4' }, React.createElement(TextCellView, {
                     key: 'description-cell',
-                    value: this.description
+                    value: description
                 })), DOM.td({ key: 'delay', className: 'col-md-2' }, React.createElement(StopwatchCellView, {
                     key: 'delay-cell',
-                    value: this.delay
+                    value: delay
                 })), DOM.td({ key: 'type', className: 'col-md-3' }, DOM.div({
                     key: 'type-inner',
                     style: { height: '20px' }
                 }, React.createElement(SelectCellView, {
                     key: 'type-cell',
-                    value: this.type,
+                    value: type,
                     items: [PenaltyType.NEGLIGIBLE, PenaltyType.SIGNIFICANT, PenaltyType.CRITICAL],
                     renderer: function renderer(item) {
                         return DOM.div({
@@ -159,68 +157,68 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
         return NameInput;
     })(Shuttle.React.Component);
 
-    var ConfigurationView = (function (_React$Component3) {
-        _inherits(ConfigurationView, _React$Component3);
+    var ConfigurationView = (function (_Shuttle$React$Component3) {
+        _inherits(ConfigurationView, _Shuttle$React$Component3);
 
         function ConfigurationView(props) {
-            var _this3 = this;
-
             _classCallCheck(this, ConfigurationView);
 
             _get(Object.getPrototypeOf(ConfigurationView.prototype), 'constructor', this).call(this, props);
-
-            var configuration = this.props.configuration.get();
-
-            this.name = Shuttle.ref(configuration.name);
-            this.penalties = Shuttle.ref(R.values(configuration.penalties));
-            this.countries = Shuttle.ref(configuration.countries);
-
-            this.countrySubArrays = R.mapObj(R.compose(R.splitEvery(8), R.map(function (country) {
-                var item = Shuttle.ref({
-                    selected: R.findIndex(R.equals(country), configuration.countries) > -1,
-                    country: country
-                });
-
-                item.addListener(function (_, item) {
-                    if (item.selected) {
-                        _this3.countries.set(R.append(item.country, _this3.countries.get()));
-                    } else {
-                        var index = R.findIndex(R.equals(item.country), _this3.countries.get());
-
-                        if (index > -1) {
-                            _this3.countries.set(R.remove(index, _this3.countries.get()));
-                        }
-                    }
-                });
-
-                return item;
-            })), R.groupBy(function (country) {
-                return country.continentName;
-            }, R.dropLast(0, countries)));
-
-            Shuttle.combine([this.name, this.penalties.map(R.reduce(function (result, item) {
-                return R.assoc(item.get().id, item, result);
-            }, {})), this.countries.map(R.filter(function (i) {
-                return i;
-            }))], function (name, penalties, countries) {
-                return R.identity({
-                    name: name,
-                    penalties: penalties,
-                    countries: countries
-                });
-            }).addListener(function (_, computed) {
-                return _this3.props.configuration.set(computed);
-            });
         }
 
         _createClass(ConfigurationView, [{
             key: 'render',
             value: function render() {
+                var _this3 = this;
+
                 var DOM = React.DOM;
                 var eventId = this.props.params.eventId;
 
+                var configuration = this.state.configuration;
+
+                var name = Shuttle.ref(configuration.name);
+                var penalties = Shuttle.ref(R.values(configuration.penalties));
+                var countries = Shuttle.ref(configuration.countries);
+
+                var countrySubArrays = R.mapObj(R.compose(R.splitEvery(8), R.map(function (country) {
+                    var item = Shuttle.ref({
+                        selected: R.findIndex(R.equals(country), configuration.countries) > -1,
+                        country: country
+                    });
+
+                    item.addListener(function (_, item) {
+                        if (item.selected) {
+                            countries.set(R.append(item.country, countries.get()));
+                        } else {
+                            var index = R.findIndex(R.equals(item.country), countries.get());
+
+                            if (index > -1) {
+                                countries.set(R.remove(index, countries.get()));
+                            }
+                        }
+                    });
+
+                    return item;
+                })), R.groupBy(function (country) {
+                    return country.continentName;
+                }, R.dropLast(0, COUNTRIES)));
+
+                Shuttle.combine([name, penalties.map(R.reduce(function (result, item) {
+                    return R.assoc(item.get().id, item, result);
+                }, {})), countries.map(R.filter(function (i) {
+                    return i;
+                }))], function (name, penalties, countries) {
+                    return R.identity({
+                        name: name,
+                        penalties: penalties,
+                        countries: countries
+                    });
+                }).addListener(function (_, computed) {
+                    return _this3.props.configuration.set(computed);
+                });
+
                 return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/configuration' }, "Configuration"), React.createElement(ReactBootstrap.PageItem, { next: true, href: '#event/' + eventId + '/registration' }, ["Registration", ' ', React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-right' })])]), DOM.div({}, [DOM.form({ className: 'form-horizontal' }, [DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Name")), React.createElement(NameInput, {
-                    name: this.name
+                    name: name
                 })]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Penalties")), DOM.div({ className: 'col-md-7' }, React.createElement(EditableTableView, {
                     generateNextDefault: function generateNextDefault() {
                         return Shuttle.ref({
@@ -231,7 +229,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                             type: ""
                         });
                     },
-                    items: this.penalties,
+                    items: penalties,
                     getId: function getId(penalty) {
                         return penalty.id;
                     },
@@ -241,7 +239,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                     headerRenderer: PenaltiesHeaderRenderer,
                     footerRenderer: PenaltiesFooterRenderer,
                     itemRenderer: PenaltyRenderer
-                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Countries")), DOM.div({ className: 'col-md-7' }, R.flatten(R.values(R.mapObjIndexed(function (countrySubArrays, continentName) {
+                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "COUNTRIES")), DOM.div({ className: 'col-md-7' }, R.flatten(R.values(R.mapObjIndexed(function (countrySubArrays, continentName) {
                     return [DOM.h4({ className: 'col-md-7' }, continentName), DOM.div({ className: 'btn-array', style: { width: '100%' } }, [R.map(function (countrySubArray) {
                         return DOM.div({ className: 'btn-array-row' }, [R.map(function (country) {
                             return DOM.span({ className: 'btn-array-cell' }, React.createElement(ToggleCellView, {
@@ -264,14 +262,12 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                             }));
                         }, countrySubArray)]);
                     }, countrySubArrays)])];
-                }, this.countrySubArrays))))])])])]);
+                }, countrySubArrays))))])])])]);
             }
         }]);
 
         return ConfigurationView;
-    })(React.Component);
-
-    window.c = countries;
+    })(Shuttle.React.Component);
 
     return ConfigurationView;
 });

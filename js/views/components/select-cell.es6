@@ -1,10 +1,6 @@
 define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/commons'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, Commons) => {
     class SelectCellView extends Shuttle.React.Component {
 
-        constructor(props) {
-            super(props);
-        }
-
         render() {
             const renderer = this.props.renderer;
             const overlay = React.createElement(ReactBootstrap.Popover, {
@@ -13,7 +9,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                 React.DOM.div({className: 'with-scroll', style: {maxHeight: '240px', marginBottom: '5px'}}, React.createElement(ReactBootstrap.ListGroup, {key: 'cell-list'}, [
                     R.addIndex(R.map)((item, i) => React.createElement(ReactBootstrap.ListGroupItem, {
                         key: i,
-                        bsStyle: this.state.value == item ? 'info' : 'default',
+                        bsStyle: R.equals(this.state.value, item) ? 'info' : 'default',
                         onClick: () => this.props.value.set(item)
                     }, renderer(item)), this.props.items)
                 ]))
