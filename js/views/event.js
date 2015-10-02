@@ -23,7 +23,11 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react'], functi
             value: function render() {
                 var DOM = React.DOM;
 
-                return DOM.div({ key: 'event-root' }, [React.createElement(ReactBootstrap.PageHeader, { key: 'header' }, this.state.name), DOM.div({ key: 'children' }, this.props.children)]);
+                return DOM.div({ key: 'event-root' }, [React.createElement(ReactBootstrap.PageHeader, { key: 'header' }, DOM.span({
+                    style: {
+                        opacity: this.state.name ? 1 : .4
+                    }
+                }, this.state.name || "Empty event name")), DOM.div({ key: 'children' }, this.props.children)]);
             }
         }]);
 

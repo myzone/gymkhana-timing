@@ -9,7 +9,12 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
 
         render() {
             return React.createElement(ReactBootstrap.ListGroupItem, {}, [
-                React.DOM.a({href: `#/event/${this.state.id}`}, this.state.name),
+                React.DOM.a({
+                    href: `#/event/${this.state.id}`,
+                    style: {
+                        opacity: this.state.name ? 1 : .4,
+                    }
+                }, this.state.name || "Empty event name"),
                 React.createElement(ReactBootstrap.Button, {
                     className: 'pull-right',
                     bsSize: 'xsmall',

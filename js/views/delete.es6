@@ -35,6 +35,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                             bsStyle: nameCopyIsOk ? 'warning' : 'error',
                             hasFeedback: true,
                             defaultValue: "",
+                            autoFocus: true,
                             onChange: (e) => this.setState({nameCopy: e.target.value})
                         })
                     ]),
