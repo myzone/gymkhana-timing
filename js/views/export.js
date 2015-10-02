@@ -17,13 +17,17 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
 
             _get(Object.getPrototypeOf(ExportView.prototype), 'constructor', this).call(this, params);
 
-            this.state.name = "";
+            this.state.select = function () {};
+            this.state.showOverlay = null;
         }
 
         _createClass(ExportView, [{
             key: 'render',
             value: function render() {
+                var _this = this;
+
                 var DOM = React.DOM;
+                var data = JSON.stringify(Shuttle.json(this.props.application), null, 3);
 
                 return React.createElement(ReactBootstrap.Modal, {
                     bsSize: "large",
@@ -31,22 +35,64 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                     onHide: function onHide() {}
                 }, [React.createElement(ReactBootstrap.Panel, {
                     header: DOM.h3({}, "Export"),
-                    bsStyle: 'primary',
+                    bsStyle: 'success',
                     style: { marginBottom: '0' }
-                }, [React.createElement(ReactBootstrap.Panel, {
+                }, [this.state.showOverlay == 'success' && React.createElement(ReactBootstrap.Alert, {
+                    onDismiss: function onDismiss() {
+                        return _this.setState({ showOverlay: null });
+                    }
+                }, "Data have been copied to clipboard"), DOM.textarea({
+                    ref: 'input',
+                    readOnly: true,
                     style: {
-                        maxHeight: '70vh',
+                        display: 'block',
+
+                        fontFamily: 'monospace',
+                        wordBreak: 'break-all',
+                        wordWrap: 'break-word',
+
+                        backgroundColor: '#f5f5f5',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        resize: 'none',
+                        outline: 'none',
+
+                        width: '100%',
+                        height: '70vh',
                         overflow: 'auto'
                     }
-                }, DOM.pre({}, JSON.stringify(Shuttle.json(this.props.application), null, 2))), React.createElement(ReactBootstrap.ButtonGroup, { className: 'pull-right' }, [React.createElement(ReactBootstrap.Button, {
-                    style: { opacity: '1' },
+                }, data), DOM.br(), React.createElement(ReactBootstrap.ButtonGroup, { className: 'pull-right' }, [React.createElement(ReactBootstrap.Button, { onClick: this.state.select }, [this.state.showOverlay == 'failure' && React.createElement(ReactBootstrap.Tooltip, {
+                    className: 'in',
+                    style: { marginLeft: '-200%' },
+                    placement: 'left'
+                }, "Press CMD+C to copy"), React.createElement(ReactBootstrap.Glyphicon, { glyph: 'copy' }), ' ', "Copy"]), React.createElement(ReactBootstrap.Button, {
                     onClick: function onClick() {
-
-                        window.location.hash = '#/';
-                    }
-                }, "Copy"), React.createElement(ReactBootstrap.Button, { onClick: function onClick() {
                         Commons.setQueryParams(R.dissoc('modal', Commons.getQueryParams()));
-                    } }, "Cancel")])])]);
+                    }
+                }, "Cancel")])])]);
+            }
+        }, {
+            key: 'componentDidMount',
+            value: function componentDidMount() {
+                var _this2 = this;
+
+                _get(Object.getPrototypeOf(ExportView.prototype), 'componentDidMount', this).call(this);
+
+                var input = React.findDOMNode(this.refs.input);
+                var select = function select() {
+                    input.select();
+
+                    try {
+                        if (!document.queryCommandSupported("copy")) throw 'unsupported';
+
+                        document.execCommand('copy');
+                        _this2.setState({ showOverlay: 'success' });
+                    } catch (_) {
+                        _this2.setState({ showOverlay: 'failure' });
+                    }
+                };
+
+                this.setState({ select: select });
             }
         }]);
 
