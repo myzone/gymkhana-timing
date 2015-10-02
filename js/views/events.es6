@@ -42,13 +42,15 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 }
             }, this.state.events);
 
-            return React.createElement(ReactBootstrap.ListGroup, {key: 'events-list'}, [
-                R.map(event => React.createElement(Link2EventView, {
-                    key: event.id.get(),
-                    id: event.id,
-                    name: event.name,
-                    application: this.props.application
-                }), events)
+            return React.createElement(ReactBootstrap.Panel, {header: React.DOM.h4({}, "Events", R.isEmpty(events) && React.DOM.small({style: {opacity: .4}}, ' (empty list)'))}, [
+                React.createElement(ReactBootstrap.ListGroup, {key: 'events-list', fill: true}, [
+                    R.map(event => React.createElement(Link2EventView, {
+                        key: event.id.get(),
+                        id: event.id,
+                        name: event.name,
+                        application: this.props.application
+                    }), events)
+                ])
             ]);
         }
     }
