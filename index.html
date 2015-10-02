@@ -2,7 +2,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title></title>
+    <title>Gymkhana timing</title>
+    <style>
+        .preloader {
+            margin: 70px auto;
+            box-sizing: border-box;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(rgba(64, 150, 238, 1) -50%, rgba(64, 150, 238, 0) 60%);
+            animation: roll-r 4s linear infinite;
+        }
+
+        .preloader > .preloader-inner {
+            padding: 5px;
+            animation: roll-l 1.5s linear infinite;
+        }
+
+        .preloader > .preloader-inner:after {
+            content: "";
+            display: block;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        @keyframes roll-r {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes roll-l {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(-360deg);
+            }
+        }
+    </style>
 </head>
-<body id="root"><h1>Page is being loaded</h1></body>
+<body id="root">
+<div class="preloader">
+    <div class="preloader preloader-inner"></div>
+</div>
+</body>
 <script data-main="js/app.js" src="js/libs/require-2.1.17.js"></script>
