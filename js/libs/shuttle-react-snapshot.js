@@ -47,8 +47,7 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
             }
 
             //shouldComponentUpdate(nextProps, nextState) {
-            //    return !R.equals(nextProps, this.props)
-            //        || !R.equals(this.computeState(nextProps, nextState), R.equals(this.computeState(this.props, this.lastState)));
+            //    return R.equals(this.state, this.computeState(nextProps, nextState))
             //}
 
         }, {
@@ -61,12 +60,18 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
             value: function componentDidUpdate(prevProps, prevState) {
                 var _this4 = this;
 
-                R.forEach(function (shuttleProp) {
-                    return shuttleProp.value.removeListener(_this4.updateListener);
-                }, this.getShuttleProps(prevProps));
-                R.forEach(function (shuttleProp) {
-                    return shuttleProp.value.addListener(_this4.updateListener);
-                }, this.getShuttleProps(this.props));
+                var getShuttlePropsIds = R.compose(R.map(function (prop) {
+                    return prop.value.guid;
+                }), this.getShuttleProps);
+
+                if (!R.equals(getShuttlePropsIds(prevProps), getShuttlePropsIds(this.props))) {
+                    R.forEach(function (shuttleProp) {
+                        return shuttleProp.value.removeListener(_this4.updateListener);
+                    }, this.getShuttleProps(prevProps));
+                    R.forEach(function (shuttleProp) {
+                        return shuttleProp.value.addListener(_this4.updateListener);
+                    }, this.getShuttleProps(this.props));
+                }
             }
         }, {
             key: 'computeState',
@@ -80,14 +85,12 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
         }, {
             key: 'getShuttleProps',
             value: function getShuttleProps(props) {
-                var _this5 = this;
-
                 return R.filter(function (prop) {
                     return prop.value instanceof Shuttle.Ref;
                 }, R.map(function (key) {
                     return R.identity({
                         key: key,
-                        value: _this5.props[key]
+                        value: props[key]
                     });
                 }, Object.keys(props)));
             }

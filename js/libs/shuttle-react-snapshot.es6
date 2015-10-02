@@ -21,8 +21,7 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
         }
 
         //shouldComponentUpdate(nextProps, nextState) {
-        //    return !R.equals(nextProps, this.props)
-        //        || !R.equals(this.computeState(nextProps, nextState), R.equals(this.computeState(this.props, this.lastState)));
+        //    return R.equals(this.state, this.computeState(nextProps, nextState))
         //}
 
         componentWillReceiveProps(props) {
@@ -30,8 +29,15 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
         }
 
         componentDidUpdate(prevProps, prevState) {
-            R.forEach(shuttleProp => shuttleProp.value.removeListener(this.updateListener), this.getShuttleProps(prevProps));
-            R.forEach(shuttleProp => shuttleProp.value.addListener(this.updateListener), this.getShuttleProps(this.props));
+            const getShuttlePropsIds = R.compose(
+                R.map(prop => prop.value.guid),
+                this.getShuttleProps
+            );
+
+            if (!R.equals(getShuttlePropsIds(prevProps), getShuttlePropsIds(this.props))) {
+                R.forEach(shuttleProp => shuttleProp.value.removeListener(this.updateListener), this.getShuttleProps(prevProps));
+                R.forEach(shuttleProp => shuttleProp.value.addListener(this.updateListener), this.getShuttleProps(this.props));
+            }
         }
 
         computeState(props, state) {
@@ -45,7 +51,7 @@ define(['shuttle', 'ramda', 'react'], function (Shuttle, R, React) {
         getShuttleProps(props) {
             return R.filter(prop => prop.value instanceof Shuttle.Ref, R.map(key => R.identity({
                 key: key,
-                value: this.props[key]
+                value: props[key]
             }), Object.keys(props)))
         }
 
