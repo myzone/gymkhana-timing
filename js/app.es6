@@ -87,7 +87,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             const loadApplication = () => {
                 const savedData = JSON.parse(localStorage.getItem('application-data'));
 
-                return Shuttle.ref(R.mapObj(event => Shuttle.ref({
+                return R.mapObj(event => Shuttle.ref({
                     id: event.id,
                     configuration: Shuttle.ref({
                         name: event.configuration.name,
@@ -120,14 +120,18 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                             penalties: heat.result.penalties
                         }
                     }), event.heats))
-                }), savedData));
+                }), savedData);
             };
 
             //const application = exampleApplication();
-            const application = loadApplication();
+            const application = Shuttle.ref(loadApplication());
+            $(window).bind('storage', () => {
+                application.set(loadApplication());
+            });
             setInterval(() => {
+                localStorage.setItem('sync', 1);
                 localStorage.setItem('application-data', JSON.stringify(Shuttle.json(application)));
-            }, 1000);
+            }, 500);
 
 
             const Main = React.createClass({
