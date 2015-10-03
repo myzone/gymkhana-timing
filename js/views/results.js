@@ -8,7 +8,18 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment) {
+define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-durations', 'shuttle', 'shuttle-react', 'components/stopwatch-cell', 'components/country-flag', 'utils/commons'], function (React, ReactRouter, ReactBootstrap, R, moment, momentDurations, Shuttle, ShuttleReact, StopwatchCellView, CountryFlagView, Commons) {
+    var PENALTY_STYLES = {
+        negligible: 'default',
+        significant: 'warning',
+        critical: 'danger'
+    };
+    var HEATS_COUNT = 2;
+
+    var renderDuration = function renderDuration(duration) {
+        return duration.format("mm:ss.SSS", { trim: false });
+    };
+
     var FirstPlaceView = (function () {
         function FirstPlaceView() {
             _classCallCheck(this, FirstPlaceView);
@@ -136,8 +147,153 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         return WinnersView;
     })(Shuttle.React.Component);
 
-    var ResultsView = (function (_React$Component) {
-        _inherits(ResultsView, _React$Component);
+    var ParticipantResultView = (function (_Shuttle$React$Component2) {
+        _inherits(ParticipantResultView, _Shuttle$React$Component2);
+
+        function ParticipantResultView(props) {
+            _classCallCheck(this, ParticipantResultView);
+
+            _get(Object.getPrototypeOf(ParticipantResultView.prototype), 'constructor', this).call(this, props);
+        }
+
+        _createClass(ParticipantResultView, [{
+            key: 'render',
+            value: function render() {
+                var _this = this;
+
+                var DOM = React.DOM;
+                var participant = this.state.participant;
+                var heats = this.state.heats;
+
+                return DOM.tr({
+                    key: 'opened-participant-row-1',
+                    className: 'non-selected ' + (this.props.opened ? 'selected' : ''),
+                    onClick: function onClick() {
+                        return _this.props.onToggle();
+                    }
+                }, [DOM.td({ className: 'important middle-aligned' }, DOM.span({ className: 'race-number' }, participant.number)), DOM.td({ className: 'important middle-aligned' }, participant.country ? React.createElement(CountryFlagView, { country: participant.country }) : ''), DOM.td({ className: 'important middle-aligned' }, participant.name), DOM.td({ className: 'middle-aligned' }, participant.motorcycle), DOM.td({ className: 'middle-aligned' }, participant.group), DOM.td({ className: 'important middle-aligned' }, heats.length + '/' + HEATS_COUNT), DOM.td({ className: 'middle-aligned' }, participant.team)]);
+            }
+        }]);
+
+        return ParticipantResultView;
+    })(Shuttle.React.Component);
+
+    var PenaltyView = (function (_Shuttle$React$Component3) {
+        _inherits(PenaltyView, _Shuttle$React$Component3);
+
+        function PenaltyView() {
+            _classCallCheck(this, PenaltyView);
+
+            _get(Object.getPrototypeOf(PenaltyView.prototype), 'constructor', this).apply(this, arguments);
+        }
+
+        _createClass(PenaltyView, [{
+            key: 'render',
+            value: function render() {
+                var penalty = this.state.penalty;
+                var i = this.props.i;
+
+                return React.createElement(ReactBootstrap.Label, {
+                    key: i,
+                    bsStyle: PENALTY_STYLES[penalty.type]
+                }, penalty.name);
+            }
+        }]);
+
+        return PenaltyView;
+    })(Shuttle.React.Component);
+
+    var ParticipantView = (function (_Shuttle$React$Component4) {
+        _inherits(ParticipantView, _Shuttle$React$Component4);
+
+        function ParticipantView() {
+            _classCallCheck(this, ParticipantView);
+
+            _get(Object.getPrototypeOf(ParticipantView.prototype), 'constructor', this).apply(this, arguments);
+        }
+
+        _createClass(ParticipantView, [{
+            key: 'render',
+            value: function render() {
+                var DOM = React.DOM;
+                var participant = this.state.participant;
+                var heats = this.props.heats;
+
+                return DOM.tr({}, [DOM.td({ className: 'important middle-aligned' }, DOM.span({ className: 'race-number' }, participant.number)), DOM.td({ className: 'important middle-aligned' }, participant.country ? React.createElement(CountryFlagView, { country: participant.country }) : ''), DOM.td({ className: 'important middle-aligned' }, participant.name), DOM.td({ className: 'middle-aligned' }, participant.motorcycle), DOM.td({ className: 'middle-aligned' }, participant.group), DOM.td({ className: 'important middle-aligned' }, heats.length + '/' + HEATS_COUNT), DOM.td({ className: 'middle-aligned' }, participant.team)]);
+            }
+        }]);
+
+        return ParticipantView;
+    })(Shuttle.React.Component);
+
+    var HeatsView = (function (_React$Component) {
+        _inherits(HeatsView, _React$Component);
+
+        function HeatsView() {
+            _classCallCheck(this, HeatsView);
+
+            _get(Object.getPrototypeOf(HeatsView.prototype), 'constructor', this).apply(this, arguments);
+        }
+
+        _createClass(HeatsView, [{
+            key: 'render',
+            value: function render() {
+                var DOM = React.DOM;
+                var heats = this.props.heats;
+                var penaltyTypes = this.props.penaltyTypes;
+
+                return DOM.tr({}, [DOM.td({ style: { padding: '0' } }), DOM.td({ style: { padding: '0' }, colSpan: 3 }, [DOM.div({}, React.createElement(ReactBootstrap.Table, {
+                    className: 'inner-table group-table-striped group-table-hover',
+                    responsive: true,
+                    condensed: true
+                }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "Time"), DOM.td({}, "Penalty"), DOM.th({}, "Total"), DOM.td({}, "∆")])), DOM.tbody({}, R.addIndex(R.map)(function (heat, i) {
+                    return DOM.tr({ key: i }, [DOM.td({}, heat.number), DOM.td({ className: 'col-md-2' }, heat.time ? renderDuration(heat.time) : ''), DOM.td({}, R.addIndex(R.map)(function (penalty, i) {
+                        return [React.createElement(PenaltyView, {
+                            i: i,
+                            penalty: penaltyTypes[penalty]
+                        }), ' '];
+                    }, heat.penalties)), DOM.td({ className: 'col-md-2' }, renderDuration(heat.totalTime)), DOM.td({ className: 'col-md-2' }, '+' + renderDuration(heat.deltaTime))]);
+                }, R.sortBy(function (heat) {
+                    return heat.number;
+                }, heats)))]))]), DOM.td({ style: { padding: '0' }, colSpan: 3 })]);
+            }
+        }]);
+
+        return HeatsView;
+    })(React.Component);
+
+    var ResultTableView = (function (_Shuttle$React$Component5) {
+        _inherits(ResultTableView, _Shuttle$React$Component5);
+
+        function ResultTableView() {
+            _classCallCheck(this, ResultTableView);
+
+            _get(Object.getPrototypeOf(ResultTableView.prototype), 'constructor', this).apply(this, arguments);
+        }
+
+        _createClass(ResultTableView, [{
+            key: 'render',
+            value: function render() {
+                var DOM = React.DOM;
+                var results = this.state.results;
+                var penaltyTypes = this.props.penaltyTypes;
+
+                return React.createElement(ReactBootstrap.Panel, {}, React.createElement(ReactBootstrap.Table, {
+                    key: 'table',
+                    className: 'group-table-striped group-table-hover data-editable',
+                    responsive: true,
+                    fill: true
+                }, [R.addIndex(R.map)(function (result, i) {
+                    return DOM.tbody({ key: i }, [React.createElement(ParticipantView, { participant: result.participant, heats: result.heats }), React.createElement(HeatsView, { heats: result.heats, bestTime: result.bestTime, penaltyTypes: penaltyTypes })]);
+                }, results)]));
+            }
+        }]);
+
+        return ResultTableView;
+    })(Shuttle.React.Component);
+
+    var ResultsView = (function (_Shuttle$React$Component6) {
+        _inherits(ResultsView, _Shuttle$React$Component6);
 
         function ResultsView() {
             _classCallCheck(this, ResultsView);
@@ -148,47 +304,63 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         _createClass(ResultsView, [{
             key: 'render',
             value: function render() {
-                var _this = this;
-
                 var DOM = React.DOM;
                 var eventId = this.props.params.eventId;
+                var penaltyTypes = this.state.penaltyTypes;
 
                 var totalTime = function totalTime(heat) {
                     return R.reduce(function (time, delay) {
                         return time.add(delay);
                     }, moment.duration(heat.result.time), R.map(function (penalty) {
-                        return _this.props.penaltyTypes.get()[penalty].get().delay;
+                        return penaltyTypes[penalty].delay;
                     }, heat.result.penalties));
                 };
-                var winnerIds = this.props.heats.map(R.compose(R.map(function (heat) {
-                    return heat.participant;
-                }), R.sortBy(function (heat) {
+                var semiResults = this.props.heats.map(R.compose(R.sortBy(function (heat) {
                     return heat.bestTime;
                 }), R.values, R.mapObjIndexed(function (heats, participant) {
                     return R.identity({
                         participant: participant,
                         bestTime: R.reduce(R.min, Infinity, R.map(function (heat) {
                             return heat.totalTime;
-                        }, heats))
+                        }, heats)),
+                        heats: heats
                     });
                 }), R.groupBy(function (heat) {
                     return heat.participant;
                 }), R.map(function (heat) {
                     return R.identity({
                         participant: heat.participant,
+                        number: heat.number,
+                        time: heat.result.time,
+                        penalties: heat.result.penalties,
                         totalTime: totalTime(heat)
                     });
                 }), R.filter(function (heat) {
                     return heat.result.type == 'TimedResult';
                 })));
-
-                var winners = Shuttle.combine([winnerIds, this.props.participants], function (winnerIds, participants) {
-                    return R.map(function (winnerId) {
-                        return R.find(function (participant) {
-                            return R.equals(winnerId, participant.get().id);
-                        }, participants);
-                    }, winnerIds);
+                var results = Shuttle.combine([semiResults, this.props.participants], function (results, participants) {
+                    return R.map(function (result) {
+                        return R.identity({
+                            participant: R.find(function (participant) {
+                                return R.equals(result.participant, participant.get().id);
+                            }, participants),
+                            bestTime: result.bestTime,
+                            heats: R.map(function (heat) {
+                                return R.identity({
+                                    participant: heat.participant,
+                                    number: heat.number,
+                                    time: heat.time,
+                                    penalties: heat.penalties,
+                                    totalTime: heat.totalTime,
+                                    deltaTime: moment.duration(heat.totalTime).subtract(result.bestTime)
+                                });
+                            }, result.heats)
+                        });
+                    }, results);
                 });
+                var winners = results.map(R.map(function (result) {
+                    return result.participant;
+                }));
 
                 return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, {
                     previous: true,
@@ -203,12 +375,12 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     thirdPlace: winners.flatMap(function (winners) {
                         return winners.length > 2 ? winners[2] : Shuttle.ref(null);
                     })
-                })]);
+                }), React.createElement(ResultTableView, { results: results, penaltyTypes: penaltyTypes })]);
             }
         }]);
 
         return ResultsView;
-    })(React.Component);
+    })(Shuttle.React.Component);
 
     return ResultsView;
 });

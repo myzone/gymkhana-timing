@@ -1,4 +1,13 @@
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, moment) => {
+define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-durations', 'shuttle', 'shuttle-react', 'components/stopwatch-cell', 'components/country-flag', 'utils/commons'], (React, ReactRouter, ReactBootstrap, R, moment, momentDurations, Shuttle, ShuttleReact, StopwatchCellView, CountryFlagView, Commons) => {
+    const PENALTY_STYLES = {
+        negligible: 'default',
+        significant: 'warning',
+        critical: 'danger'
+    };
+    const HEATS_COUNT = 2;
+
+    const renderDuration = duration => duration.format("mm:ss.SSS", {trim: false});
+
     class FirstPlaceView {
         render() {
             const DOM = React.DOM;
@@ -112,33 +121,172 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         }
     }
 
-    class ResultsView extends React.Component {
+
+    class ParticipantResultView extends Shuttle.React.Component {
+
+        constructor(props) {
+            super(props);
+        }
+
+        render() {
+            const DOM = React.DOM;
+            const participant = this.state.participant;
+            const heats = this.state.heats;
+
+            return DOM.tr({
+                key: 'opened-participant-row-1',
+                className: `non-selected ${this.props.opened ? 'selected' : ''}`,
+                onClick: () => this.props.onToggle()
+            }, [
+                DOM.td({className: 'important middle-aligned'}, DOM.span({className: 'race-number'}, participant.number)),
+                DOM.td({className: 'important middle-aligned'}, participant.country ? React.createElement(CountryFlagView, {country: participant.country}) : ''),
+                DOM.td({className: 'important middle-aligned'}, participant.name),
+                DOM.td({className: 'middle-aligned'}, participant.motorcycle),
+                DOM.td({className: 'middle-aligned'}, participant.group),
+                DOM.td({className: 'important middle-aligned'}, `${heats.length}/${HEATS_COUNT}`),
+                DOM.td({className: 'middle-aligned'}, participant.team)
+            ]);
+        }
+
+    }
+
+    class PenaltyView extends Shuttle.React.Component {
+
+        render() {
+            const penalty = this.state.penalty;
+            const i = this.props.i;
+
+            return React.createElement(ReactBootstrap.Label, {
+                key: i,
+                bsStyle: PENALTY_STYLES[penalty.type]
+            }, penalty.name);
+        }
+
+    }
+
+
+    class ParticipantView extends Shuttle.React.Component {
+        render() {
+            const DOM = React.DOM;
+            const participant = this.state.participant;
+            const heats = this.props.heats;
+
+            return DOM.tr({}, [
+                DOM.td({className: 'important middle-aligned'}, DOM.span({className: 'race-number'}, participant.number)),
+                DOM.td({className: 'important middle-aligned'}, participant.country ? React.createElement(CountryFlagView, {country: participant.country}) : ''),
+                DOM.td({className: 'important middle-aligned'}, participant.name),
+                DOM.td({className: 'middle-aligned'}, participant.motorcycle),
+                DOM.td({className: 'middle-aligned'}, participant.group),
+                DOM.td({className: 'important middle-aligned'}, `${heats.length}/${HEATS_COUNT}`),
+                DOM.td({className: 'middle-aligned'}, participant.team)
+            ])
+        }
+    }
+
+    class HeatsView extends React.Component {
+
+        render() {
+            const DOM = React.DOM;
+            const heats = this.props.heats;
+            const penaltyTypes = this.props.penaltyTypes;
+
+            return DOM.tr({}, [
+                DOM.td({style: {padding: '0'}}),
+                DOM.td({style: {padding: '0'}, colSpan: 3}, [
+                    DOM.div({}, React.createElement(ReactBootstrap.Table, {
+                        className: 'inner-table group-table-striped group-table-hover',
+                        responsive: true,
+                        condensed: true
+                    }, [
+                        DOM.thead({}, DOM.tr({}, [
+                            DOM.td({}, ""),
+                            DOM.td({}, "Time"),
+                            DOM.td({}, "Penalty"),
+                            DOM.th({}, "Total"),
+                            DOM.td({}, "∆")
+                        ])),
+                        DOM.tbody({}, R.addIndex(R.map)((heat, i) => {
+                            return DOM.tr({key: i}, [
+                                DOM.td({}, heat.number),
+                                DOM.td({className: 'col-md-2'}, heat.time ? renderDuration(heat.time) : ''),
+                                DOM.td({}, R.addIndex(R.map)((penalty, i) => [React.createElement(PenaltyView, {
+                                    i: i,
+                                    penalty: penaltyTypes[penalty]
+                                }), ' '], heat.penalties)),
+                                DOM.td({className: 'col-md-2'}, renderDuration(heat.totalTime)),
+                                DOM.td({className: 'col-md-2'}, `+${renderDuration(heat.deltaTime)}`)
+                            ]);
+                        }, R.sortBy(heat => heat.number, heats)))
+                    ]))
+                ]),
+                DOM.td({style: {padding: '0'}, colSpan: 3})
+            ]);
+        }
+    }
+
+    class ResultTableView extends Shuttle.React.Component {
+        render() {
+            const DOM = React.DOM;
+            const results = this.state.results;
+            const penaltyTypes = this.props.penaltyTypes;
+
+            return React.createElement(ReactBootstrap.Panel, {}, React.createElement(ReactBootstrap.Table, {
+                key: 'table',
+                className: 'group-table-striped group-table-hover data-editable',
+                responsive: true,
+                fill: true
+            }, [
+                R.addIndex(R.map)((result, i) => {
+                    return DOM.tbody({key: i}, [
+                        React.createElement(ParticipantView, {participant: result.participant, heats: result.heats}),
+                        React.createElement(HeatsView, {heats: result.heats, bestTime: result.bestTime, penaltyTypes: penaltyTypes})
+                    ])
+                }, results)
+            ]))
+        }
+    }
+
+    class ResultsView extends Shuttle.React.Component {
         render() {
             const DOM = React.DOM;
             const eventId = this.props.params.eventId;
+            const penaltyTypes = this.state.penaltyTypes;
 
-            const totalTime = (heat) => R.reduce((time, delay) => time.add(delay), moment.duration(heat.result.time), R.map(penalty => this.props.penaltyTypes.get()[penalty].get().delay, heat.result.penalties));
-            const winnerIds = this.props.heats
+            const totalTime = (heat) => R.reduce((time, delay) => time.add(delay), moment.duration(heat.result.time), R.map(penalty => penaltyTypes[penalty].delay, heat.result.penalties));
+            const semiResults = this.props.heats
                 .map(R.compose(
-                    R.map(heat => heat.participant),
                     R.sortBy(heat => heat.bestTime),
                     R.values,
                     R.mapObjIndexed((heats, participant) => R.identity({
                         participant: participant,
-                        bestTime: R.reduce(R.min, Infinity, R.map(heat => heat.totalTime, heats))
+                        bestTime: R.reduce(R.min, Infinity, R.map(heat => heat.totalTime, heats)),
+                        heats: heats
                     })),
                     R.groupBy(heat => heat.participant),
                     R.map(heat => R.identity({
                         participant: heat.participant,
+                        number: heat.number,
+                        time: heat.result.time,
+                        penalties: heat.result.penalties,
                         totalTime: totalTime(heat)
                     })),
                     R.filter(heat => heat.result.type == 'TimedResult')
                 ));
-
-            const winners = Shuttle
-                .combine([winnerIds, this.props.participants], (winnerIds, participants) => {
-                    return R.map(winnerId => R.find(participant => R.equals(winnerId, participant.get().id), participants), winnerIds);
-                });
+            const results = Shuttle.combine([semiResults, this.props.participants], (results, participants) => {
+                return R.map(result => R.identity({
+                    participant: R.find(participant => R.equals(result.participant, participant.get().id), participants),
+                    bestTime: result.bestTime,
+                    heats: R.map(heat => R.identity({
+                        participant: heat.participant,
+                        number: heat.number,
+                        time: heat.time,
+                        penalties: heat.penalties,
+                        totalTime: heat.totalTime,
+                        deltaTime: moment.duration(heat.totalTime).subtract(result.bestTime)
+                    }),result.heats)
+                }), results);
+            });
+            const winners = results.map(R.map(result => result.participant));
 
             return DOM.div({}, [
                 React.createElement(ReactBootstrap.Pager, {}, [
@@ -155,7 +303,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     firstPlace: winners.flatMap(winners => winners.length > 0 ? winners[0] : Shuttle.ref(null)),
                     secondPlace: winners.flatMap(winners => winners.length > 1 ? winners[1] : Shuttle.ref(null)),
                     thirdPlace: winners.flatMap(winners => winners.length > 2 ? winners[2] : Shuttle.ref(null))
-                })
+                }),
+
+                React.createElement(ResultTableView, {results: results, penaltyTypes: penaltyTypes})
             ]);
         }
 

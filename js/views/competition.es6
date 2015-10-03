@@ -8,6 +8,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
 
     const renderDuration = duration => duration.format("mm:ss.SSS", {trim: false});
 
+
     class HeatView extends React.Component {
 
         constructor(props) {
@@ -25,7 +26,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                         ? {type: 'TimedResult', time: time, penalties: penalties}
                         : {type: 'NoTimeResult'}
                 }
-            }).log();
+            });
 
             this.listener = (_, heat) => {
                 let heats = this.props.heats.get();

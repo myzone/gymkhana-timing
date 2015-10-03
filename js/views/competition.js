@@ -40,7 +40,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                     number: _this.props.result.number,
                     result: !R.isNil(time) || !R.isEmpty(penalties) ? { type: 'TimedResult', time: time, penalties: penalties } : { type: 'NoTimeResult' }
                 };
-            }).log();
+            });
 
             this.listener = function (_, heat) {
                 var heats = _this.props.heats.get();
