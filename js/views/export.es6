@@ -42,29 +42,20 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'models
                     }, [
                         React.createElement(ReactBootstrap.Collapse, {in: this.state.showOverlay == 'success'}, React.createElement(ReactBootstrap.Alert, {
                             onDismiss: () => this.setState({showOverlay: null})
-                        }, "Data have been copied to clipboard")),
+                        }, "Data have been copied to clipboard.")),
+
+                        DOM.p({}, [
+                            "Please keep your dump in safe to make import process safe and painless."
+                        ]),
+
                         DOM.textarea({
                             ref: 'input',
                             readOnly: true,
-                            style: {
-                                display: 'block',
-
-                                fontFamily: 'monospace',
-                                wordBreak: 'break-all',
-                                wordWrap: 'break-word',
-
-                                backgroundColor: '#f5f5f5',
-                                border: '1px solid #ccc',
-                                borderRadius: '4px',
-                                resize: 'none',
-                                outline: 'none',
-
-                                width: '100%',
-                                height: '70vh',
-                                overflow: 'auto'
-                            }
+                            className: 'data-text-area'
                         }, data),
+
                         DOM.br(),
+
                         React.createElement(ReactBootstrap.ButtonGroup, {className: 'pull-right'}, [
                             React.createElement(ReactBootstrap.Button, {onClick: copy}, [
                                 this.state.showOverlay == 'failure' && React.createElement(ReactBootstrap.Tooltip, {

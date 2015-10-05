@@ -65,7 +65,11 @@ define(['ramda', 'shuttle', 'moment', 'utils/commons'], function (R, Shuttle, mo
             }, JSON.parse(raw)));
         },
         validate: function validate(raw) {
-            return R.equals(raw, Application.marshall(Application.unmashall(raw)));
+            try {
+                return R.equals(JSON.parse(raw), JSON.parse(Application.marshall(Application.unmashall(raw))));
+            } catch (e) {
+                return false;
+            }
         }
     };
 

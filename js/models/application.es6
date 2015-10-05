@@ -50,7 +50,13 @@ define(['ramda', 'shuttle', 'moment', 'utils/commons'], (R, Shuttle, moment, Com
                 }
             }), event.heats))
         }), JSON.parse(raw))),
-        validate: raw => R.equals(raw, Application.marshall(Application.unmashall(raw)))
+        validate: raw => {
+            try {
+                return R.equals(JSON.parse(raw), JSON.parse(Application.marshall(Application.unmashall(raw))));
+            } catch (e) {
+                return false;
+            }
+        }
     };
 
     return Application;
