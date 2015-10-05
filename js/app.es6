@@ -10,6 +10,7 @@ require.config({
         'react-bootstrap': 'libs/react-bootstrap-0.25.2',
         'react-router': 'libs/react-router-1.0.0-rc1',
         'react-input-mask': 'libs/react-input-mask-0.1.3-PATCHED',
+        'react-dropzone': 'libs/react-dropzone-2.1.0-PATCHED',
 
         'shuttle': 'libs/shuttle-snapshot',
         'shuttle-react': 'libs/shuttle-react-snapshot',

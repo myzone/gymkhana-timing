@@ -1,4 +1,4 @@
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'components/editable-table', 'components/text-cell', 'components/select-cell', 'components/stopwatch-cell', 'components/toggle-cell', 'components/country-flag', 'utils/commons', 'static-data/countries', 'static-data/penalty-type'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, EditableTableView, TextCellView, SelectCellView, StopwatchCellView, ToggleCellView, CountryFlagView, Commons, COUNTRIES, PenaltyType) => {
+define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shuttle-react', 'components/editable-table', 'components/text-cell', 'components/select-cell', 'components/stopwatch-cell', 'components/toggle-cell', 'components/country-flag', 'utils/commons', 'static-data/countries', 'static-data/penalty-type'], (React, ReactBootstrap, Dropzone, R, Shuttle, ShuttleReact, EditableTableView, TextCellView, SelectCellView, StopwatchCellView, ToggleCellView, CountryFlagView, Commons, COUNTRIES, PenaltyType) => {
     class PenaltiesHeaderRenderer extends React.Component {
 
         render() {
@@ -110,7 +110,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
 
             return React.createElement(ReactBootstrap.Input, {
                 type: 'text',
-                wrapperClassName: 'col-md-7',
+                groupClassName: 'no-margin',
 
                 bsStyle: nameIsOk ? 'success' : 'error',
                 hasFeedback: true,
@@ -121,6 +121,58 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
 
         validateName() {
             return !R.isEmpty(this.state.name);
+        }
+
+    }
+
+    class CourseInput extends Shuttle.React.Component {
+
+        render() {
+            const DOM = React.DOM;
+
+            return React.createElement(Dropzone, {
+                style: {
+                    borderWidth: '2px',
+                    borderColor: '#666',
+                    borderStyle: 'dashed',
+                    borderRadius: '5px'
+                },
+                activeStyle: {
+                    height: 'auto',
+                    width: 'auto',
+                    borderStyle: 'solid',
+                    backgroundColor: '#eee'
+                },
+                multiple: 'true',
+                onDrop: files => {
+                    const file = R.head(files);
+
+                    if (file) {
+                        const reader = new FileReader();
+
+                        reader.onload = e => {
+                            var img = new Image();
+                            img.onload = () => this.props.course.set(e.target.result);
+                            img.onerror = () => this.props.course.set(null);
+                            img.src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                }
+            }, this.state.course
+                ? DOM.img({
+                    src: this.state.course,
+                    style: {
+                        height: 'auto',
+                        width: '100%'
+                    }
+                })
+                : React.createElement(ReactBootstrap.Jumbotron, {style: {marginBottom: 0}}, DOM.span({style: {
+                    marginBottom: '15px',
+                    fontSize: '21px',
+                    fontWeight: '200'
+                }
+            }, "Try dropping course layout here or click to select file.")));
         }
 
     }
@@ -140,6 +192,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
             const name = Shuttle.ref(configuration.name);
             const penalties = Shuttle.ref(R.values(configuration.penalties));
             const countries = Shuttle.ref(configuration.countries);
+            const course = Shuttle.ref(configuration.course);
 
             const countrySubArrays = R.mapObj(R.compose(R.splitEvery(8), R.map(country => {
                 const item = Shuttle.ref({
@@ -163,8 +216,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
             })), R.groupBy(country => country.continentName, R.dropLast(0, COUNTRIES)));
 
             Shuttle
-                .combine([name, penalties.map(R.reduce((result, item) => R.assoc(item.get().id, item, result), {})), countries.map(R.filter(i => i))], (name, penalties, countries) => R.identity({
+                .combine([name, course, penalties.map(R.reduce((result, item) => R.assoc(item.get().id, item, result), {})), countries.map(R.filter(i => i))], (name, course, penalties, countries) => R.identity({
                     name: name,
+                    course: course,
                     penalties: penalties,
                     countries: countries
                 }))
@@ -182,9 +236,16 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                     DOM.form({className: 'form-horizontal'}, [
                         DOM.div({className: 'form-group'}, [
                             DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Name")),
-                            React.createElement(NameInput, {
+                            DOM.div({className: 'col-md-7'}, React.createElement(NameInput, {
                                 name: name
-                            })
+                            }))
+                        ]),
+
+                        DOM.div({className: 'form-group'}, [
+                            DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Course layout")),
+                            DOM.div({className: 'col-md-7'}, React.createElement(CourseInput, {
+                                course: course
+                            }))
                         ]),
 
                         DOM.div({className: 'form-group'}, [
@@ -200,9 +261,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                                 items: penalties,
                                 getId: penalty => penalty.id,
                                 isEmpty: penalty => R.isEmpty(penalty.name)
-                                    && R.isEmpty(penalty.description)
-                                    && R.isNil(penalty.delay)
-                                    && R.isEmpty(penalty.type),
+                                && R.isEmpty(penalty.description)
+                                && R.isNil(penalty.delay)
+                                && R.isEmpty(penalty.type),
                                 headerRenderer: PenaltiesHeaderRenderer,
                                 footerRenderer: PenaltiesFooterRenderer,
                                 itemRenderer: PenaltyRenderer
@@ -210,7 +271,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'compon
                         ]),
 
                         DOM.div({className: 'form-group'}, [
-                            DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "COUNTRIES")),
+                            DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Countries")),
                             DOM.div({className: 'col-md-7'}, R.flatten(R.values(R.mapObjIndexed((countrySubArrays, continentName) => [
                                 DOM.h4({className: 'col-md-7'}, continentName),
                                 DOM.div({className: 'btn-array', style: {width: '100%'}}, [
