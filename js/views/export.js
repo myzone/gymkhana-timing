@@ -8,91 +8,118 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/commons'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, Commons) {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'models/application', 'utils/commons'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, Application, Commons) {
+    var prettify = function prettify(json) {
+        return JSON.stringify(JSON.parse(json), null, 3);
+    };
+
     var ExportView = (function (_Shuttle$React$Component) {
         _inherits(ExportView, _Shuttle$React$Component);
 
-        function ExportView(params) {
+        function ExportView() {
             _classCallCheck(this, ExportView);
 
-            _get(Object.getPrototypeOf(ExportView.prototype), 'constructor', this).call(this, params);
-
-            this.state.select = function () {};
-            this.state.showOverlay = null;
+            _get(Object.getPrototypeOf(ExportView.prototype), 'constructor', this).apply(this, arguments);
         }
 
         _createClass(ExportView, [{
             key: 'render',
             value: function render() {
-                var _this = this;
+                var data = prettify(Application.marshall(this.props.application));
 
-                var DOM = React.DOM;
-                var data = JSON.stringify(Shuttle.json(this.props.application), null, 3);
+                var ExportDialog = (function (_React$Component) {
+                    _inherits(ExportDialog, _React$Component);
+
+                    function ExportDialog(params) {
+                        _classCallCheck(this, ExportDialog);
+
+                        _get(Object.getPrototypeOf(ExportDialog.prototype), 'constructor', this).call(this, params);
+
+                        this.state = {
+                            input: null,
+                            showOverlay: null
+                        };
+                    }
+
+                    _createClass(ExportDialog, [{
+                        key: 'render',
+                        value: function render() {
+                            var _this = this;
+
+                            var DOM = React.DOM;
+                            var copy = function copy() {
+                                _this.state.input.select();
+
+                                try {
+                                    if (!document.queryCommandSupported("copy")) throw 'unsupported';
+
+                                    document.execCommand('copy');
+                                    _this.setState({ showOverlay: 'success' });
+
+                                    document.getSelection().empty();
+                                } catch (_) {
+                                    _this.setState({ showOverlay: 'failure' });
+                                }
+                            };
+
+                            return React.createElement(ReactBootstrap.Modal.Dialog, { bsSize: "large" }, React.createElement(ReactBootstrap.Panel, {
+                                header: DOM.h3({}, "Export"),
+                                bsStyle: 'success',
+                                style: { marginBottom: '0' }
+                            }, [React.createElement(ReactBootstrap.Collapse, { 'in': this.state.showOverlay == 'success' }, React.createElement(ReactBootstrap.Alert, {
+                                onDismiss: function onDismiss() {
+                                    return _this.setState({ showOverlay: null });
+                                }
+                            }, "Data have been copied to clipboard")), DOM.textarea({
+                                ref: 'input',
+                                readOnly: true,
+                                style: {
+                                    display: 'block',
+
+                                    fontFamily: 'monospace',
+                                    wordBreak: 'break-all',
+                                    wordWrap: 'break-word',
+
+                                    backgroundColor: '#f5f5f5',
+                                    border: '1px solid #ccc',
+                                    borderRadius: '4px',
+                                    resize: 'none',
+                                    outline: 'none',
+
+                                    width: '100%',
+                                    height: '70vh',
+                                    overflow: 'auto'
+                                }
+                            }, data), DOM.br(), React.createElement(ReactBootstrap.ButtonGroup, { className: 'pull-right' }, [React.createElement(ReactBootstrap.Button, { onClick: copy }, [this.state.showOverlay == 'failure' && React.createElement(ReactBootstrap.Tooltip, {
+                                className: 'in',
+                                style: { marginLeft: '-200%' },
+                                placement: 'left'
+                            }, "Press CMD+C to copy"), React.createElement(ReactBootstrap.Glyphicon, { glyph: 'copy' }), ' ', "Copy"]), React.createElement(ReactBootstrap.Button, {
+                                onClick: function onClick() {
+                                    Commons.setQueryParams(R.dissoc('modal', Commons.getQueryParams()));
+                                }
+                            }, "Cancel")])]));
+                        }
+                    }, {
+                        key: 'componentDidMount',
+                        value: function componentDidMount() {
+                            this.setState({ input: React.findDOMNode(this.refs.input) });
+                        }
+                    }, {
+                        key: 'componentWillUnmount',
+                        value: function componentWillUnmount() {
+                            this.setState({ input: null });
+                        }
+                    }]);
+
+                    return ExportDialog;
+                })(React.Component);
 
                 return React.createElement(ReactBootstrap.Modal, {
-                    bsSize: "large",
                     show: this.props.opened,
+                    dialogComponent: ExportDialog,
                     onHide: function onHide() {}
-                }, [React.createElement(ReactBootstrap.Panel, {
-                    header: DOM.h3({}, "Export"),
-                    bsStyle: 'success',
-                    style: { marginBottom: '0' }
-                }, [this.state.showOverlay == 'success' && React.createElement(ReactBootstrap.Alert, {
-                    onDismiss: function onDismiss() {
-                        return _this.setState({ showOverlay: null });
-                    }
-                }, "Data have been copied to clipboard"), DOM.textarea({
-                    ref: 'input',
-                    readOnly: true,
-                    style: {
-                        display: 'block',
-
-                        fontFamily: 'monospace',
-                        wordBreak: 'break-all',
-                        wordWrap: 'break-word',
-
-                        backgroundColor: '#f5f5f5',
-                        border: '1px solid #ccc',
-                        borderRadius: '4px',
-                        resize: 'none',
-                        outline: 'none',
-
-                        width: '100%',
-                        height: '70vh',
-                        overflow: 'auto'
-                    }
-                }, data), DOM.br(), React.createElement(ReactBootstrap.ButtonGroup, { className: 'pull-right' }, [React.createElement(ReactBootstrap.Button, { onClick: this.state.select }, [this.state.showOverlay == 'failure' && React.createElement(ReactBootstrap.Tooltip, {
-                    className: 'in',
-                    style: { marginLeft: '-200%' },
-                    placement: 'left'
-                }, "Press CMD+C to copy"), React.createElement(ReactBootstrap.Glyphicon, { glyph: 'copy' }), ' ', "Copy"]), React.createElement(ReactBootstrap.Button, {
-                    onClick: function onClick() {
-                        Commons.setQueryParams(R.dissoc('modal', Commons.getQueryParams()));
-                    }
-                }, "Cancel")])])]);
-            }
-        }, {
-            key: 'componentDidMount',
-            value: function componentDidMount() {
-                var _this2 = this;
-
-                _get(Object.getPrototypeOf(ExportView.prototype), 'componentDidMount', this).call(this);
-
-                var input = React.findDOMNode(this.refs.input);
-                var select = function select() {
-                    input.select();
-
-                    try {
-                        if (!document.queryCommandSupported("copy")) throw 'unsupported';
-
-                        document.execCommand('copy');
-                        _this2.setState({ showOverlay: 'success' });
-                    } catch (_) {
-                        _this2.setState({ showOverlay: 'failure' });
-                    }
-                };
-
-                this.setState({ select: select });
+                });
             }
         }]);
 

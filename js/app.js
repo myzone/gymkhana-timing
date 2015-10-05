@@ -52,6 +52,8 @@ require.config({
         'components/editable-table': 'views/components/editable-table',
         'components/country-flag': 'views/components/country-flag',
 
+        'models/application': 'models/application',
+
         'utils/commons': 'utils/commons',
 
         'static-data/countries': 'static-data/countries',
@@ -75,7 +77,7 @@ require.config({
 });
 
 require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery', 'shuttle', 'shuttle-react'], function (React, ReactBootstrap, ReactRouter, R, moment, $, Shuttle, ShuttleReact) {
-    require(['views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results', 'views/create'], function (PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView, CreateView) {
+    require(['models/application', 'views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results', 'views/create'], function (Application, PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView, CreateView) {
         moment.locale('en');
 
         var exampleApplication = function exampleApplication() {
@@ -94,60 +96,20 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
         };
 
         var loadApplication = function loadApplication() {
-            var savedData = JSON.parse(localStorage.getItem('application-data'));
+            var raw = localStorage.getItem('application-data');
 
-            return R.mapObj(function (event) {
-                return Shuttle.ref({
-                    id: event.id,
-                    configuration: Shuttle.ref({
-                        name: event.configuration.name,
-                        penalties: R.mapObj(function (penalty) {
-                            return Shuttle.ref({
-                                id: penalty.id,
-                                name: penalty.name,
-                                description: penalty.description,
-                                delay: moment.duration(penalty.delay),
-                                type: penalty.type
-                            });
-                        }, event.configuration.penalties),
-                        countries: event.configuration.countries
-                    }),
-                    participants: Shuttle.ref(R.map(function (participant) {
-                        return Shuttle.ref({
-                            id: participant.id,
-                            number: participant.number,
-                            country: participant.country,
-                            name: participant.name,
-                            motorcycle: participant.motorcycle,
-                            group: participant.group,
-                            birthday: moment(participant.birthday),
-                            team: participant.team
-                        });
-                    }, event.participants)),
-                    heats: Shuttle.ref(R.map(function (heat) {
-                        return R.identity({
-                            id: heat.id,
-                            participant: heat.participant,
-                            number: heat.number,
-                            result: {
-                                type: heat.result.type,
-                                time: heat.result.time ? moment.duration(heat.result.time) : undefined,
-                                penalties: heat.result.penalties
-                            }
-                        });
-                    }, event.heats))
-                });
-            }, savedData);
+            return raw ? Application.unmashall(raw) : Application.empty();
         };
 
         //const application = exampleApplication();
-        var application = Shuttle.ref(loadApplication());
+        var store = Shuttle.ref(loadApplication());
+        var application = store.flatMap(R.identity);
         $(window).bind('storage', function () {
-            application.set(loadApplication());
+            store.set(loadApplication());
         });
         setInterval(function () {
             localStorage.setItem('sync', 1);
-            localStorage.setItem('application-data', JSON.stringify(Shuttle.json(application)));
+            localStorage.setItem('application-data', Application.marshall(application));
         }, 500);
 
         var Main = React.createClass({
@@ -217,16 +179,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             return function (application) {
                 var event = application[eventId];
 
-                if (!event) return Shuttle.ref({
-                    id: '',
-                    configuration: Shuttle.ref({
-                        name: '',
-                        penalties: {},
-                        countries: []
-                    }),
-                    participants: Shuttle.ref([]),
-                    heats: Shuttle.ref([])
-                });
+                if (!event) return Application.emptyEvent('', '');
 
                 return event;
             };

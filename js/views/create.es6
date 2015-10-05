@@ -1,4 +1,4 @@
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/commons'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, Commons) => {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'models/application', 'utils/commons'], (React, ReactBootstrap, R, Shuttle, ShuttleReact, Application, Commons) => {
     class CreateView extends Shuttle.React.Component {
 
         constructor(params) {
@@ -41,18 +41,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                             style: {opacity: '1'},
                             onClick: () => {
                                 const eventId = Commons.guid();
-
-                                const application = Shuttle.ref({
-                                        id: eventId,
-                                        configuration: Shuttle.ref({
-                                            name: this.state.name,
-                                            penalties: {},
-                                            countries: []
-                                        }),
-                                        participants: Shuttle.ref([]),
-                                        heats: Shuttle.ref([])
-                                });
-                                this.props.application.set(R.assoc(eventId, application, this.state.application));
+                                const name = this.state.name;
+                                
+                                this.props.application.set(R.assoc(eventId, Application.emptyEvent(eventId, name), this.state.application));
 
                                 window.location.hash = `#/`;
                             }

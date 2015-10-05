@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/commons'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, Commons) {
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'models/application', 'utils/commons'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, Application, Commons) {
     var CreateView = (function (_Shuttle$React$Component) {
         _inherits(CreateView, _Shuttle$React$Component);
 
@@ -54,18 +54,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/
                     style: { opacity: '1' },
                     onClick: function onClick() {
                         var eventId = Commons.guid();
+                        var name = _this.state.name;
 
-                        var application = Shuttle.ref({
-                            id: eventId,
-                            configuration: Shuttle.ref({
-                                name: _this.state.name,
-                                penalties: {},
-                                countries: []
-                            }),
-                            participants: Shuttle.ref([]),
-                            heats: Shuttle.ref([])
-                        });
-                        _this.props.application.set(R.assoc(eventId, application, _this.state.application));
+                        _this.props.application.set(R.assoc(eventId, Application.emptyEvent(eventId, name), _this.state.application));
 
                         window.location.hash = '#/';
                     }
