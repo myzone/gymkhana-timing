@@ -8,13 +8,18 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         }
 
         render() {
+            const name = this.state.name;
+            const eventDate = this.state.eventDate ? this.state.eventDate.format('Do MMM YYYY') : '';
+            const eventPlace = !this.state.eventPlace ? '' : this.state.eventDate ? `, ${this.state.eventPlace}` : this.state.eventPlace;
+
             return React.createElement(ReactBootstrap.ListGroupItem, {}, [
                 React.DOM.a({
                     href: `#/event/${this.state.id}`,
                     style: {
-                        opacity: this.state.name ? 1 : .4,
+                        opacity: name ? 1 : .4,
                     }
-                }, this.state.name || "Empty event name"),
+                }, name || "Empty event name"),
+                React.DOM.small({style: {color: 'darkgray'}}, ` @${eventDate}${eventPlace}`),
                 React.createElement(ReactBootstrap.Button, {
                     className: 'pull-right',
                     bsSize: 'xsmall',
@@ -22,7 +27,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 }, React.createElement(ReactBootstrap.Glyphicon, {key: 'glyph', glyph: 'trash'})),
                 React.createElement(DeleteView, {
                     opened: this.opened,
-                    eventName: this.state.name,
+                    eventName: name,
                     eventId: this.state.id,
                     application: this.props.application
                 })
@@ -33,12 +38,18 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
     class EventsView extends Shuttle.React.Component {
         render() {
             const events = R.map(event => {
+                const configuration = event
+                    .flatMap(e => e.configuration);
+
                 return {
                     id: event
                         .map(event => event.id),
-                    name: event
-                        .flatMap(e => e.configuration)
-                        .map(c => c.name)
+                    name: configuration
+                        .map(c => c.name),
+                    eventDate: configuration
+                        .map(c => c.eventDate),
+                    eventPlace: configuration
+                        .map(c => c.eventPlace)
                 }
             }, this.state.events);
 
@@ -48,6 +59,8 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                         key: event.id.get(),
                         id: event.id,
                         name: event.name,
+                        eventDate: event.eventDate,
+                        eventPlace: event.eventPlace,
                         application: this.props.application
                     }), events)
                 ])

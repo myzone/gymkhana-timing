@@ -8,39 +8,38 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact) {
-    var EventView = (function (_Shuttle$React$Component) {
-        _inherits(EventView, _Shuttle$React$Component);
+define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'utils/commons'], function (React, ReactBootstrap, R, Shuttle, ShuttleReact, Commons) {
+    var PlaceCellView = (function (_Shuttle$React$Component) {
+        _inherits(PlaceCellView, _Shuttle$React$Component);
 
-        function EventView() {
-            _classCallCheck(this, EventView);
+        function PlaceCellView() {
+            _classCallCheck(this, PlaceCellView);
 
-            _get(Object.getPrototypeOf(EventView.prototype), 'constructor', this).apply(this, arguments);
+            _get(Object.getPrototypeOf(PlaceCellView.prototype), 'constructor', this).apply(this, arguments);
         }
 
-        _createClass(EventView, [{
+        _createClass(PlaceCellView, [{
             key: 'render',
             value: function render() {
-                var DOM = React.DOM;
+                var _this = this;
 
-                var configuration = this.state.configuration;
+                return React.createElement(ReactBootstrap.Input, {
+                    type: 'text',
+                    className: this.props.className,
+                    groupClassName: 'no-margin',
 
-                var name = configuration.name;
-                var eventDate = configuration.eventDate ? configuration.eventDate.format('Do MMM YYYY') : '';
-                var eventPlace = !configuration.eventPlace ? '' : configuration.eventDate ? ', ' + configuration.eventPlace : configuration.eventPlace;
-
-                return DOM.div({ key: 'event-root' }, [React.createElement(ReactBootstrap.PageHeader, { key: 'header' }, DOM.span({
-                    style: {
-                        opacity: name ? 1 : .4
+                    value: this.state.value,
+                    onChange: function onChange(e) {
+                        return _this.props.value.set(e.target.value);
                     }
-                }, name || "Empty event name", React.DOM.small({}, ' @' + eventDate + eventPlace))), DOM.div({ key: 'children' }, this.props.children)]);
+                });
             }
         }]);
 
-        return EventView;
+        return PlaceCellView;
     })(Shuttle.React.Component);
 
-    return EventView;
+    return PlaceCellView;
 });
 
-//# sourceMappingURL=event.js.map
+//# sourceMappingURL=place-cell.js.map

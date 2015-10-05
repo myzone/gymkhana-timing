@@ -1,4 +1,4 @@
-define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shuttle-react', 'components/editable-table', 'components/text-cell', 'components/select-cell', 'components/stopwatch-cell', 'components/toggle-cell', 'components/country-flag', 'utils/commons', 'static-data/countries', 'static-data/penalty-type'], (React, ReactBootstrap, Dropzone, R, Shuttle, ShuttleReact, EditableTableView, TextCellView, SelectCellView, StopwatchCellView, ToggleCellView, CountryFlagView, Commons, COUNTRIES, PenaltyType) => {
+define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/editable-table', 'components/text-cell', 'components/select-cell', 'components/date-cell', 'components/stopwatch-cell', 'components/toggle-cell', 'components/place-cell', 'components/country-flag', 'utils/commons', 'static-data/countries', 'static-data/penalty-type'], (React, ReactBootstrap, Dropzone, R, Shuttle, ShuttleReact, moment, EditableTableView, TextCellView, SelectCellView, DateCellView, StopwatchCellView, ToggleCellView, PlaceCellView, CountryFlagView, Commons, COUNTRIES, PenaltyType) => {
     class PenaltiesHeaderRenderer extends React.Component {
 
         render() {
@@ -125,6 +125,20 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
 
     }
 
+    class PlaceInput extends Shuttle.React.Component {
+
+        render() {
+            return React.createElement(ReactBootstrap.Input, {
+                type: 'text',
+                groupClassName: 'no-margin',
+
+                value: this.state.eventPlace,
+                onChange: e => this.props.eventPlace.set(e.target.value)
+            });
+        }
+
+    }
+
     class CourseInput extends Shuttle.React.Component {
 
         render() {
@@ -143,7 +157,7 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                     borderStyle: 'solid',
                     backgroundColor: '#eee'
                 },
-                multiple: 'true',
+                multiple: false,
                 onDrop: files => {
                     const file = R.head(files);
 
@@ -190,9 +204,11 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
             const configuration = this.state.configuration;
 
             const name = Shuttle.ref(configuration.name);
+            const eventDate = Shuttle.ref(configuration.eventDate);
+            const eventPlace = Shuttle.ref(configuration.eventPlace);
+            const course = Shuttle.ref(configuration.course);
             const penalties = Shuttle.ref(R.values(configuration.penalties));
             const countries = Shuttle.ref(configuration.countries);
-            const course = Shuttle.ref(configuration.course);
 
             const countrySubArrays = R.mapObj(R.compose(R.splitEvery(8), R.map(country => {
                 const item = Shuttle.ref({
@@ -216,11 +232,20 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
             })), R.groupBy(country => country.continentName, R.dropLast(0, COUNTRIES)));
 
             Shuttle
-                .combine([name, course, penalties.map(R.reduce((result, item) => R.assoc(item.get().id, item, result), {})), countries.map(R.filter(i => i))], (name, course, penalties, countries) => R.identity({
-                    name: name,
-                    course: course,
-                    penalties: penalties,
-                    countries: countries
+                .combine([
+                    name,
+                    eventDate,
+                    eventPlace,
+                    course,
+                    penalties.map(R.reduce((result, item) => R.assoc(item.get().id, item, result), {})),
+                    countries.map(R.filter(i => i))
+                ], (name, eventDate, eventPlace, course, penalties, countries) => R.identity({
+                        name: name,
+                        eventDate: eventDate,
+                        eventPlace: eventPlace,
+                        course: course,
+                        penalties: penalties,
+                        countries: countries
                 }))
                 .addListener((_, computed) => this.props.configuration.set(computed));
 
@@ -238,6 +263,20 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                             DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Name")),
                             DOM.div({className: 'col-md-7'}, React.createElement(NameInput, {
                                 name: name
+                            }))
+                        ]),
+
+                        DOM.div({className: 'form-group'}, [
+                            DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Date")),
+                            DOM.div({className: 'col-md-7 '}, DOM.span({className: 'form-control'}, React.createElement(DateCellView, {
+                                value: eventDate
+                            })))
+                        ]),
+
+                        DOM.div({className: 'form-group'}, [
+                            DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Place")),
+                            DOM.div({className: 'col-md-7 '}, React.createElement(PlaceCellView, {
+                                value: eventPlace
                             }))
                         ]),
 

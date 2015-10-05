@@ -25,12 +25,16 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
             value: function render() {
                 var _this = this;
 
+                var name = this.state.name;
+                var eventDate = this.state.eventDate ? this.state.eventDate.format('Do MMM YYYY') : '';
+                var eventPlace = !this.state.eventPlace ? '' : this.state.eventDate ? ', ' + this.state.eventPlace : this.state.eventPlace;
+
                 return React.createElement(ReactBootstrap.ListGroupItem, {}, [React.DOM.a({
                     href: '#/event/' + this.state.id,
                     style: {
-                        opacity: this.state.name ? 1 : .4
+                        opacity: name ? 1 : .4
                     }
-                }, this.state.name || "Empty event name"), React.createElement(ReactBootstrap.Button, {
+                }, name || "Empty event name"), React.DOM.small({ style: { color: 'darkgray' } }, ' @' + eventDate + eventPlace), React.createElement(ReactBootstrap.Button, {
                     className: 'pull-right',
                     bsSize: 'xsmall',
                     onClick: function onClick() {
@@ -38,7 +42,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     }
                 }, React.createElement(ReactBootstrap.Glyphicon, { key: 'glyph', glyph: 'trash' })), React.createElement(DeleteView, {
                     opened: this.opened,
-                    eventName: this.state.name,
+                    eventName: name,
                     eventId: this.state.id,
                     application: this.props.application
                 })]);
@@ -63,14 +67,22 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 var _this2 = this;
 
                 var events = R.map(function (event) {
+                    var configuration = event.flatMap(function (e) {
+                        return e.configuration;
+                    });
+
                     return {
                         id: event.map(function (event) {
                             return event.id;
                         }),
-                        name: event.flatMap(function (e) {
-                            return e.configuration;
-                        }).map(function (c) {
+                        name: configuration.map(function (c) {
                             return c.name;
+                        }),
+                        eventDate: configuration.map(function (c) {
+                            return c.eventDate;
+                        }),
+                        eventPlace: configuration.map(function (c) {
+                            return c.eventPlace;
                         })
                     };
                 }, this.state.events);
@@ -80,6 +92,8 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                         key: event.id.get(),
                         id: event.id,
                         name: event.name,
+                        eventDate: event.eventDate,
+                        eventPlace: event.eventPlace,
                         application: _this2.props.application
                     });
                 }, events)])]);

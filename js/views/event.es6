@@ -3,12 +3,18 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react'], (React
         render() {
             const DOM = React.DOM;
 
+            const configuration = this.state.configuration;
+
+            const name = configuration.name;
+            const eventDate = configuration.eventDate ? configuration.eventDate.format('Do MMM YYYY') : '';
+            const eventPlace = !configuration.eventPlace ? '' : configuration.eventDate ? `, ${configuration.eventPlace}` : configuration.eventPlace;
+
             return DOM.div({key: 'event-root'}, [
                 React.createElement(ReactBootstrap.PageHeader, {key: 'header'}, DOM.span({
                     style: {
-                        opacity: this.state.name ? 1 : .4
+                        opacity: name ? 1 : .4
                     }
-                }, this.state.name || "Empty event name")),
+                }, name || "Empty event name", React.DOM.small({}, ` @${eventDate}${eventPlace}`))),
 
                 DOM.div({key: 'children'}, this.props.children)
             ]);

@@ -10,9 +10,11 @@ define(['ramda', 'shuttle', 'moment', 'utils/commons'], function (R, Shuttle, mo
                 id: id,
                 configuration: Shuttle.ref({
                     name: name,
+                    eventDate: moment().day(6),
+                    eventPlace: null,
+                    course: null,
                     penalties: {},
-                    countries: [],
-                    course: null
+                    countries: []
                 }),
                 participants: Shuttle.ref([]),
                 heats: Shuttle.ref([])
@@ -27,6 +29,9 @@ define(['ramda', 'shuttle', 'moment', 'utils/commons'], function (R, Shuttle, mo
                     id: event.id,
                     configuration: Shuttle.ref({
                         name: event.configuration.name,
+                        eventDate: moment(event.configuration.eventDate),
+                        eventPlace: event.configuration.eventPlace,
+                        course: event.configuration.course,
                         penalties: R.mapObj(function (penalty) {
                             return Shuttle.ref({
                                 id: penalty.id,
@@ -36,8 +41,7 @@ define(['ramda', 'shuttle', 'moment', 'utils/commons'], function (R, Shuttle, mo
                                 type: penalty.type
                             });
                         }, event.configuration.penalties),
-                        countries: event.configuration.countries,
-                        course: event.configuration.course
+                        countries: event.configuration.countries
                     }),
                     participants: Shuttle.ref(R.map(function (participant) {
                         return Shuttle.ref({

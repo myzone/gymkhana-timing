@@ -6,7 +6,7 @@ require.config({
         'moment': 'libs/moment-with-locales-2.10.2',
         'moment-durations': 'libs/moment-duration-format-1.3.0',
 
-        'react': 'libs/react-0.13.1',
+        'react': 'libs/react-0.13.3-production.min',
         'react-bootstrap': 'libs/react-bootstrap-0.25.2',
         'react-router': 'libs/react-router-1.0.0-rc1',
         'react-input-mask': 'libs/react-input-mask-0.1.3-PATCHED',
@@ -40,6 +40,7 @@ require.config({
         'components/select-cell': 'views/components/select-cell',
         'components/toggle-cell': 'views/components/toggle-cell',
         'components/stopwatch-cell': 'views/components/stopwatch-cell',
+        'components/place-cell': 'views/components/place-cell',
         'components/editable-table': 'views/components/editable-table',
         'components/country-flag': 'views/components/country-flag',
 
@@ -173,9 +174,8 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                     return React.createElement(EventView, {
                         key: 'view',
                         params: this.props.params,
-                        name: event
-                            .flatMap(event => event.configuration)
-                            .map(configuration => configuration.name),
+                        configuration: event
+                            .flatMap(event => event.configuration),
                         application: application
                     }, this.props.children);
                 }
