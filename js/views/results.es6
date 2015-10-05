@@ -169,15 +169,13 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
         render() {
             const DOM = React.DOM;
             const participant = this.state.participant;
-            const heats = this.props.heats;
 
             return DOM.tr({}, [
-                DOM.td({className: 'important middle-aligned'}, DOM.span({className: 'race-number'}, participant.number)),
-                DOM.td({className: 'important middle-aligned'}, participant.country ? React.createElement(CountryFlagView, {country: participant.country}) : ''),
-                DOM.td({className: 'important middle-aligned'}, participant.name),
+                DOM.td({className: 'middle-aligned'}, DOM.span({className: 'race-number'}, participant.number)),
+                DOM.td({className: 'middle-aligned'}, participant.country ? React.createElement(CountryFlagView, {country: participant.country}) : ''),
+                DOM.td({className: 'middle-aligned'}, participant.name),
                 DOM.td({className: 'middle-aligned'}, participant.motorcycle),
                 DOM.td({className: 'middle-aligned'}, participant.group),
-                DOM.td({className: 'important middle-aligned'}, `${heats.length}/${HEATS_COUNT}`),
                 DOM.td({className: 'middle-aligned'}, participant.team)
             ])
         }
@@ -194,8 +192,9 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                 DOM.td({style: {padding: '0'}}),
                 DOM.td({style: {padding: '0'}, colSpan: 3}, [
                     DOM.div({}, React.createElement(ReactBootstrap.Table, {
-                        className: 'inner-table group-table-striped group-table-hover',
+                        className: 'inner-table',
                         responsive: true,
+                        striped: true,
                         condensed: true
                     }, [
                         DOM.thead({}, DOM.tr({}, [

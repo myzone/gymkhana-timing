@@ -49,7 +49,7 @@ define(['react', 'react-bootstrap', 'jquery', 'ramda', 'shuttle', 'shuttle-react
 
                         fontWeight: '100',
                         color: 'black',
-                        textShadow: '0.5px 0.5px 0.5px rgba(255, 255, 255, 0.65), -0.5px -0.5px 0.5px rgba(255, 255, 255, 0.65), 0.5px 0.5px 0.5px rgba(255, 255, 255, 0.45), -0.5px 0.5px 0.5px rgba(255, 255, 255, 0.65)'
+                        textShadow: '0.1em 0.1em 0.1em rgba(255, 255, 255, 0.65), -0.1em -0.1em 0.1em rgba(255, 255, 255, 0.65), 0.1em -0.1em 0.1em rgba(255, 255, 255, 0.45), -0.1em 0.1em 0.1em rgba(255, 255, 255, 0.65)'
                     }
                 }, this.props.country.countryCode))]));
             }
