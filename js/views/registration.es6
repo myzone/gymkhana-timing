@@ -66,8 +66,6 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 })
                 .addListener((_, computed) => this.props.item.set(computed));
 
-            console.log(participant)
-
             return DOM.tr({
                 key: 'row',
                 className: this.props.last ? "" : validationStatus ? 'list-group-item-success' : 'list-group-item-danger'

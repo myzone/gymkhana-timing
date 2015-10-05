@@ -31,6 +31,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'models
 
                 return React.createElement(ReactBootstrap.Modal, {
                     bsSize: "large",
+                    dialogClassName: 'data-modal',
                     show: this.props.opened,
                     onHide: function onHide() {}
                 }, [React.createElement(ReactBootstrap.Panel, {

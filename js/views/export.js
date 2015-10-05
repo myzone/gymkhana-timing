@@ -62,7 +62,10 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'models
                                 }
                             };
 
-                            return React.createElement(ReactBootstrap.Modal.Dialog, { bsSize: "large" }, React.createElement(ReactBootstrap.Panel, {
+                            return React.createElement(ReactBootstrap.Modal.Dialog, {
+                                bsSize: "large",
+                                className: 'data-modal'
+                            }, React.createElement(ReactBootstrap.Panel, {
                                 header: DOM.h3({}, "Export"),
                                 bsStyle: 'success',
                                 style: { marginBottom: '0' }

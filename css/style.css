@@ -178,8 +178,13 @@
     width: 100%;
 }
 
+.data-modal {
+    width: 100%;
+    overflow: hidden;
+}
+
 .data-text-area {
-    display: block;
+    display: flex;
 
     font-family: monospace;
     word-break: break-all;
@@ -192,7 +197,7 @@
     outline: none;
 
     width: 100%;
-    height: 70vh;
+    height: 60vh;
     overflow: auto;
 }
 
