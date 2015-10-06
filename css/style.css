@@ -99,6 +99,10 @@
     display: none;
 }
 
+.without-scroll {
+    overflow: hidden;
+}
+
 .middle-aligned {
     vertical-align: middle !important;
 }

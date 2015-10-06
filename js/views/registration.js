@@ -96,7 +96,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     className: this.props.last ? "" : validationStatus ? 'list-group-item-success' : 'list-group-item-danger'
                 }, [DOM.td({ key: 'trash', style: { width: '24px' } }, this.props.deleteButton), DOM.td({ key: 'number', style: { width: '50px' } }, React.createElement(TextCellView, {
                     key: 'number-cell',
-                    className: 'race-number',
+                    className: 'race-number without-scroll',
                     style: { width: '50px' },
                     maxLength: 3,
                     value: number
@@ -119,18 +119,25 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     }
                 }))), DOM.td({ key: 'name', className: 'col-md-4' }, React.createElement(TextCellView, {
                     key: 'name-cell',
+                    className: 'without-scroll',
                     value: name
                 })), DOM.td({
                     key: 'motorcycle',
                     className: 'col-md-2'
-                }, React.createElement(TextCellView, { key: 'motorcycle-cell', value: motorcycle })), DOM.td({ key: 'group', className: 'col-md-1' }, React.createElement(TextCellView, {
+                }, React.createElement(TextCellView, {
+                    key: 'motorcycle-cell',
+                    className: 'without-scroll',
+                    value: motorcycle
+                })), DOM.td({ key: 'group', className: 'col-md-1' }, React.createElement(TextCellView, {
                     key: 'group-cell',
+                    className: 'without-scroll',
                     value: group
                 })), DOM.td({
                     key: 'birthday',
                     className: 'col-md-2'
                 }, React.createElement(DateCellView, { key: 'birthday-cell', value: birthday })), DOM.td({ key: 'team', className: 'col-md-1' }, React.createElement(TextCellView, {
                     key: 'team-cell',
+                    className: 'without-scroll',
                     value: team
                 })), DOM.td({ key: 'validation' }, this.props.last ? "" : validationStatus ? React.createElement(ReactBootstrap.Glyphicon, { glyph: 'ok' }) : React.createElement(ReactBootstrap.Glyphicon, { glyph: 'remove' }))]);
             }
