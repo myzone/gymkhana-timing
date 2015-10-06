@@ -1,0 +1,42 @@
+Timing
+
+ баги
+- конфугурация
+    - строка добавления штрафов добавляется сверху, а не снизу
+    - инчек страны удаляет все страны 
+- регистрация
+    - для всех ячеек таблицы выключить скролл
+- компетишн
+    - результаты заездов первого участника случайно заполняются 
+    - ломается перерисовка всех заездов
+        - QuotaExceededError: DOM Exception 22: An attempt was made to add something to storage that exceeded the quota.
+            - setItemapp.js:179
+            - (anonymous function)app.js:179
+        - TypeError: undefined is not an object (evaluating 'Array.prototype.slice.call(e.dataTransfer ? e.dataTransfer.items : e.target.files)')
+            - slicereact-dropzone-2.1.0-PATCHED.js:86
+            - onDragEnterreact-dropzone-2.1.0-PATCHED.js:86
+        - TypeError: undefined is not an object (evaluating 'penaltyTypes[penalty].delay')
+            - (anonymous function)results.js:494
+    - ломается добавление штрафа 
+        - TypeError: undefined is not an object (evaluating '_this10.state.penaltyTypes[penalty].get')
+        - (anonymous function)competition.es6:338:144
+    - после удаления штрафа ломается весь компетишн, релод не помогает
+        - TypeError: undefined is not an object (evaluating '_this10.state.penaltyTypes[penalty].get')
+            - (anonymous function)competition.es6:338:144
+
+ фичи
+- жеребьвка
+    - настрока случайного числа
+    - реализация
+- убрать ненужные поля группа 
+- ограничить ширину колонок в табцице
+    - регистрации
+    - участников заезда
+        - заездов
+    - участников в результатах
+        - заездов в результатах
+
+- добавить в конфигурацию настройку количества заездов
+- добавить поддержку внешнего хранилища 
+- сделать доступ только на чтение для результатов с загрузкой данных из хранилища
+- сделать полноценную поддержку команд
