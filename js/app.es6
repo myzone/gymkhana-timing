@@ -12,6 +12,9 @@ require.config({
         'react-input-mask': 'libs/react-input-mask-0.1.3-PATCHED',
         'react-dropzone': 'libs/react-dropzone-2.1.0-PATCHED',
 
+        'large-local-storage': 'libs/LargeLocalStorage',
+        'Q': 'libs/q',
+
         'shuttle': 'libs/shuttle-snapshot',
         'shuttle-react': 'libs/shuttle-react-snapshot',
 
@@ -69,7 +72,7 @@ require.config({
 });
 
 
-require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery', 'shuttle', 'shuttle-react'], (React, ReactBootstrap, ReactRouter, R, moment, $, Shuttle, ShuttleReact) => {
+require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery', 'shuttle', 'shuttle-react', 'large-local-storage', 'Q'], (React, ReactBootstrap, ReactRouter, R, moment, $, Shuttle, ShuttleReact, LargeLocalStorage, Q) => {
     require(['models/application', 'views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results', 'views/create'], (Application, PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView, CreateView) => {
             moment.locale('en');
 
@@ -87,6 +90,18 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                     })
                 });
             };
+
+            const desiredCapacity = 125 * 1024 * 1024;
+
+            // Create a 125MB key-value store
+            const storage = new LargeLocalStorage({size: desiredCapacity, name: 'myDb'});
+            storage.initialized.then(function(grantedCapacity) {
+                // Check to see how much space the user authorized us to actually use.
+                // Some browsers don't indicate how much space was granted in which case
+                // grantedCapacity will be 1.
+                if (grantedCapacity != -1 && grantedCapacity != desiredCapacity) {
+                }
+            });
 
             const loadApplication = () => {
                 const raw = localStorage.getItem('application-data');
