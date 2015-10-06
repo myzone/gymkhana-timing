@@ -3,11 +3,11 @@
 define(['ramda', 'moment'], function (R, moment) {
     return {
         guid: function guid() {
-            var s4 = function s4() {
-                return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+            var s6 = function s6() {
+                return Math.floor((1 + Math.random()) * 0x1000000).toString(16).substring(1);
             };
 
-            return s4();
+            return s6();
         },
         getQueryParams: function getQueryParams() {
             return R.compose(R.reduce(function (result, item) {

@@ -303,9 +303,9 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                                 items: penalties,
                                 getId: penalty => penalty.id,
                                 isEmpty: penalty => R.isEmpty(penalty.name)
-                                && R.isEmpty(penalty.description)
-                                && R.isNil(penalty.delay)
-                                && R.isEmpty(penalty.type),
+                                    && R.isEmpty(penalty.description)
+                                    && R.isNil(penalty.delay)
+                                    && R.isEmpty(penalty.type),
                                 headerRenderer: PenaltiesHeaderRenderer,
                                 footerRenderer: PenaltiesFooterRenderer,
                                 itemRenderer: PenaltyRenderer

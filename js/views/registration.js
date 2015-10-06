@@ -160,7 +160,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 _this2.last = Shuttle.ref({
                     id: Commons.guid(),
                     number: "",
-                    country: "ua", //TODO: Make available to seeing in registration table
+                    country: "",
                     name: "",
                     motorcycle: "",
                     group: "",

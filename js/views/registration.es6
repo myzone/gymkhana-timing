@@ -142,7 +142,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 this.last = Shuttle.ref({
                     id: Commons.guid(),
                     number: "",
-                    country: "ua",    //TODO: Make available to seeing in registration table
+                    country: "",
                     name: "",
                     motorcycle: "",
                     group: "",
@@ -221,11 +221,11 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     },
                     getId: participant => participant.id,
                     isEmpty: participant => R.isEmpty(participant.number)
-                    && R.isEmpty(participant.country)
-                    && R.isEmpty(participant.name)
-                    && R.isEmpty(participant.motorcycle)
-                    && R.isEmpty(participant.group)
-                    && R.isEmpty(participant.team),
+                        && R.isEmpty(participant.country)
+                        && R.isEmpty(participant.name)
+                        && R.isEmpty(participant.motorcycle)
+                        && R.isEmpty(participant.group)
+                        && R.isEmpty(participant.team),
                     headerRenderer: ParticipantHeaderRenderer,
                     footerRenderer: ParticipantFooterRenderer,
                     itemRenderer: ParticipantRenderer
