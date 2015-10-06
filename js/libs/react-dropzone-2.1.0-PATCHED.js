@@ -84,7 +84,17 @@ define(['react'], function (React) {
         onDragEnter: function onDragEnter(e) {
             e.preventDefault();
 
-            var dataTransferItems = Array.prototype.slice.call(e.dataTransfer ? e.dataTransfer.items : e.target.files);
+            var getItems = function (e) {
+                if (e.dataTransfer && e.dataTransfer.items)
+                    return [].concat(e.dataTransfer.items);
+
+                if (e.target.files)
+                    return [].concat(e.target.files);
+
+                return [];
+            };
+
+            var dataTransferItems = getItems(e);
             var allFilesAccepted = this.allFilesAccepted(dataTransferItems);
 
             this.setState({
@@ -166,11 +176,11 @@ define(['react'], function (React) {
                 className = this.props.className;
                 if (this.state.isDragActive) {
                     className += ' ' + this.props.activeClassName;
-                };
+                }
                 if (this.state.isDragReject) {
                     className += ' ' + this.props.rejectClassName;
-                };
-            };
+                }
+            }
 
             var style, activeStyle;
             if (this.props.style) {
