@@ -295,7 +295,7 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                             var index = R.findIndex(R.equals(item.country), countries.get());
 
                             if (index > -1) {
-                                countries.set(R.remove(index, countries.get()));
+                                countries.set(R.remove(index, 1, countries.get()));
                             }
                         }
                     });
