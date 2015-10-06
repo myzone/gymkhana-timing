@@ -132,6 +132,8 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
         render() {
             const DOM = React.DOM;
             const selected = this.state.currentRow == this.props.rowId;
+            const penaltyTypes = this.state.penaltyTypes;
+            const penalties = R.filter(penalty => R.has(penalty, penaltyTypes), this.state.penalties);
             const onSelect = () => {
                 if (R.isNil(this.state.currentRow)) {
                     this.props.currentRow.set(this.props.rowId);
@@ -148,10 +150,10 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                     : this.props.result.time ? renderDuration(this.props.result.time) : ''),
                 DOM.td({}, R.addIndex(R.map)((penalty, i) => [React.createElement(PenaltyView, {
                     i: i,
-                    penalty: this.state.penaltyTypes[penalty],
-                    penalties: this.props.penalties,
+                    penalty: penaltyTypes[penalty],
+                    penalties: penalties,
                     selected: selected
-                }), ' '], this.state.penalties)),
+                }), ' '], penalties)),
                 DOM.td({className: 'col-md-2'}, renderDuration(this.props.result.totalTime)),
                 DOM.td({className: 'col-md-2'}, `+${renderDuration(this.props.result.deltaTime)}`)
             ]);
@@ -299,6 +301,74 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
         render() {
             const DOM = React.DOM;
             const eventId = this.props.params.eventId;
+            const data = R.map(participant => {
+                const opened = R.equals(this.state.current, participant.get());
+                const heats = this.props.heats
+                    .map(heats => R.filter(heat => R.equals(heat.participant, participant.get().id), heats));
+
+                const results = heats
+                    .flatMap(heats => Shuttle.sequence(R.map(heat => {
+                        if (heat.result.type == 'TimedResult')
+                            return Shuttle
+                                .sequence(R.map(penalty => this.state.penaltyTypes[penalty], R.filter(penalty => R.has(penalty, this.state.penaltyTypes), heat.result.penalties)))
+                                .map(penalties => R.identity({
+                                    id: heat.id,
+                                    participant: heat.participant,
+                                    number: heat.number,
+                                    time: heat.result.time,
+                                    penalties: heat.result.penalties,
+                                    totalTime: R.min(moment.duration({
+                                        minutes: 59,
+                                        seconds: 59,
+                                        milliseconds: 999
+                                    }), R.reduce((time, delay) => time.add(delay), moment.duration(heat.result.time), R.map(penalty => penalty.delay, penalties)))
+                                }));
+
+                        if (heat.result.type == 'NoTimeResult')
+                            return Shuttle.ref({
+                                id: heat.id,
+                                participant: heat.participant,
+                                number: heat.number,
+                                time: null,
+                                penalties: [],
+                                totalTime: moment.duration({
+                                    minutes: 59,
+                                    seconds: 59,
+                                    milliseconds: 999
+                                })
+                            });
+
+                        throw 'undefined';
+                    }, R.reduce((result, i) => R.append(R.find(heat => heat.number == i + 1, heats) || {
+                        participant: participant.get().id,
+                        number: i + 1,
+                        result: {
+                            type: 'NoTimeResult'
+                        }
+                    }, result), [], R.range(0, HEATS_COUNT)))))
+                    .map(semiResults => {
+                        const bestHeatTime = R.reduce(R.min, moment.duration(Infinity), R.map(result => result.totalTime, semiResults));
+
+                        return R.sortBy(result => result.number, R.map(result => {
+                            return {
+                                id: result.id,
+                                time: result.time,
+                                participant: result.participant,
+                                number: result.number,
+                                penalties: result.penalties,
+                                totalTime: result.totalTime,
+                                deltaTime: moment.duration(result.totalTime).subtract(bestHeatTime)
+                            }
+                        }, semiResults));
+                    });
+
+                return {
+                    participant: participant,
+                    opened: opened,
+                    heats: heats,
+                    results: results
+                };
+            }, this.state.participants);
 
             return DOM.div({}, [
                 React.createElement(ReactBootstrap.Pager, {}, [
@@ -320,91 +390,31 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                     responsive: true,
                     hover: true
                 }, [
-
-                    R.addIndex(R.map)((participant, i) => {
-                            const opened = R.equals(this.state.current, participant.get());
-                            const heats = this.props.heats
-                                .map(heats => R.filter(heat => R.equals(heat.participant, participant.get().id), heats));
-
-                            const results = heats
-                                .map(heats => R.map(heat => {
-                                        if (heat.result.type == 'TimedResult')
-                                            return {
-                                                id: heat.id,
-                                                participant: heat.participant,
-                                                number: heat.number,
-                                                time: heat.result.time,
-                                                penalties: heat.result.penalties,
-                                                totalTime: R.reduce((time, delay) => time.add(delay), moment.duration(heat.result.time), R.map(penalty => this.state.penaltyTypes[penalty].get().delay, heat.result.penalties))
-                                            };
-
-                                        if (heat.result.type == 'NoTimeResult')
-                                            return {
-                                                id: heat.id,
-                                                participant: heat.participant,
-                                                number: heat.number,
-                                                time: null,
-                                                penalties: [],
-                                                totalTime: moment.duration({
-                                                    minutes: 59,
-                                                    seconds: 59,
-                                                    milliseconds: 999
-                                                })
-                                            };
-
-                                        throw 'undefined';
-                                    }, R.reduce((result, i) => R.append(R.find(heat => heat.number == i + 1, heats) || {
-                                            participant: participant.get().id,
-                                            number: i + 1,
-                                            result: {
-                                                type: 'NoTimeResult'
-                                            }
-                                        }, result), [], R.range(0, HEATS_COUNT)))
-                                )
-                                .map(semiResults => {
-                                    const bestHeatTime = R.reduce(R.min, moment.duration(Infinity), R.map(result => result.totalTime, semiResults));
-
-                                    return R.sortBy(result => result.number, R.map(result => {
-                                        return {
-                                            id: result.id,
-                                            time: result.time,
-                                            participant: result.participant,
-                                            number: result.number,
-                                            penalties: result.penalties,
-                                            totalTime: result.totalTime,
-                                            deltaTime: moment.duration(result.totalTime).subtract(bestHeatTime)
-                                        }
-                                    }, semiResults));
-                                });
-
-                            return DOM.tbody({key: i}, [
-                                React.createElement(ParticipantView, {
-                                    key: `main-${i}`,
-                                    opened: opened,
-                                    onToggle: () => {
-                                        this.setState({current: !opened ? participant.get() : null});
-                                    },
-                                    participant: participant,
-                                    heats: heats
-                                        .map(heats => R.filter(heat => heat.result.type == 'TimedResult', heats)),
-                                    eventId: eventId
-                                }),
-                                React.createElement(AdditionalParticipantView, {
-                                    key: `additional-${i}`,
-                                    opened: opened,
-                                    participant: participant,
-                                    heats: this.props.heats,
-                                    results: results,
-                                    penaltyTypes: this.props.penaltyTypes,
-                                    participants: this.props.participants,
-                                    onNext: (next) => {
-                                        this.setState({current: next});
-                                    }
-                                })
-                            ])
-                        },
-                        this.state.participants
-                    )
+                    R.addIndex(R.map)((data, i) => DOM.tbody({key: i}, [
+                        React.createElement(ParticipantView, {
+                            key: `main-${i}`,
+                            opened: data.opened,
+                            onToggle: () => {
+                                this.setState({current: !data.opened ? data.participant.get() : null});
+                            },
+                            participant: data.participant,
+                            heats: data.heats
+                                .map(heats => R.filter(heat => heat.result.type == 'TimedResult', heats)),
+                            eventId: eventId
+                        }),
+                        React.createElement(AdditionalParticipantView, {
+                            key: `additional-${i}`,
+                            opened: data.opened,
+                            participant: data.participant,
+                            heats: this.props.heats,
+                            results: data.results,
+                            penaltyTypes: this.props.penaltyTypes,
+                            participants: this.props.participants,
+                            onNext: (next) => {
+                                this.setState({current: next});
+                            }
+                        })
+                    ]), data)
                 ])
             ]);
         }

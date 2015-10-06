@@ -185,6 +185,10 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
 
                 var DOM = React.DOM;
                 var selected = this.state.currentRow == this.props.rowId;
+                var penaltyTypes = this.state.penaltyTypes;
+                var penalties = R.filter(function (penalty) {
+                    return R.has(penalty, penaltyTypes);
+                }, this.state.penalties);
                 var onSelect = function onSelect() {
                     if (R.isNil(_this4.state.currentRow)) {
                         _this4.props.currentRow.set(_this4.props.rowId);
@@ -197,11 +201,11 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                 }, [DOM.td({}, this.props.rowId + 1), DOM.td({ className: 'col-md-2' }, selected ? React.createElement(StopwatchCellView, { value: this.props.time }) : this.props.result.time ? renderDuration(this.props.result.time) : ''), DOM.td({}, R.addIndex(R.map)(function (penalty, i) {
                     return [React.createElement(PenaltyView, {
                         i: i,
-                        penalty: _this4.state.penaltyTypes[penalty],
-                        penalties: _this4.props.penalties,
+                        penalty: penaltyTypes[penalty],
+                        penalties: penalties,
                         selected: selected
                     }), ' '];
-                }, this.state.penalties)), DOM.td({ className: 'col-md-2' }, renderDuration(this.props.result.totalTime)), DOM.td({ className: 'col-md-2' }, '+' + renderDuration(this.props.result.deltaTime))]);
+                }, penalties)), DOM.td({ className: 'col-md-2' }, renderDuration(this.props.result.totalTime)), DOM.td({ className: 'col-md-2' }, '+' + renderDuration(this.props.result.deltaTime))]);
             }
         }]);
 
@@ -373,16 +377,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
 
                 var DOM = React.DOM;
                 var eventId = this.props.params.eventId;
-
-                return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, {
-                    previous: true,
-                    href: '#event/' + eventId + '/registration'
-                }, [React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-left' }), ' ', "Registration"]), React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/competition' }, "Competition"), React.createElement(ReactBootstrap.PageItem, { next: true, href: '#event/' + eventId + '/results' }, ["Results", ' ', React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-right' })])]), React.createElement(ReactBootstrap.Table, {
-                    key: 'table',
-                    className: 'group-table-striped group-table-hover data-editable',
-                    responsive: true,
-                    hover: true
-                }, [R.addIndex(R.map)(function (participant, i) {
+                var data = R.map(function (participant) {
                     var opened = R.equals(_this10.state.current, participant.get());
                     var heats = _this10.props.heats.map(function (heats) {
                         return R.filter(function (heat) {
@@ -390,22 +385,32 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                         }, heats);
                     });
 
-                    var results = heats.map(function (heats) {
-                        return R.map(function (heat) {
-                            if (heat.result.type == 'TimedResult') return {
-                                id: heat.id,
-                                participant: heat.participant,
-                                number: heat.number,
-                                time: heat.result.time,
-                                penalties: heat.result.penalties,
-                                totalTime: R.reduce(function (time, delay) {
-                                    return time.add(delay);
-                                }, moment.duration(heat.result.time), R.map(function (penalty) {
-                                    return _this10.state.penaltyTypes[penalty].get().delay;
-                                }, heat.result.penalties))
-                            };
+                    var results = heats.flatMap(function (heats) {
+                        return Shuttle.sequence(R.map(function (heat) {
+                            if (heat.result.type == 'TimedResult') return Shuttle.sequence(R.map(function (penalty) {
+                                return _this10.state.penaltyTypes[penalty];
+                            }, R.filter(function (penalty) {
+                                return R.has(penalty, _this10.state.penaltyTypes);
+                            }, heat.result.penalties))).map(function (penalties) {
+                                return R.identity({
+                                    id: heat.id,
+                                    participant: heat.participant,
+                                    number: heat.number,
+                                    time: heat.result.time,
+                                    penalties: heat.result.penalties,
+                                    totalTime: R.min(moment.duration({
+                                        minutes: 59,
+                                        seconds: 59,
+                                        milliseconds: 999
+                                    }), R.reduce(function (time, delay) {
+                                        return time.add(delay);
+                                    }, moment.duration(heat.result.time), R.map(function (penalty) {
+                                        return penalty.delay;
+                                    }, penalties)))
+                                });
+                            });
 
-                            if (heat.result.type == 'NoTimeResult') return {
+                            if (heat.result.type == 'NoTimeResult') return Shuttle.ref({
                                 id: heat.id,
                                 participant: heat.participant,
                                 number: heat.number,
@@ -416,7 +421,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                                     seconds: 59,
                                     milliseconds: 999
                                 })
-                            };
+                            });
 
                             throw 'undefined';
                         }, R.reduce(function (result, i) {
@@ -429,7 +434,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                                     type: 'NoTimeResult'
                                 }
                             }, result);
-                        }, [], R.range(0, HEATS_COUNT)));
+                        }, [], R.range(0, HEATS_COUNT))));
                     }).map(function (semiResults) {
                         var bestHeatTime = R.reduce(R.min, moment.duration(Infinity), R.map(function (result) {
                             return result.totalTime;
@@ -450,14 +455,31 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                         }, semiResults));
                     });
 
+                    return {
+                        participant: participant,
+                        opened: opened,
+                        heats: heats,
+                        results: results
+                    };
+                }, this.state.participants);
+
+                return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, {
+                    previous: true,
+                    href: '#event/' + eventId + '/registration'
+                }, [React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-left' }), ' ', "Registration"]), React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/competition' }, "Competition"), React.createElement(ReactBootstrap.PageItem, { next: true, href: '#event/' + eventId + '/results' }, ["Results", ' ', React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-right' })])]), React.createElement(ReactBootstrap.Table, {
+                    key: 'table',
+                    className: 'group-table-striped group-table-hover data-editable',
+                    responsive: true,
+                    hover: true
+                }, [R.addIndex(R.map)(function (data, i) {
                     return DOM.tbody({ key: i }, [React.createElement(ParticipantView, {
                         key: 'main-' + i,
-                        opened: opened,
+                        opened: data.opened,
                         onToggle: function onToggle() {
-                            _this10.setState({ current: !opened ? participant.get() : null });
+                            _this10.setState({ current: !data.opened ? data.participant.get() : null });
                         },
-                        participant: participant,
-                        heats: heats.map(function (heats) {
+                        participant: data.participant,
+                        heats: data.heats.map(function (heats) {
                             return R.filter(function (heat) {
                                 return heat.result.type == 'TimedResult';
                             }, heats);
@@ -465,17 +487,17 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                         eventId: eventId
                     }), React.createElement(AdditionalParticipantView, {
                         key: 'additional-' + i,
-                        opened: opened,
-                        participant: participant,
+                        opened: data.opened,
+                        participant: data.participant,
                         heats: _this10.props.heats,
-                        results: results,
+                        results: data.results,
                         penaltyTypes: _this10.props.penaltyTypes,
                         participants: _this10.props.participants,
                         onNext: function onNext(next) {
                             _this10.setState({ current: next });
                         }
                     })]);
-                }, this.state.participants)])]);
+                }, data)])]);
             }
         }]);
 

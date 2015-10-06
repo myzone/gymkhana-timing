@@ -104,10 +104,10 @@ define(['ramda', 'utils/commons'], (R, Commons) => {
 
     }
 
-    var ref = (initialState) => {
+    const ref = (initialState) => {
         return new Ref(initialState, []);
     };
-    var combine = (observables, combiner) => {
+    const combine = (observables, combiner) => {
         const args = () => R.map(observable => observable.get(), observables);
         const dependencies = observables => {
             const flatDependencyTree = observables => R.concat(observables, R.map(flatDependencyTree, R.map(observable => observable.dependencies, observables)));
@@ -122,7 +122,10 @@ define(['ramda', 'utils/commons'], (R, Commons) => {
 
         return innerResult;
     };
-    var json = observable => {
+    const sequence = (observables) => {
+        return combine(observables, Array.of);
+    };
+    const json = observable => {
         if (R.isNil(observable))
             return observable;
 
@@ -143,6 +146,7 @@ define(['ramda', 'utils/commons'], (R, Commons) => {
 
         ref: ref,
         combine: combine,
+        sequence: sequence,
         json: json
     };
 });

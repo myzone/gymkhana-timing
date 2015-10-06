@@ -147,6 +147,9 @@ define(['ramda', 'utils/commons'], function (R, Commons) {
 
         return innerResult;
     };
+    var sequence = function sequence(observables) {
+        return combine(observables, Array.of);
+    };
     var json = function json(_x) {
         var _again = true;
 
@@ -175,6 +178,7 @@ define(['ramda', 'utils/commons'], function (R, Commons) {
 
         ref: ref,
         combine: combine,
+        sequence: sequence,
         json: json
     };
 });
