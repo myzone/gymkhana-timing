@@ -98,7 +98,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             };
 
             var desiredCapacity = 125 * 1024 * 1024;
-            var storage = new LargeLocalStorage({ size: desiredCapacity, name: 'myDb' });
+            var storage = new LargeLocalStorage({ size: desiredCapacity, name: 'application-data-storage' });
             return storage.initialized.then(function (initialized) {
                 // Check to see how much space the user authorized us to actually use.
                 // Some browsers don't indicate how much space was granted in which case
@@ -111,7 +111,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                     storage.setContents('application-data', Application.marshall(application)).then(function () {
                         return localStorage.setItem('last-sync', moment().toISOString());
                     }).then(function () {
-                        return console.info('Flush has been done');
+                        return console.info('Flush has been done.');
                     });
                 };
                 var noFlush = function noFlush() {};
@@ -124,7 +124,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                     loadApplication().then(function () {
                         return listener = flush;
                     }).then(function () {
-                        return console.info('Application has been reloaded');
+                        return console.info('Application has been reloaded.');
                     });
                 });
 

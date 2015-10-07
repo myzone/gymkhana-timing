@@ -89,7 +89,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                     });
 
                 const desiredCapacity = 125 * 1024 * 1024;
-                const storage = new LargeLocalStorage({size: desiredCapacity, name: 'myDb'});
+                const storage = new LargeLocalStorage({size: desiredCapacity, name: 'application-data-storage'});
                 return storage.initialized
                     .then(initialized => {
                         // Check to see how much space the user authorized us to actually use.
@@ -104,7 +104,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         const flush = () => {
                             storage.setContents('application-data', Application.marshall(application))
                                 .then(() => localStorage.setItem('last-sync', moment().toISOString()))
-                                .then(() => console.info('Flush has been done'));
+                                .then(() => console.info('Flush has been done.'));
                         };
                         const noFlush = () => {};
 
@@ -115,7 +115,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
 
                             loadApplication()
                                 .then(() => listener = flush)
-                                .then(() => console.info('Application has been reloaded'));
+                                .then(() => console.info('Application has been reloaded.'));
                         });
 
                         Shuttle.listenTree(() => listener(), application);
@@ -315,7 +315,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
 
             bootstrapStorage()
                 .then(bootstrapReact)
-                .then(() => console.info('Application started up.'))
+                .then(() => console.info('Application started up.'));
 
             window.R = R;
             window.s = Shuttle;
