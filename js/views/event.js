@@ -33,7 +33,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react'], functi
                     style: {
                         opacity: name ? 1 : .4
                     }
-                }, name || "Empty event name", React.DOM.small({}, ' @' + eventDate + eventPlace))), DOM.div({ key: 'children' }, this.props.children)]);
+                }, name || "Empty event name", DOM.br(), DOM.small({}, '' + eventDate + eventPlace))), DOM.div({ key: 'children' }, this.props.children)]);
             }
         }]);
 

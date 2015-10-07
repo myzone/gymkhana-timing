@@ -14,7 +14,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react'], (React
                     style: {
                         opacity: name ? 1 : .4
                     }
-                }, name || "Empty event name", React.DOM.small({}, ` @${eventDate}${eventPlace}`))),
+                }, name || "Empty event name", DOM.br(), DOM.small({}, `${eventDate}${eventPlace}`))),
 
                 DOM.div({key: 'children'}, this.props.children)
             ]);
