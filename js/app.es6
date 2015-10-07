@@ -76,9 +76,9 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
     require(['models/application', 'views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results', 'views/create'], (Application, PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView, CreateView) => {
             moment.locale('en');
 
-            const bootstrapStorage = () => {
-                const store = Shuttle.ref(Application.empty());
-                const application = store.flatMap(R.identity);
+            const bootstrapStorage = (store, application) => {
+                const desiredCapacity = 125 * 1024 * 1024;
+                const storage = new LargeLocalStorage({size: desiredCapacity, name: 'application-data-storage'});
 
                 const loadApplication = () => storage
                     .getContents('application-data')
@@ -88,8 +88,6 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         }
                     });
 
-                const desiredCapacity = 125 * 1024 * 1024;
-                const storage = new LargeLocalStorage({size: desiredCapacity, name: 'application-data-storage'});
                 return storage.initialized
                     .then(initialized => {
                         // Check to see how much space the user authorized us to actually use.
@@ -106,7 +104,8 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                                 .then(() => localStorage.setItem('last-sync', moment().toISOString()))
                                 .then(() => console.info('Flush has been done.'));
                         };
-                        const noFlush = () => {};
+                        const noFlush = () => {
+                        };
 
                         let listener = flush;
 
@@ -313,9 +312,11 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                 ]), document.getElementById('root'));
             };
 
-            bootstrapStorage()
-                .then(bootstrapReact)
-                .then(() => console.info('Application started up.'));
+            const store = Shuttle.ref(Application.empty());
+            const application = store.flatMap(R.identity);
+
+            bootstrapStorage(store, application);
+            bootstrapReact(application);
 
             window.R = R;
             window.s = Shuttle;

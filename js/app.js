@@ -85,9 +85,9 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
     require(['models/application', 'views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results', 'views/create'], function (Application, PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView, CreateView) {
         moment.locale('en');
 
-        var bootstrapStorage = function bootstrapStorage() {
-            var store = Shuttle.ref(Application.empty());
-            var application = store.flatMap(R.identity);
+        var bootstrapStorage = function bootstrapStorage(store, application) {
+            var desiredCapacity = 125 * 1024 * 1024;
+            var storage = new LargeLocalStorage({ size: desiredCapacity, name: 'application-data-storage' });
 
             var loadApplication = function loadApplication() {
                 return storage.getContents('application-data').then(function (raw) {
@@ -97,8 +97,6 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                 });
             };
 
-            var desiredCapacity = 125 * 1024 * 1024;
-            var storage = new LargeLocalStorage({ size: desiredCapacity, name: 'application-data-storage' });
             return storage.initialized.then(function (initialized) {
                 // Check to see how much space the user authorized us to actually use.
                 // Some browsers don't indicate how much space was granted in which case
@@ -400,9 +398,11 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             })])])])]), document.getElementById('root'));
         };
 
-        bootstrapStorage().then(bootstrapReact).then(function () {
-            return console.info('Application started up.');
-        });
+        var store = Shuttle.ref(Application.empty());
+        var application = store.flatMap(R.identity);
+
+        bootstrapStorage(store, application);
+        bootstrapReact(application);
 
         window.R = R;
         window.s = Shuttle;
