@@ -141,12 +141,70 @@ define(['ramda', 'utils/commons'], (R, Commons) => {
         return observable;
     };
 
+    const listenTree = (listener, tree) => {
+        const handlers = {};
+
+        const withoutListener = (listener, tree) => {
+            if (R.isNil(tree)) {
+                return tree;
+            }
+
+            if (tree instanceof Ref) {
+                withoutListener(listener, tree.get());
+
+                tree.removeListener(handlers[tree.guid]);
+                delete handlers[tree.guid];
+
+                return tree;
+            }
+
+            if (tree instanceof Array) {
+                return R.map(i => withoutListener(listener, i), tree);
+            }
+
+            if (typeof tree == 'object' && tree.constructor == Object) {
+                return R.mapObj(i => withoutListener(listener, i), tree);
+            }
+        };
+        const withListener = (listener, tree) => {
+            if (R.isNil(tree)) {
+                return tree;
+            }
+
+            if (tree instanceof Ref) {
+                const handler = (o, n) => {
+                    withoutListener(listener, o);
+                    withListener(listener, n);
+
+                    listener();
+                };
+                handlers[tree.guid] = handler;
+
+                tree.addListener(handler);
+                withListener(listener, tree.get());
+
+                return tree;
+            }
+
+            if (tree instanceof Array) {
+                return R.map(i => withListener(listener, i), tree);
+            }
+
+            if (typeof tree == 'object' && tree.constructor == Object) {
+                return R.mapObj(i => withListener(listener, i), tree);
+            }
+        };
+
+        withListener(listener, tree);
+    };
+
     return {
         Ref: Ref,
 
         ref: ref,
         combine: combine,
         sequence: sequence,
-        json: json
+        json: json,
+        listenTree: listenTree
     };
 });

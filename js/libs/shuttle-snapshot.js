@@ -173,13 +173,79 @@ define(['ramda', 'utils/commons'], function (R, Commons) {
         }
     };
 
+    var listenTree = function listenTree(listener, tree) {
+        var handlers = {};
+
+        var withoutListener = function withoutListener(listener, tree) {
+            if (R.isNil(tree)) {
+                return tree;
+            }
+
+            if (tree instanceof Ref) {
+                withoutListener(listener, tree.get());
+
+                tree.removeListener(handlers[tree.guid]);
+                delete handlers[tree.guid];
+
+                return tree;
+            }
+
+            if (tree instanceof Array) {
+                return R.map(function (i) {
+                    return withoutListener(listener, i);
+                }, tree);
+            }
+
+            if (typeof tree == 'object' && tree.constructor == Object) {
+                return R.mapObj(function (i) {
+                    return withoutListener(listener, i);
+                }, tree);
+            }
+        };
+        var withListener = function withListener(listener, tree) {
+            if (R.isNil(tree)) {
+                return tree;
+            }
+
+            if (tree instanceof Ref) {
+                var handler = function handler(o, n) {
+                    withoutListener(listener, o);
+                    withListener(listener, n);
+
+                    listener();
+                };
+                handlers[tree.guid] = handler;
+
+                tree.addListener(handler);
+                withListener(listener, tree.get());
+
+                return tree;
+            }
+
+            if (tree instanceof Array) {
+                return R.map(function (i) {
+                    return withListener(listener, i);
+                }, tree);
+            }
+
+            if (typeof tree == 'object' && tree.constructor == Object) {
+                return R.mapObj(function (i) {
+                    return withListener(listener, i);
+                }, tree);
+            }
+        };
+
+        withListener(listener, tree);
+    };
+
     return {
         Ref: Ref,
 
         ref: ref,
         combine: combine,
         sequence: sequence,
-        json: json
+        json: json,
+        listenTree: listenTree
     };
 });
 

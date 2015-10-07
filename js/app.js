@@ -86,8 +86,18 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
         moment.locale('en');
 
         var bootstrapStorage = function bootstrapStorage() {
-            var desiredCapacity = 125 * 1024 * 1024;
+            var store = Shuttle.ref(Application.empty());
+            var application = store.flatMap(R.identity);
 
+            var loadApplication = function loadApplication() {
+                return storage.getContents('application-data').then(function (raw) {
+                    if (raw) {
+                        store.set(Application.unmashall(raw));
+                    }
+                });
+            };
+
+            var desiredCapacity = 125 * 1024 * 1024;
             var storage = new LargeLocalStorage({ size: desiredCapacity, name: 'myDb' });
             return storage.initialized.then(function (initialized) {
                 // Check to see how much space the user authorized us to actually use.
@@ -96,30 +106,32 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                 if (initialized.getCapacity() != -1 && initialized.getCapacity() != desiredCapacity) {
                     alert('fuck');
                 }
-            }).then(function () {
-                var store = Shuttle.ref(Application.empty());
-                var application = store.flatMap(R.identity);
-
-                var loadApplication = function loadApplication() {
-                    return storage.getContents('application-data').then(function (raw) {
-                        if (raw) {
-                            store.set(Application.unmashall(raw));
-                        }
-                    });
-                };
-
-                loadApplication();
-                $(window).bind('storage', function () {
-                    loadApplication().then(function () {
-                        return console.log('reloaded');
-                    });
-                });
-                setInterval(function () {
+            }).then(loadApplication).then(function () {
+                var flush = function flush() {
                     storage.setContents('application-data', Application.marshall(application)).then(function () {
                         return localStorage.setItem('last-sync', moment().toISOString());
+                    }).then(function () {
+                        return console.info('Flush has been done');
                     });
-                }, 500);
+                };
+                var noFlush = function noFlush() {};
 
+                var listener = flush;
+
+                $(window).bind('storage', function () {
+                    listener = noFlush;
+
+                    loadApplication().then(function () {
+                        return listener = flush;
+                    }).then(function () {
+                        return console.info('Application has been reloaded');
+                    });
+                });
+
+                Shuttle.listenTree(function () {
+                    return listener();
+                }, application);
+            }).then(function () {
                 return application;
             });
         };

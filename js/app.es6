@@ -77,8 +77,18 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             moment.locale('en');
 
             const bootstrapStorage = () => {
-                const desiredCapacity = 125 * 1024 * 1024;
+                const store = Shuttle.ref(Application.empty());
+                const application = store.flatMap(R.identity);
 
+                const loadApplication = () => storage
+                    .getContents('application-data')
+                    .then(raw => {
+                        if (raw) {
+                            store.set(Application.unmashall(raw))
+                        }
+                    });
+
+                const desiredCapacity = 125 * 1024 * 1024;
                 const storage = new LargeLocalStorage({size: desiredCapacity, name: 'myDb'});
                 return storage.initialized
                     .then(initialized => {
@@ -89,30 +99,28 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                             alert(`fuck`)
                         }
                     })
+                    .then(loadApplication)
                     .then(() => {
-                        const store = Shuttle.ref(Application.empty());
-                        const application = store.flatMap(R.identity);
-
-                        const loadApplication = () => storage
-                            .getContents('application-data')
-                            .then(raw => {
-                                if (raw) {
-                                    store.set(Application.unmashall(raw))
-                                }
-                            });
-
-                        loadApplication();
-                        $(window).bind('storage', () => {
-                            loadApplication()
-                                .then(() => console.log('reloaded'));
-                        });
-                        setInterval(() => {
+                        const flush = () => {
                             storage.setContents('application-data', Application.marshall(application))
-                                .then(() => localStorage.setItem('last-sync', moment().toISOString()));
-                        }, 500);
+                                .then(() => localStorage.setItem('last-sync', moment().toISOString()))
+                                .then(() => console.info('Flush has been done'));
+                        };
+                        const noFlush = () => {};
 
-                        return application;
-                    });
+                        let listener = flush;
+
+                        $(window).bind('storage', () => {
+                            listener = noFlush;
+
+                            loadApplication()
+                                .then(() => listener = flush)
+                                .then(() => console.info('Application has been reloaded'));
+                        });
+
+                        Shuttle.listenTree(() => listener(), application);
+                    })
+                    .then(() => application);
             };
 
             const bootstrapReact = application => {
