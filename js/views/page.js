@@ -40,9 +40,9 @@ define(['react', 'react-bootstrap', 'ramda', 'utils/commons', 'views/create', 'v
 
                 return DOM.div({ key: 'container', className: 'container' }, DOM.div({ key: 'row', className: 'row' }, [React.createElement(ReactBootstrap.Navbar, {
                     key: 'navigation-bar',
-                    brand: DOM.a({ href: '#/' }, "Gymkhana timing"),
-                    inverse: true
-                }, React.createElement(ReactBootstrap.Nav, { key: 'navigation-bar-inner', right: true }, [React.createElement(ReactBootstrap.NavItem, {
+                    inverse: true,
+                    toggleNavKey: 0
+                }, [React.createElement(ReactBootstrap.NavBrand, {}, DOM.a({ href: '#/' }, "Gymkhana timing")), React.createElement(ReactBootstrap.Nav, { key: 'navigation-bar-inner', eventKey: 0, right: true }, [React.createElement(ReactBootstrap.NavItem, {
                     key: 'new',
                     onClick: function onClick() {
                         return setModal(Modal.NEW);
@@ -57,7 +57,7 @@ define(['react', 'react-bootstrap', 'ramda', 'utils/commons', 'views/create', 'v
                     onClick: function onClick() {
                         return setModal(Modal.EXPORT);
                     }
-                }, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'export' }), ' Export')])), React.createElement(CreateView, {
+                }, React.createElement(ReactBootstrap.Glyphicon, { glyph: 'export' }), ' Export')])]), React.createElement(CreateView, {
                     application: this.props.application,
                     opened: modal == Modal.NEW
                 }), React.createElement(ImportView, {

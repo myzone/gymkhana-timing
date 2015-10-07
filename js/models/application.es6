@@ -41,9 +41,7 @@ define(['ramda', 'shuttle', 'moment', 'utils/commons'], (R, Shuttle, moment, Com
                 country: participant.country,
                 name: participant.name,
                 motorcycle: participant.motorcycle,
-                group: participant.group,
-                birthday: moment(participant.birthday),
-                team: participant.team
+                birthday: moment(participant.birthday)
             }), event.participants)),
             heats: Shuttle.ref(R.map(heat => R.identity({
                 id: heat.id,

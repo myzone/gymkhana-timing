@@ -50,9 +50,7 @@ define(['ramda', 'shuttle', 'moment', 'utils/commons'], function (R, Shuttle, mo
                             country: participant.country,
                             name: participant.name,
                             motorcycle: participant.motorcycle,
-                            group: participant.group,
-                            birthday: moment(participant.birthday),
-                            team: participant.team
+                            birthday: moment(participant.birthday)
                         });
                     }, event.participants)),
                     heats: Shuttle.ref(R.map(function (heat) {

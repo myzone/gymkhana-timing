@@ -146,9 +146,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                 DOM.td({className: 'middle-aligned'}, DOM.span({className: 'race-number'}, participant.number)),
                 DOM.td({className: 'middle-aligned'}, participant.country ? React.createElement(CountryFlagView, {country: participant.country}) : ''),
                 DOM.td({className: 'middle-aligned'}, participant.name),
-                DOM.td({className: 'middle-aligned'}, participant.motorcycle),
-                DOM.td({className: 'middle-aligned'}, participant.group),
-                DOM.td({className: 'middle-aligned'}, participant.team)
+                DOM.td({className: 'middle-aligned'}, participant.motorcycle)
             ])
         }
     }

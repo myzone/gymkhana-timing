@@ -21,22 +21,25 @@ define(['react', 'react-bootstrap', 'ramda', 'utils/commons', 'views/create', 'v
             return DOM.div({key: 'container', className: 'container'}, DOM.div({key: 'row', className: 'row'}, [
                 React.createElement(ReactBootstrap.Navbar, {
                     key: 'navigation-bar',
-                    brand: DOM.a({href: '#/'}, "Gymkhana timing"),
-                    inverse: true
-                }, React.createElement(ReactBootstrap.Nav, {key: 'navigation-bar-inner', right: true}, [
-                    React.createElement(ReactBootstrap.NavItem, {
-                        key: 'new',
-                        onClick: () => setModal(Modal.NEW)
-                    }, React.createElement(ReactBootstrap.Glyphicon, {glyph: 'file'}), ' New'),
-                    React.createElement(ReactBootstrap.NavItem, {
-                        key: 'import',
-                        onClick: () => setModal(Modal.IMPORT)
-                    }, React.createElement(ReactBootstrap.Glyphicon, {glyph: 'import'}), ' Import'),
-                    React.createElement(ReactBootstrap.NavItem, {
-                        key: 'export',
-                        onClick: () => setModal(Modal.EXPORT)
-                    }, React.createElement(ReactBootstrap.Glyphicon, {glyph: 'export'}), ' Export')
-                ])),
+                    inverse: true,
+                    toggleNavKey: 0
+                }, [
+                    React.createElement(ReactBootstrap.NavBrand, {}, DOM.a({href: '#/'}, "Gymkhana timing")),
+                    React.createElement(ReactBootstrap.Nav, {key: 'navigation-bar-inner', eventKey: 0, right: true}, [
+                        React.createElement(ReactBootstrap.NavItem, {
+                            key: 'new',
+                            onClick: () => setModal(Modal.NEW)
+                        }, React.createElement(ReactBootstrap.Glyphicon, {glyph: 'file'}), ' New'),
+                        React.createElement(ReactBootstrap.NavItem, {
+                            key: 'import',
+                            onClick: () => setModal(Modal.IMPORT)
+                        }, React.createElement(ReactBootstrap.Glyphicon, {glyph: 'import'}), ' Import'),
+                        React.createElement(ReactBootstrap.NavItem, {
+                            key: 'export',
+                            onClick: () => setModal(Modal.EXPORT)
+                        }, React.createElement(ReactBootstrap.Glyphicon, {glyph: 'export'}), ' Export')
+                    ])
+                ]),
 
                 React.createElement(CreateView, {
                     application: this.props.application,

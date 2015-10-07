@@ -10,9 +10,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 DOM.th({key: 'country-header'}, "Country"),
                 DOM.th({key: 'name-header'}, "Name"),
                 DOM.th({key: 'motorcycle-header'}, "Motorcycle"),
-                DOM.th({key: 'group-header'}, "Group"),
-                DOM.th({key: 'birthday-header'}, "Birthday"),
-                DOM.th({key: 'team-header'}, "Team")
+                DOM.th({key: 'birthday-header'}, "Birthday")
             ]);
         }
 
@@ -40,28 +38,22 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                 && !R.isEmpty(participant.country)
                 && !R.isEmpty(participant.name)
                 && !R.isEmpty(participant.motorcycle)
-                && !R.isEmpty(participant.group)
-                && !R.isEmpty(participant.team);
 
             const number = Shuttle.ref(participant.number);
             const country = Shuttle.ref(participant.country);
             const name = Shuttle.ref(participant.name);
             const motorcycle = Shuttle.ref(participant.motorcycle);
-            const group = Shuttle.ref(participant.group);
             const birthday = Shuttle.ref(participant.birthday);
-            const team = Shuttle.ref(participant.team);
 
             Shuttle
-                .combine([number, country, name, motorcycle, group, birthday, team], (number, country, name, motorcycle, group, birthday, team) => {
+                .combine([number, country, name, motorcycle, birthday], (number, country, name, motorcycle, birthday) => {
                     return {
                         id: participant.id,
                         number: number,
                         country: country,
                         name: name,
                         motorcycle: motorcycle,
-                        group: group,
-                        birthday: birthday,
-                        team: team
+                        birthday: birthday
                     }
                 })
                 .addListener((_, computed) => this.props.item.set(computed));
@@ -79,7 +71,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     maxLength: 3,
                     value: number
                 })),
-                DOM.td({key: 'country', className: 'col-md-1'}, DOM.div({
+                DOM.td({key: 'country', className: 'col-sm-1'}, DOM.div({
                     key: 'country-inner',
                     style: {height: '20px'}
                 }, React.createElement(SelectCellView, {
@@ -95,33 +87,24 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                         country: country
                     }) : '')
                 }))),
-                DOM.td({key: 'name', className: 'col-md-4'}, React.createElement(TextCellView, {
+                DOM.td({key: 'name', className: 'col-sm-4'}, React.createElement(TextCellView, {
                     key: 'name-cell',
                     className: 'without-scroll',
                     value: name
                 })),
                 DOM.td({
                     key: 'motorcycle',
-                    className: 'col-md-2'
+                    className: 'col-sm-4'
                 }, React.createElement(TextCellView, {
                     key: 'motorcycle-cell',
                     className: 'without-scroll',
                     value: motorcycle
                 })),
-                DOM.td({key: 'group', className: 'col-md-1'}, React.createElement(TextCellView, {
-                    key: 'group-cell',
-                    className: 'without-scroll',
-                    value: group
-                })),
                 DOM.td({
                     key: 'birthday',
-                    className: 'col-md-2'
+                    className: 'col-sm-3'
                 }, React.createElement(DateCellView, {key: 'birthday-cell', value: birthday})),
-                DOM.td({key: 'team', className: 'col-md-1'}, React.createElement(TextCellView, {
-                    key: 'team-cell',
-                    className: 'without-scroll',
-                    value: team
-                })),
+
                 DOM.td({key: 'validation'}, this.props.last ? "" : validationStatus
                     ? React.createElement(ReactBootstrap.Glyphicon, {glyph: 'ok'})
                     : React.createElement(ReactBootstrap.Glyphicon, {glyph: 'remove'}))
@@ -131,45 +114,6 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
 
 
     class RegistrationView extends Shuttle.React.Component {
-
-        listener;
-        last;
-
-        constructor(props) {
-            super(props);
-
-            const generateLast = () => {
-                this.last = Shuttle.ref({
-                    id: Commons.guid(),
-                    number: "",
-                    country: "",
-                    name: "",
-                    motorcycle: "",
-                    group: "",
-                    birthday: moment(),
-                    team: ""
-                });
-                this.last.addListener(this.listener);
-            };
-
-            this.listener = (_, participant) => {
-                if (participant.number.length != 0
-                    || participant.country.length != 0
-                    || participant.name.length != 0
-                    || participant.motorcycle.length != 0
-                    || participant.group.length != 0
-                    || participant.team.length != 0) {
-
-                    const last = this.last;
-                    generateLast();
-
-                    last.removeListener(this.listener);
-                    this.props.participants.set(R.append(last, this.state.participants));
-                }
-            };
-
-            generateLast();
-        }
 
         render() {
             const DOM = React.DOM;
@@ -211,9 +155,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                         country: null,
                         name: "",
                         motorcycle: "",
-                        group: "",
-                        birthday: moment(),
-                        team: ""
+                        birthday: moment()
                     }),
                     items: this.props.participants,
                     props: {
@@ -223,9 +165,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     isEmpty: participant => R.isEmpty(participant.number)
                         && R.isEmpty(participant.country)
                         && R.isEmpty(participant.name)
-                        && R.isEmpty(participant.motorcycle)
-                        && R.isEmpty(participant.group)
-                        && R.isEmpty(participant.team),
+                        && R.isEmpty(participant.motorcycle),
                     headerRenderer: ParticipantHeaderRenderer,
                     footerRenderer: ParticipantFooterRenderer,
                     itemRenderer: ParticipantRenderer
