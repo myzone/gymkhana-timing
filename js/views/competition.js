@@ -48,7 +48,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                 var index = R.findIndex(function (heat) {
                     return heat.id == _this.props.result.id;
                 }, heats);
-                if (index >= 0) {
+                if (index > -1) {
                     heats = R.remove(index, 1, heats);
                 }
 
@@ -112,18 +112,21 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                 var _this2 = this;
 
                 var penalty = this.state.penalty;
-
                 var selected = this.props.selected;
-                var i = this.props.i;
 
                 var onClick = function onClick() {
                     if (selected) {
-                        _this2.props.penalties.set(R.remove(i, 1, _this2.state.penalties));
+                        var index = R.findIndex(function (penaltyId) {
+                            return penalty.id;
+                        }, _this2.state.penalties);
+
+                        if (index > -1) {
+                            _this2.props.penalties.set(R.remove(index, 1, _this2.state.penalties));
+                        }
                     }
                 };
 
                 return React.createElement(ReactBootstrap.Label, {
-                    key: i,
                     bsStyle: PENALTY_STYLES[penalty.type],
                     onClick: onClick
                 }, selected ? [penalty.name, ' ', React.createElement(ReactBootstrap.Glyphicon, {
@@ -200,9 +203,9 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                     onClick: onSelect
                 }, [DOM.td({}, this.props.rowId + 1), DOM.td({ className: 'col-md-2' }, selected ? React.createElement(StopwatchCellView, { value: this.props.time }) : this.props.result.time ? renderDuration(this.props.result.time) : ''), DOM.td({}, R.addIndex(R.map)(function (penalty, i) {
                     return [React.createElement(PenaltyView, {
-                        i: i,
+                        key: i,
                         penalty: penaltyTypes[penalty],
-                        penalties: penalties,
+                        penalties: _this4.props.penalties,
                         selected: selected
                     }), ' '];
                 }, penalties)), DOM.td({ className: 'col-md-2' }, renderDuration(this.props.result.totalTime)), DOM.td({ className: 'col-md-2' }, '+' + renderDuration(this.props.result.deltaTime))]);
