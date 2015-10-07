@@ -122,34 +122,6 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
     }
 
 
-    class ParticipantResultView extends Shuttle.React.Component {
-
-        constructor(props) {
-            super(props);
-        }
-
-        render() {
-            const DOM = React.DOM;
-            const participant = this.state.participant;
-            const heats = this.state.heats;
-
-            return DOM.tr({
-                key: 'opened-participant-row-1',
-                className: `non-selected ${this.props.opened ? 'selected' : ''}`,
-                onClick: () => this.props.onToggle()
-            }, [
-                DOM.td({className: 'important middle-aligned'}, DOM.span({className: 'race-number'}, participant.number)),
-                DOM.td({className: 'important middle-aligned'}, participant.country ? React.createElement(CountryFlagView, {country: participant.country}) : ''),
-                DOM.td({className: 'important middle-aligned'}, participant.name),
-                DOM.td({className: 'middle-aligned'}, participant.motorcycle),
-                DOM.td({className: 'middle-aligned'}, participant.group),
-                DOM.td({className: 'important middle-aligned'}, `${heats.length}/${HEATS_COUNT}`),
-                DOM.td({className: 'middle-aligned'}, participant.team)
-            ]);
-        }
-
-    }
-
     class PenaltyView extends Shuttle.React.Component {
 
         render() {

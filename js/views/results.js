@@ -147,39 +147,8 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
         return WinnersView;
     })(Shuttle.React.Component);
 
-    var ParticipantResultView = (function (_Shuttle$React$Component2) {
-        _inherits(ParticipantResultView, _Shuttle$React$Component2);
-
-        function ParticipantResultView(props) {
-            _classCallCheck(this, ParticipantResultView);
-
-            _get(Object.getPrototypeOf(ParticipantResultView.prototype), 'constructor', this).call(this, props);
-        }
-
-        _createClass(ParticipantResultView, [{
-            key: 'render',
-            value: function render() {
-                var _this = this;
-
-                var DOM = React.DOM;
-                var participant = this.state.participant;
-                var heats = this.state.heats;
-
-                return DOM.tr({
-                    key: 'opened-participant-row-1',
-                    className: 'non-selected ' + (this.props.opened ? 'selected' : ''),
-                    onClick: function onClick() {
-                        return _this.props.onToggle();
-                    }
-                }, [DOM.td({ className: 'important middle-aligned' }, DOM.span({ className: 'race-number' }, participant.number)), DOM.td({ className: 'important middle-aligned' }, participant.country ? React.createElement(CountryFlagView, { country: participant.country }) : ''), DOM.td({ className: 'important middle-aligned' }, participant.name), DOM.td({ className: 'middle-aligned' }, participant.motorcycle), DOM.td({ className: 'middle-aligned' }, participant.group), DOM.td({ className: 'important middle-aligned' }, heats.length + '/' + HEATS_COUNT), DOM.td({ className: 'middle-aligned' }, participant.team)]);
-            }
-        }]);
-
-        return ParticipantResultView;
-    })(Shuttle.React.Component);
-
-    var PenaltyView = (function (_Shuttle$React$Component3) {
-        _inherits(PenaltyView, _Shuttle$React$Component3);
+    var PenaltyView = (function (_Shuttle$React$Component2) {
+        _inherits(PenaltyView, _Shuttle$React$Component2);
 
         function PenaltyView() {
             _classCallCheck(this, PenaltyView);
@@ -203,8 +172,8 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
         return PenaltyView;
     })(Shuttle.React.Component);
 
-    var ParticipantView = (function (_Shuttle$React$Component4) {
-        _inherits(ParticipantView, _Shuttle$React$Component4);
+    var ParticipantView = (function (_Shuttle$React$Component3) {
+        _inherits(ParticipantView, _Shuttle$React$Component3);
 
         function ParticipantView() {
             _classCallCheck(this, ParticipantView);
@@ -262,8 +231,8 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
         return HeatsView;
     })(React.Component);
 
-    var ResultTableView = (function (_Shuttle$React$Component5) {
-        _inherits(ResultTableView, _Shuttle$React$Component5);
+    var ResultTableView = (function (_Shuttle$React$Component4) {
+        _inherits(ResultTableView, _Shuttle$React$Component4);
 
         function ResultTableView() {
             _classCallCheck(this, ResultTableView);
@@ -292,8 +261,8 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
         return ResultTableView;
     })(Shuttle.React.Component);
 
-    var ResultsView = (function (_Shuttle$React$Component6) {
-        _inherits(ResultsView, _Shuttle$React$Component6);
+    var ResultsView = (function (_Shuttle$React$Component5) {
+        _inherits(ResultsView, _Shuttle$React$Component5);
 
         function ResultsView() {
             _classCallCheck(this, ResultsView);
