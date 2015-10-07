@@ -13,7 +13,7 @@ define(['react', 'react-bootstrap', 'jquery', 'ramda', 'shuttle', 'shuttle-react
                     key: 'image',
                     className: 'country-flag',
                     style: {
-                        backgroundImage: `url(http://www.geonames.org/flags/m/${R.toLower(this.props.country.countryCode)}.png)`
+                        backgroundImage: `url(./resources/flags/${R.toLower(this.props.country.countryCode)}.svg)`
                     }
                 },
                 DOM.div({className: 'country-flag-label'}, this.props.country.countryCode))

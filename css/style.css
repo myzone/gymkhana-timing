@@ -224,9 +224,9 @@
     -ms-transform: scale(2, 2);
 
     font-weight: 100;
-    color: black;
-    /*text-shadow: .1em .1em .1em rgba(255, 255, 255, .65),*/
-                /*-.1em -.1em .1em rgba(255, 255, 255, .65),*/
-                 /*.1em -.1em .1em rgba(255, 255, 255, .65),*/
-                /*-.1em .1em .1em rgba(255, 255, 255, .65);*/
+    color: #303030;
+    text-shadow: .1em .1em .1em rgba(255, 255, 255, .65),
+                -.1em -.1em .1em rgba(255, 255, 255, .65),
+                 .1em -.1em .1em rgba(255, 255, 255, .65),
+                -.1em .1em .1em rgba(255, 255, 255, .65);
 }
