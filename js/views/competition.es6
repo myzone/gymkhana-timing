@@ -146,17 +146,17 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                 onClick: onSelect
             }, [
                 DOM.td({}, this.props.rowId + 1),
-                DOM.td({className: 'col-md-2'}, selected
+                DOM.td({className: 'col-sm-2'}, selected
                     ? React.createElement(StopwatchCellView, {value: this.props.time})
                     : this.props.result.time ? renderDuration(this.props.result.time) : ''),
-                DOM.td({}, R.addIndex(R.map)((penalty, i) => [React.createElement(PenaltyView, {
+                DOM.td({className: 'col-sm-9'}, R.addIndex(R.map)((penalty, i) => [React.createElement(PenaltyView, {
                     key: i,
                     penalty: penaltyTypes[penalty],
                     penalties: this.props.penalties,
                     selected: selected
                 }), ' '], penalties)),
-                DOM.td({className: 'col-md-2'}, renderDuration(this.props.result.totalTime)),
-                DOM.td({className: 'col-md-2'}, `+${renderDuration(this.props.result.deltaTime)}`)
+                DOM.td({className: 'col-sm-2'}, renderDuration(this.props.result.totalTime)),
+                DOM.td({className: 'col-sm-2'}, `+${renderDuration(this.props.result.deltaTime)}`)
             ]);
         }
 
@@ -175,21 +175,22 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
 
             return DOM.tr({className: 'info selected-heat-row-additional'}, [
                 DOM.td({}, ''),
-                DOM.td({className: 'col-md-2'}, ''),
-                DOM.td({colSpan: 2}, React.createElement(ReactBootstrap.ButtonGroup, {}, R.addIndex(R.map)((penalty, i) => {
+                DOM.td({className: 'col-sm-2'}, ''),
+                DOM.td({className: 'col-sm-10'}, React.createElement(ReactBootstrap.ButtonGroup, {}, R.addIndex(R.map)((penalty, i) => {
                     return React.createElement(AddPenaltyButton, {
                         penalty: penalty,
                         penalties: this.props.penalties
                     });
                 }, R.values(this.state.penaltyTypes)))),
-                DOM.td({}, React.createElement(ReactBootstrap.Button, {
+                DOM.td({className: 'col-sm-2'}, React.createElement(ReactBootstrap.Button, {
                     bsSize: 'small',
                     onClick: () => {
                         this.props.currentRow.set(null);
                     }
                 }, React.createElement(ReactBootstrap.Glyphicon, {
                     glyph: 'ok'
-                })))
+                }))),
+                DOM.td({className: 'col-sm-2'}, '')
             ])
         }
 
@@ -216,13 +217,11 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                 className: `non-selected ${this.props.opened ? 'selected' : ''}`,
                 onClick: () => this.props.onToggle()
             }, [
-                DOM.td({className: 'important middle-aligned'}, DOM.span({className: 'race-number'}, participant.number)),
-                DOM.td({className: 'important middle-aligned'}, participant.country ? React.createElement(CountryFlagView, {country: participant.country}) : ''),
-                DOM.td({className: 'important middle-aligned'}, participant.name),
-                DOM.td({className: 'middle-aligned'}, participant.motorcycle),
-                DOM.td({className: 'middle-aligned'}, participant.group),
-                DOM.td({className: 'important middle-aligned'}, `${heats.length}/${HEATS_COUNT}`),
-                DOM.td({className: 'middle-aligned'}, participant.team)
+                DOM.td({className: 'important middle-aligned col-sm-1'}, DOM.span({className: 'race-number'}, participant.number)),
+                DOM.td({className: 'important middle-aligned col-sm-1'}, participant.country ? React.createElement(CountryFlagView, {country: participant.country}) : ''),
+                DOM.td({className: 'important middle-aligned col-sm-5'}, participant.name),
+                DOM.td({className: 'middle-aligned col-sm-3'}, participant.motorcycle),
+                DOM.td({className: 'important middle-aligned col-sm-1'}, `${heats.length}/${HEATS_COUNT}`)
             ]);
         }
 

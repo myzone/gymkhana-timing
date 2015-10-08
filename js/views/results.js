@@ -14,7 +14,6 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
         significant: 'warning',
         critical: 'danger'
     };
-    var HEATS_COUNT = 2;
 
     var renderDuration = function renderDuration(duration) {
         return duration.format("mm:ss.SSS", { trim: false });
@@ -30,7 +29,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
             value: function render() {
                 var DOM = React.DOM;
 
-                return DOM.td({ className: 'col-md-3' }, [React.createElement('center', {}, DOM.div({ style: { marginTop: '0px' } }, [DOM.span({ className: 'race-number' }, this.props.number), ' ', DOM.span({}, this.props.name)])), DOM.div({
+                return DOM.td({ className: 'col-md-3' }, [React.createElement('center', {}, DOM.div({ style: { marginTop: '0px' } }, [DOM.span({ className: 'race-number', style: { fontSize: '25px' } }, this.props.number), ' ', DOM.span({}, this.props.name)])), DOM.div({
                     style: {
                         background: 'gold',
                         height: '80px',
@@ -61,7 +60,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
             value: function render() {
                 var DOM = React.DOM;
 
-                return DOM.td({ className: 'col-md-3' }, [React.createElement('center', {}, DOM.div({ style: { marginTop: '20px' } }, [DOM.span({ className: 'race-number' }, this.props.number), ' ', DOM.span({}, this.props.name)])), DOM.div({
+                return DOM.td({ className: 'col-md-3' }, [React.createElement('center', {}, DOM.div({ style: { marginTop: '20px' } }, [DOM.span({ className: 'race-number', style: { fontSize: '25px' } }, this.props.number), ' ', DOM.span({}, this.props.name)])), DOM.div({
                     style: {
                         background: 'silver',
                         height: '60px',
@@ -92,7 +91,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
             value: function render() {
                 var DOM = React.DOM;
 
-                return DOM.td({ className: 'col-md-3' }, [React.createElement('center', {}, DOM.div({ style: { marginTop: '40px' } }, [DOM.span({ className: 'race-number' }, this.props.number), ' ', DOM.span({}, this.props.name)])), DOM.div({
+                return DOM.td({ className: 'col-md-3' }, [React.createElement('center', {}, DOM.div({ style: { marginTop: '40px' } }, [DOM.span({ className: 'race-number', style: { fontSize: '25px' } }, this.props.number), ' ', DOM.span({}, this.props.name)])), DOM.div({
                     style: {
                         height: '40px',
                         background: '#CD7F32',
@@ -187,7 +186,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                 var DOM = React.DOM;
                 var participant = this.state.participant;
 
-                return DOM.tr({}, [DOM.td({ className: 'middle-aligned' }, DOM.span({ className: 'race-number' }, participant.number)), DOM.td({ className: 'middle-aligned' }, participant.country ? React.createElement(CountryFlagView, { country: participant.country }) : ''), DOM.td({ className: 'middle-aligned' }, participant.name), DOM.td({ className: 'middle-aligned' }, participant.motorcycle)]);
+                return DOM.tr({}, [DOM.td({ className: 'middle-aligned', style: { fontSize: '25px', width: '50px' } }, DOM.span({ className: 'race-number' }, participant.number)), DOM.td({ className: 'middle-aligned', style: { width: '50px' } }, participant.country ? React.createElement(CountryFlagView, { country: participant.country }) : ''), DOM.td({ className: 'middle-aligned col-sm-4' }, participant.name), DOM.td({ className: 'middle-aligned col-sm-4' }, participant.motorcycle), DOM.td({ className: 'middle-aligned col-sm-3' }, participant.birthday.fromNow(true))]);
             }
         }]);
 
@@ -216,7 +215,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                     striped: true,
                     condensed: true
                 }, [DOM.thead({}, DOM.tr({}, [DOM.td({}, ""), DOM.td({}, "Time"), DOM.td({}, "Penalty"), DOM.th({}, "Total"), DOM.td({}, "∆")])), DOM.tbody({}, R.addIndex(R.map)(function (heat, i) {
-                    return DOM.tr({ key: i }, [DOM.td({}, heat.number), DOM.td({ className: 'col-md-2' }, heat.time ? renderDuration(heat.time) : ''), DOM.td({}, R.addIndex(R.map)(function (penalty, i) {
+                    return DOM.tr({ key: i }, [DOM.td({}, heat.number), DOM.td({ className: 'col-sm-2' }, heat.time ? renderDuration(heat.time) : ''), DOM.td({ className: 'col-sm-10' }, R.addIndex(R.map)(function (penalty, i) {
                         return [React.createElement(PenaltyView, {
                             i: i,
                             penalty: penaltyTypes[penalty]

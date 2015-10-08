@@ -61,25 +61,25 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
             }, [
                 DOM.td({key: 'trash', style: {width: '24px'}}, this.props.deleteButton),
 
-                DOM.td({key: 'name', className: 'col-md-2'}, React.createElement(TextCellView, {
+                DOM.td({key: 'name', className: 'col-sm-2'}, React.createElement(TextCellView, {
                     key: 'name-cell',
                     className: 'without-scroll',
                     value: name
                 })),
 
-                DOM.td({key: 'description', className: 'col-md-4'}, React.createElement(TextCellView, {
+                DOM.td({key: 'description', className: 'col-sm-4'}, React.createElement(TextCellView, {
                     key: 'description-cell',
                     className: 'without-scroll',
                     value: description
                 })),
 
-                DOM.td({key: 'delay', className: 'col-md-2'}, React.createElement(StopwatchCellView, {
+                DOM.td({key: 'delay', className: 'col-sm-2'}, React.createElement(StopwatchCellView, {
                     key: 'delay-cell',
                     className: 'without-scroll',
                     value: delay
                 })),
 
-                DOM.td({key: 'type', className: 'col-md-3'}, DOM.div({
+                DOM.td({key: 'type', className: 'col-sm-3'}, DOM.div({
                     key: 'type-inner',
                     style: {height: '20px'}
                 }, React.createElement(SelectCellView, {
@@ -263,36 +263,36 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                 DOM.div({}, [
                     DOM.form({className: 'form-horizontal'}, [
                         DOM.div({className: 'form-group'}, [
-                            DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Name")),
-                            DOM.div({className: 'col-md-7'}, React.createElement(NameInput, {
+                            DOM.label({className: 'control-label col-sm-1'}, DOM.span({}, "Name")),
+                            DOM.div({className: 'col-sm-7'}, React.createElement(NameInput, {
                                 name: name
                             }))
                         ]),
 
                         DOM.div({className: 'form-group'}, [
-                            DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Date")),
-                            DOM.div({className: 'col-md-7 '}, DOM.span({className: 'form-control'}, React.createElement(DateCellView, {
+                            DOM.label({className: 'control-label col-sm-1'}, DOM.span({}, "Date")),
+                            DOM.div({className: 'col-sm-7 '}, DOM.span({className: 'form-control'}, React.createElement(DateCellView, {
                                 value: eventDate
                             })))
                         ]),
 
                         DOM.div({className: 'form-group'}, [
-                            DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Place")),
-                            DOM.div({className: 'col-md-7 '}, React.createElement(PlaceCellView, {
+                            DOM.label({className: 'control-label col-sm-1'}, DOM.span({}, "Place")),
+                            DOM.div({className: 'col-sm-7 '}, React.createElement(PlaceCellView, {
                                 value: eventPlace
                             }))
                         ]),
 
                         DOM.div({className: 'form-group'}, [
-                            DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Course layout")),
-                            DOM.div({className: 'col-md-7'}, React.createElement(CourseInput, {
+                            DOM.label({className: 'control-label col-sm-1'}, DOM.span({}, "Course layout")),
+                            DOM.div({className: 'col-sm-7'}, React.createElement(CourseInput, {
                                 course: course
                             }))
                         ]),
 
                         DOM.div({className: 'form-group'}, [
-                            DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Penalties")),
-                            DOM.div({className: 'col-md-7'}, React.createElement(EditableTableView, {
+                            DOM.label({className: 'control-label col-sm-1'}, DOM.span({}, "Penalties")),
+                            DOM.div({className: 'col-sm-7'}, React.createElement(EditableTableView, {
                                 generateNextDefault: () => Shuttle.ref({
                                     id: Commons.guid(),
                                     name: "",
@@ -313,9 +313,9 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                         ]),
 
                         DOM.div({className: 'form-group'}, [
-                            DOM.label({className: 'control-label col-md-1'}, DOM.span({}, "Countries")),
-                            DOM.div({className: 'col-md-7'}, R.flatten(R.values(R.mapObjIndexed((countrySubArrays, continentName) => [
-                                DOM.h4({className: 'col-md-7'}, continentName),
+                            DOM.label({className: 'control-label col-sm-1'}, DOM.span({}, "Countries")),
+                            DOM.div({className: 'col-sm-7'}, R.flatten(R.values(R.mapObjIndexed((countrySubArrays, continentName) => [
+                                DOM.h4({className: 'col-sm-7'}, continentName),
                                 DOM.div({className: 'btn-array', style: {width: '100%'}}, [
                                     R.map(countrySubArray => DOM.div({className: 'btn-array-row'}, [
                                         R.map(country => DOM.span({className: 'btn-array-cell'}, React.createElement(ToggleCellView, {
