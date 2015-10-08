@@ -88,19 +88,19 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                 return DOM.tr({
                     key: 'row',
                     className: this.props.last ? "" : validationStatus ? 'list-group-item-success' : 'list-group-item-danger'
-                }, [DOM.td({ key: 'trash', style: { width: '24px' } }, this.props.deleteButton), DOM.td({ key: 'name', className: 'col-md-2' }, React.createElement(TextCellView, {
+                }, [DOM.td({ key: 'trash', style: { width: '24px' } }, this.props.deleteButton), DOM.td({ key: 'name', className: 'col-sm-2' }, React.createElement(TextCellView, {
                     key: 'name-cell',
                     className: 'without-scroll',
                     value: name
-                })), DOM.td({ key: 'description', className: 'col-md-4' }, React.createElement(TextCellView, {
+                })), DOM.td({ key: 'description', className: 'col-sm-4' }, React.createElement(TextCellView, {
                     key: 'description-cell',
                     className: 'without-scroll',
                     value: description
-                })), DOM.td({ key: 'delay', className: 'col-md-2' }, React.createElement(StopwatchCellView, {
+                })), DOM.td({ key: 'delay', className: 'col-sm-2' }, React.createElement(StopwatchCellView, {
                     key: 'delay-cell',
                     className: 'without-scroll',
                     value: delay
-                })), DOM.td({ key: 'type', className: 'col-md-3' }, DOM.div({
+                })), DOM.td({ key: 'type', className: 'col-sm-3' }, DOM.div({
                     key: 'type-inner',
                     style: { height: '20px' }
                 }, React.createElement(SelectCellView, {
@@ -322,15 +322,15 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                     return _this5.props.configuration.set(computed);
                 });
 
-                return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/configuration' }, "Configuration"), React.createElement(ReactBootstrap.PageItem, { next: true, href: '#event/' + eventId + '/registration' }, ["Registration", ' ', React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-right' })])]), DOM.div({}, [DOM.form({ className: 'form-horizontal' }, [DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Name")), DOM.div({ className: 'col-md-7' }, React.createElement(NameInput, {
+                return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/configuration' }, "Configuration"), React.createElement(ReactBootstrap.PageItem, { next: true, href: '#event/' + eventId + '/registration' }, ["Registration", ' ', React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-right' })])]), DOM.div({}, [DOM.form({ className: 'form-horizontal' }, [DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-labelsm-1' }, DOM.span({}, "Name")), DOM.div({ className: 'col-sm-7' }, React.createElement(NameInput, {
                     name: name
-                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Date")), DOM.div({ className: 'col-md-7 ' }, DOM.span({ className: 'form-control' }, React.createElement(DateCellView, {
+                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-1' }, DOM.span({}, "Date")), DOM.div({ className: 'col-sm-7 ' }, DOM.span({ className: 'form-control' }, React.createElement(DateCellView, {
                     value: eventDate
-                })))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Place")), DOM.div({ className: 'col-md-7 ' }, React.createElement(PlaceCellView, {
+                })))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-1' }, DOM.span({}, "Place")), DOM.div({ className: 'col-sm-7 ' }, React.createElement(PlaceCellView, {
                     value: eventPlace
-                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Course layout")), DOM.div({ className: 'col-md-7' }, React.createElement(CourseInput, {
+                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-1' }, DOM.span({}, "Course layout")), DOM.div({ className: 'col-sm-7' }, React.createElement(CourseInput, {
                     course: course
-                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Penalties")), DOM.div({ className: 'col-md-7' }, React.createElement(EditableTableView, {
+                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-1' }, DOM.span({}, "Penalties")), DOM.div({ className: 'col-sm-7' }, React.createElement(EditableTableView, {
                     generateNextDefault: function generateNextDefault() {
                         return Shuttle.ref({
                             id: Commons.guid(),
@@ -350,8 +350,8 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                     headerRenderer: PenaltiesHeaderRenderer,
                     footerRenderer: PenaltiesFooterRenderer,
                     itemRenderer: PenaltyRenderer
-                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-md-1' }, DOM.span({}, "Countries")), DOM.div({ className: 'col-md-7' }, R.flatten(R.values(R.mapObjIndexed(function (countrySubArrays, continentName) {
-                    return [DOM.h4({ className: 'col-md-7' }, continentName), DOM.div({ className: 'btn-array', style: { width: '100%' } }, [R.map(function (countrySubArray) {
+                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-1' }, DOM.span({}, "Countries")), DOM.div({ className: 'col-sm-7' }, R.flatten(R.values(R.mapObjIndexed(function (countrySubArrays, continentName) {
+                    return [DOM.h4({ className: 'col-sm-7' }, continentName), DOM.div({ className: 'btn-array', style: { width: '100%' } }, [R.map(function (countrySubArray) {
                         return DOM.div({ className: 'btn-array-row' }, [R.map(function (country) {
                             return DOM.span({ className: 'btn-array-cell' }, React.createElement(ToggleCellView, {
                                 value: country,
