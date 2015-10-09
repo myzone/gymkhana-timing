@@ -75,9 +75,29 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
     require(['models/application', 'views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results', 'views/create'], (Application, PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView, CreateView) => {
             moment.locale('en');
 
+            const desiredCapacity = 125 * 1024 * 1024;
+            const storage = new LargeLocalStorage({size: desiredCapacity, name: 'application-data-storage'});
+
             const bootstrapStorage = (store, application) => {
-                const desiredCapacity = 125 * 1024 * 1024;
-                const storage = new LargeLocalStorage({size: desiredCapacity, name: 'application-data-storage'});
+
+                let dropingToDisk = false;
+                const unloadListener = () => {
+                    if (!dropingToDisk)
+                        return;
+
+                    // Prevent multiple prompts - seen on Chrome and IE
+                    if (R.test(/msie|chrome/, R.toLower(navigator.userAgent))) {
+                        if (window.aysHasPrompted) {
+                            return;
+                        }
+                        window.aysHasPrompted = true;
+                        window.setTimeout(() => {
+                            window.aysHasPrompted = false;
+                        }, 900);
+                    }
+
+                    return "Wait. Data is currently saving";
+                };
 
                 const loadApplication = () => storage
                     .getContents('application-data')
@@ -86,6 +106,8 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                             store.set(Application.unmashall(raw))
                         }
                     });
+
+                $(window).bind('beforeunload', unloadListener);
 
                 return storage.initialized
                     .then(initialized => {
@@ -99,9 +121,13 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                     .then(loadApplication)
                     .then(() => {
                         const flush = () => {
+                            dropingToDisk = true;
+
+                            console.log('Flush has been started.');
                             storage.setContents('application-data', Application.marshall(application))
                                 .then(() => localStorage.setItem('last-sync', moment().toISOString()))
-                                .then(() => console.info('Flush has been done.'));
+                                .then(() => console.info('Flush has been done.'))
+                                .then(() => dropingToDisk = false);
                         };
                         const noFlush = () => {
                         };
@@ -327,6 +353,7 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             window.R = R;
             window.s = Shuttle;
             window.m = moment;
+            window.clear = () => storage.setContents('application-data', "{}");
         }
     );
 });

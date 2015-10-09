@@ -146,9 +146,14 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
         _createClass(RegistrationView, [{
             key: 'render',
             value: function render() {
+                var _this2 = this;
+
                 var DOM = React.DOM;
 
                 var eventId = this.props.params.eventId;
+                var shuffle = function shuffle() {
+                    _this2.props.participants.set(R.sortBy(Math.random, _this2.state.participants));
+                };
 
                 return DOM.div({ key: 'registration-root' }, [React.createElement(ReactBootstrap.Pager, { key: 'pager-root' }, [React.createElement(ReactBootstrap.PageItem, {
                     key: 'previous',
@@ -191,7 +196,12 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     headerRenderer: ParticipantHeaderRenderer,
                     footerRenderer: ParticipantFooterRenderer,
                     itemRenderer: ParticipantRenderer
-                })]);
+                }), React.createElement(ReactBootstrap.Button, {
+                    className: 'pull-right',
+                    onClick: function onClick() {
+                        return shuffle();
+                    }
+                }, "Shuffle")]);
             }
         }]);
 

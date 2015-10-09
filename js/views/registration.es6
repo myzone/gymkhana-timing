@@ -37,7 +37,7 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
             const validationStatus = !R.isEmpty(participant.number)
                 && !R.isEmpty(participant.country)
                 && !R.isEmpty(participant.name)
-                && !R.isEmpty(participant.motorcycle)
+                && !R.isEmpty(participant.motorcycle);
 
             const number = Shuttle.ref(participant.number);
             const country = Shuttle.ref(participant.country);
@@ -119,6 +119,9 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
             const DOM = React.DOM;
 
             const eventId = this.props.params.eventId;
+            const shuffle = () => {
+                this.props.participants.set(R.sortBy(Math.random, this.state.participants))
+            };
 
             return DOM.div({key: 'registration-root'}, [
                 React.createElement(ReactBootstrap.Pager, {key: 'pager-root'}, [
@@ -169,7 +172,12 @@ define(['react', 'react-bootstrap', 'ramda', 'shuttle', 'shuttle-react', 'moment
                     headerRenderer: ParticipantHeaderRenderer,
                     footerRenderer: ParticipantFooterRenderer,
                     itemRenderer: ParticipantRenderer
-                })
+                }),
+
+                React.createElement(ReactBootstrap.Button, {
+                    className: 'pull-right',
+                    onClick: () => shuffle()
+                }, "Shuffle")
             ]);
         }
     }

@@ -84,9 +84,28 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
     require(['models/application', 'views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results', 'views/create'], function (Application, PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView, CreateView) {
         moment.locale('en');
 
+        var desiredCapacity = 125 * 1024 * 1024;
+        var storage = new LargeLocalStorage({ size: desiredCapacity, name: 'application-data-storage' });
+
         var bootstrapStorage = function bootstrapStorage(store, application) {
-            var desiredCapacity = 125 * 1024 * 1024;
-            var storage = new LargeLocalStorage({ size: desiredCapacity, name: 'application-data-storage' });
+
+            var dropingToDisk = false;
+            var unloadListener = function unloadListener() {
+                if (!dropingToDisk) return;
+
+                // Prevent multiple prompts - seen on Chrome and IE
+                if (R.test(/msie|chrome/, R.toLower(navigator.userAgent))) {
+                    if (window.aysHasPrompted) {
+                        return;
+                    }
+                    window.aysHasPrompted = true;
+                    window.setTimeout(function () {
+                        window.aysHasPrompted = false;
+                    }, 900);
+                }
+
+                return "Wait. Data is currently saving";
+            };
 
             var loadApplication = function loadApplication() {
                 return storage.getContents('application-data').then(function (raw) {
@@ -95,6 +114,8 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                     }
                 });
             };
+
+            $(window).bind('beforeunload', unloadListener);
 
             return storage.initialized.then(function (initialized) {
                 // Check to see how much space the user authorized us to actually use.
@@ -105,10 +126,15 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                 }
             }).then(loadApplication).then(function () {
                 var flush = function flush() {
+                    dropingToDisk = true;
+
+                    console.log('Flush has been started.');
                     storage.setContents('application-data', Application.marshall(application)).then(function () {
                         return localStorage.setItem('last-sync', moment().toISOString());
                     }).then(function () {
                         return console.info('Flush has been done.');
+                    }).then(function () {
+                        return dropingToDisk = false;
                     });
                 };
                 var noFlush = function noFlush() {};
@@ -416,6 +442,9 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
         window.R = R;
         window.s = Shuttle;
         window.m = moment;
+        window.clear = function () {
+            return storage.setContents('application-data', "{}");
+        };
     });
 });
 
