@@ -19,6 +19,7 @@ require.config({
         'react': 'libs/react-0.13.3-production.min',
         'react-bootstrap': 'libs/react-bootstrap-0.26.4',
         'react-router': 'libs/react-router-1.0.0-rc1',
+        'react-router-history': 'libs/react-router-history-1.0.0',
         'react-input-mask': 'libs/react-input-mask-0.1.3-PATCHED',
         'react-dropzone': 'libs/react-dropzone-2.1.0-PATCHED',
 
@@ -80,7 +81,7 @@ require.config({
     waitSeconds: 120
 });
 
-require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery', 'shuttle', 'shuttle-react', 'large-local-storage'], function (React, ReactBootstrap, ReactRouter, R, moment, $, Shuttle, ShuttleReact, LargeLocalStorage) {
+require(['react', 'react-bootstrap', 'react-router', 'react-router-history', 'ramda', 'moment', 'jquery', 'shuttle', 'shuttle-react', 'large-local-storage'], function (React, ReactBootstrap, ReactRouter, History, R, moment, $, Shuttle, ShuttleReact, LargeLocalStorage) {
     require(['models/application', 'views/page', 'views/events', 'views/event', 'views/configuration', 'views/registration', 'views/competition', 'views/results', 'views/create'], function (Application, PageView, EventsView, EventView, ConfigurationView, RegistrationView, CompetitionView, ResultsView, CreateView) {
         moment.locale('en');
 
@@ -395,7 +396,16 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                 return ResultsApplicationProvider;
             })(React.Component);
 
-            React.render(React.createElement(Main, { key: 'main' }, [React.createElement(ReactRouter.Router, { key: 'router' }, [React.createElement(ReactRouter.Route, {
+            var history = History.createHashHistory();
+
+            history.listen(function (location) {
+                ga('send', {
+                    hitType: 'pageview',
+                    page: '' + location.pathname + location.search
+                });
+            });
+
+            React.render(React.createElement(Main, { key: 'main', history: history }, [React.createElement(ReactRouter.Router, { key: 'router' }, [React.createElement(ReactRouter.Route, {
                 key: 'page',
                 path: '/',
                 component: PageApplicationProvider
