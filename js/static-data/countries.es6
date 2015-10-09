@@ -40,11 +40,6 @@ define(['ramda'], (R) => [
         "countryName": "Angola"
     },
     {
-        "continentName": "Antarctica",
-        "countryCode": "AQ",
-        "countryName": "Antarctica"
-    },
-    {
         "continentName": "South America",
         "countryCode": "AR",
         "countryName": "Argentina"
@@ -163,11 +158,6 @@ define(['ramda'], (R) => [
         "continentName": "Asia",
         "countryCode": "BT",
         "countryName": "Bhutan"
-    },
-    {
-        "continentName": "Antarctica",
-        "countryCode": "BV",
-        "countryName": "Bouvet Island"
     },
     {
         "continentName": "Africa",
@@ -445,11 +435,6 @@ define(['ramda'], (R) => [
         "countryName": "Greece"
     },
     {
-        "continentName": "Antarctica",
-        "countryCode": "GS",
-        "countryName": "South Georgia and the South Sandwich Islands"
-    },
-    {
         "continentName": "North America",
         "countryCode": "GT",
         "countryName": "Guatemala"
@@ -473,11 +458,6 @@ define(['ramda'], (R) => [
         "continentName": "Asia",
         "countryCode": "HK",
         "countryName": "Hong Kong"
-    },
-    {
-        "continentName": "Antarctica",
-        "countryCode": "HM",
-        "countryName": "Heard Island and McDonald Islands"
     },
     {
         "continentName": "North America",
@@ -1073,11 +1053,6 @@ define(['ramda'], (R) => [
         "continentName": "Africa",
         "countryCode": "TD",
         "countryName": "Chad"
-    },
-    {
-        "continentName": "Antarctica",
-        "countryCode": "TF",
-        "countryName": "French Southern Territories"
     },
     {
         "continentName": "Africa",
