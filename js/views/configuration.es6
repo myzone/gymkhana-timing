@@ -1,4 +1,4 @@
-define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/editable-table', 'components/text-cell', 'components/select-cell', 'components/date-cell', 'components/stopwatch-cell', 'components/toggle-cell', 'components/place-cell', 'components/country-flag', 'utils/commons', 'static-data/countries', 'static-data/penalty-type'], (React, ReactBootstrap, Dropzone, R, Shuttle, ShuttleReact, moment, EditableTableView, TextCellView, SelectCellView, DateCellView, StopwatchCellView, ToggleCellView, PlaceCellView, CountryFlagView, Commons, COUNTRIES, PenaltyType) => {
+define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/editable-table', 'components/text-cell', 'components/select-cell', 'components/date-cell', 'components/stopwatch-cell', 'components/toggle-cell', 'components/country-flag', 'utils/commons', 'static-data/countries', 'static-data/penalty-type'], (React, ReactBootstrap, Dropzone, R, Shuttle, ShuttleReact, moment, EditableTableView, TextCellView, SelectCellView, DateCellView, StopwatchCellView, ToggleCellView, CountryFlagView, Commons, COUNTRIES, PenaltyType) => {
     class PenaltiesHeaderRenderer extends React.Component {
 
         render() {
@@ -106,37 +106,20 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
 
     }
 
-    class NameInput extends Shuttle.React.Component {
+    class MappedInput extends Shuttle.React.Component {
 
         render() {
-            const nameIsOk = this.validateName();
+            const onChange = v => this.props.value.set(this.props.handle(v));
+            const value = this.state.value;
 
             return React.createElement(ReactBootstrap.Input, {
                 type: 'text',
                 groupClassName: 'no-margin',
 
-                bsStyle: nameIsOk ? 'success' : 'error',
+                bsStyle: !R.isNil(value) ? 'success' : 'error',
                 hasFeedback: true,
-                value: this.state.name,
-                onChange: e => this.props.name.set(e.target.value)
-            });
-        }
-
-        validateName() {
-            return !R.isEmpty(this.state.name);
-        }
-
-    }
-
-    class PlaceInput extends Shuttle.React.Component {
-
-        render() {
-            return React.createElement(ReactBootstrap.Input, {
-                type: 'text',
-                groupClassName: 'no-margin',
-
-                value: this.state.eventPlace,
-                onChange: e => this.props.eventPlace.set(e.target.value)
+                value: !R.isNil(value) ? value : '',
+                onChange: e => onChange(e.target.value)
             });
         }
 
@@ -209,6 +192,7 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
             const name = Shuttle.ref(configuration.name);
             const eventDate = Shuttle.ref(configuration.eventDate);
             const eventPlace = Shuttle.ref(configuration.eventPlace);
+            const heatCount = Shuttle.ref(configuration.heatCount);
             const course = Shuttle.ref(configuration.course);
             const penalties = Shuttle.ref(R.values(configuration.penalties));
             const countries = Shuttle.ref(configuration.countries);
@@ -239,13 +223,15 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                     name,
                     eventDate,
                     eventPlace,
+                    heatCount,
                     course,
                     penalties.map(R.reduce((result, item) => R.assoc(item.get().id, item, result), {})),
                     countries.map(R.filter(i => i))
-                ], (name, eventDate, eventPlace, course, penalties, countries) => R.identity({
+                ], (name, eventDate, eventPlace, heatCount, course, penalties, countries) => R.identity({
                         name: name,
                         eventDate: eventDate,
                         eventPlace: eventPlace,
+                        heatCount: heatCount,
                         course: course,
                         penalties: penalties,
                         countries: countries
@@ -263,35 +249,45 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                 DOM.div({}, [
                     DOM.form({className: 'form-horizontal'}, [
                         DOM.div({className: 'form-group'}, [
-                            DOM.label({className: 'control-label col-sm-1'}, DOM.span({}, "Name")),
-                            DOM.div({className: 'col-sm-7'}, React.createElement(NameInput, {
-                                name: name
+                            DOM.label({className: 'control-label col-sm-2'}, DOM.span({}, "Name")),
+                            DOM.div({className: 'col-sm-7'}, React.createElement(MappedInput, {
+                                value: name,
+                                handle: name => !R.test(/^w*$/g,name) ? name : null
                             }))
                         ]),
 
                         DOM.div({className: 'form-group'}, [
-                            DOM.label({className: 'control-label col-sm-1'}, DOM.span({}, "Date")),
+                            DOM.label({className: 'control-label col-sm-2'}, DOM.span({}, "Date")),
                             DOM.div({className: 'col-sm-7 '}, DOM.span({className: 'form-control'}, React.createElement(DateCellView, {
                                 value: eventDate
                             })))
                         ]),
 
                         DOM.div({className: 'form-group'}, [
-                            DOM.label({className: 'control-label col-sm-1'}, DOM.span({}, "Place")),
-                            DOM.div({className: 'col-sm-7 '}, React.createElement(PlaceCellView, {
-                                value: eventPlace
+                            DOM.label({className: 'control-label col-sm-2'}, DOM.span({}, "Place")),
+                            DOM.div({className: 'col-sm-7 '}, React.createElement(MappedInput, {
+                                value: eventPlace,
+                                handle: place => !R.test(/^\s*$/g, place) ? place : null
                             }))
                         ]),
 
                         DOM.div({className: 'form-group'}, [
-                            DOM.label({className: 'control-label col-sm-1'}, DOM.span({}, "Course layout")),
+                            DOM.label({className: 'control-label col-sm-2'}, DOM.span({}, "Heat count")),
+                            DOM.div({className: 'col-sm-7'}, React.createElement(MappedInput, {
+                                value: heatCount,
+                                handle: heatCount => !isNaN(parseInt(heatCount)) ? parseInt(heatCount) : null
+                            }))
+                        ]),
+
+                        DOM.div({className: 'form-group'}, [
+                            DOM.label({className: 'control-label col-sm-2'}, DOM.span({}, "Course layout")),
                             DOM.div({className: 'col-sm-7'}, React.createElement(CourseInput, {
                                 course: course
                             }))
                         ]),
 
                         DOM.div({className: 'form-group'}, [
-                            DOM.label({className: 'control-label col-sm-1'}, DOM.span({}, "Penalties")),
+                            DOM.label({className: 'control-label col-sm-2'}, DOM.span({}, "Penalties")),
                             DOM.div({className: 'col-sm-7'}, React.createElement(EditableTableView, {
                                 generateNextDefault: () => Shuttle.ref({
                                     id: Commons.guid(),
@@ -313,7 +309,7 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                         ]),
 
                         DOM.div({className: 'form-group'}, [
-                            DOM.label({className: 'control-label col-sm-1'}, DOM.span({}, "Countries")),
+                            DOM.label({className: 'control-label col-sm-2'}, DOM.span({}, "Countries")),
                             DOM.div({className: 'col-sm-7'}, R.flatten(R.values(R.mapObjIndexed((countrySubArrays, continentName) => [
                                 DOM.h4({className: 'col-sm-7'}, continentName),
                                 DOM.div({className: 'btn-array', style: {width: '100%'}}, [

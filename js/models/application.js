@@ -1,6 +1,18 @@
 'use strict';
 
 define(['ramda', 'shuttle', 'moment', 'utils/commons'], function (R, Shuttle, moment, Commons) {
+    var parse = function parse(raw) {
+        try {
+            return JSON.parse(raw);
+        } catch (e) {
+            console.error('YOUR DATA IS BROKEN (dump is below)');
+            console.error(raw);
+            console.error('===================================');
+
+            throw e;
+        }
+    };
+
     var Application = {
         empty: function empty() {
             return Shuttle.ref({});
@@ -31,6 +43,7 @@ define(['ramda', 'shuttle', 'moment', 'utils/commons'], function (R, Shuttle, mo
                         name: event.configuration.name,
                         eventDate: moment(event.configuration.eventDate),
                         eventPlace: event.configuration.eventPlace,
+                        heatCount: event.configuration.heatCount,
                         course: event.configuration.course,
                         penalties: R.mapObj(function (penalty) {
                             return Shuttle.ref({
@@ -66,7 +79,7 @@ define(['ramda', 'shuttle', 'moment', 'utils/commons'], function (R, Shuttle, mo
                         });
                     }, event.heats))
                 });
-            }, JSON.parse(raw)));
+            }, parse(raw)));
         },
         validate: function validate(raw) {
             try {

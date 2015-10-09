@@ -43,7 +43,6 @@ require.config({
         'components/select-cell': 'views/components/select-cell',
         'components/toggle-cell': 'views/components/toggle-cell',
         'components/stopwatch-cell': 'views/components/stopwatch-cell',
-        'components/place-cell': 'views/components/place-cell',
         'components/editable-table': 'views/components/editable-table',
         'components/country-flag': 'views/components/country-flag',
 
@@ -232,6 +231,9 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                         const event = application
                             .flatMap(getEvent(this.props.params.eventId));
 
+                        const configuration = event
+                            .flatMap(event => event.configuration);
+
                         return React.createElement(CompetitionView, {
                             key: 'view',
                             params: this.props.params,
@@ -239,9 +241,10 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                                 .flatMap(event => event.participants),
                             heats: event
                                 .flatMap(event => event.heats),
-                            penaltyTypes: event
-                                .flatMap(event => event.configuration)
-                                .map(configuration => configuration.penalties)
+                            penaltyTypes: configuration
+                                .map(configuration => configuration.penalties),
+                            heatCount: configuration
+                                .map(configuration => configuration.heatCount)
                         }, this.props.children);
                     }
                 }
@@ -315,7 +318,10 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
             const store = Shuttle.ref(Application.empty());
             const application = store.flatMap(R.identity);
 
-            bootstrapStorage(store, application);
+            bootstrapStorage(store, application)
+                .then(() => console.log('Data loaded from storage'))
+                .catch(e => console.error('Data DID NOT load from storage', e));
+
             bootstrapReact(application);
 
             window.R = R;

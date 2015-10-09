@@ -53,7 +53,6 @@ require.config({
         'components/select-cell': 'views/components/select-cell',
         'components/toggle-cell': 'views/components/toggle-cell',
         'components/stopwatch-cell': 'views/components/stopwatch-cell',
-        'components/place-cell': 'views/components/place-cell',
         'components/editable-table': 'views/components/editable-table',
         'components/country-flag': 'views/components/country-flag',
 
@@ -309,6 +308,10 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                     value: function render() {
                         var event = application.flatMap(getEvent(this.props.params.eventId));
 
+                        var configuration = event.flatMap(function (event) {
+                            return event.configuration;
+                        });
+
                         return React.createElement(CompetitionView, {
                             key: 'view',
                             params: this.props.params,
@@ -318,10 +321,11 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
                             heats: event.flatMap(function (event) {
                                 return event.heats;
                             }),
-                            penaltyTypes: event.flatMap(function (event) {
-                                return event.configuration;
-                            }).map(function (configuration) {
+                            penaltyTypes: configuration.map(function (configuration) {
                                 return configuration.penalties;
+                            }),
+                            heatCount: configuration.map(function (configuration) {
+                                return configuration.heatCount;
                             })
                         }, this.props.children);
                     }
@@ -401,7 +405,12 @@ require(['react', 'react-bootstrap', 'react-router', 'ramda', 'moment', 'jquery'
         var store = Shuttle.ref(Application.empty());
         var application = store.flatMap(R.identity);
 
-        bootstrapStorage(store, application);
+        bootstrapStorage(store, application).then(function () {
+            return console.log('Data loaded from storage');
+        })['catch'](function (e) {
+            return console.error('Data DID NOT load from storage', e);
+        });
+
         bootstrapReact(application);
 
         window.R = R;

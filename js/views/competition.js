@@ -9,7 +9,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-durations', 'shuttle', 'shuttle-react', 'components/stopwatch-cell', 'components/country-flag', 'utils/commons'], function (React, ReactRouter, ReactBootstrap, R, moment, momentDurations, Shuttle, ShuttleReact, StopwatchCellView, CountryFlagView, Commons) {
-    var HEATS_COUNT = 2;
     var PENALTY_STYLES = {
         negligible: 'default',
         significant: 'warning',
@@ -275,6 +274,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                 var _this6 = this;
 
                 var DOM = React.DOM;
+                var heatCount = this.props.heatCount;
                 var participant = this.state.participant;
                 var heats = this.state.heats;
 
@@ -284,7 +284,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                     onClick: function onClick() {
                         return _this6.props.onToggle();
                     }
-                }, [DOM.td({ className: 'important middle-aligned col-sm-1' }, DOM.span({ className: 'race-number' }, participant.number)), DOM.td({ className: 'important middle-aligned col-sm-1' }, participant.country ? React.createElement(CountryFlagView, { country: participant.country }) : ''), DOM.td({ className: 'important middle-aligned col-sm-5' }, participant.name), DOM.td({ className: 'middle-aligned col-sm-3' }, participant.motorcycle), DOM.td({ className: 'important middle-aligned col-sm-1' }, heats.length + '/' + HEATS_COUNT)]);
+                }, [DOM.td({ className: 'important middle-aligned col-sm-1' }, DOM.span({ className: 'race-number' }, participant.number)), DOM.td({ className: 'important middle-aligned col-sm-1' }, participant.country ? React.createElement(CountryFlagView, { country: participant.country }) : ''), DOM.td({ className: 'important middle-aligned col-sm-5' }, participant.name), DOM.td({ className: 'middle-aligned col-sm-3' }, participant.motorcycle), DOM.td({ className: 'important middle-aligned col-sm-1' }, R.min(heats.length, heatCount) + '/' + heatCount)]);
             }
         }]);
 
@@ -380,6 +380,8 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
 
                 var DOM = React.DOM;
                 var eventId = this.props.params.eventId;
+                var heatCount = this.state.heatCount || 0;
+
                 var data = R.map(function (participant) {
                     var opened = R.equals(_this10.state.current, participant.get());
                     var heats = _this10.props.heats.map(function (heats) {
@@ -437,7 +439,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                                     type: 'NoTimeResult'
                                 }
                             }, result);
-                        }, [], R.range(0, HEATS_COUNT))));
+                        }, [], R.range(0, heatCount))));
                     }).map(function (semiResults) {
                         var bestHeatTime = R.reduce(R.min, moment.duration(Infinity), R.map(function (result) {
                             return result.totalTime;
@@ -487,6 +489,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                                 return heat.result.type == 'TimedResult';
                             }, heats);
                         }),
+                        heatCount: heatCount,
                         eventId: eventId
                     }), React.createElement(AdditionalParticipantView, {
                         key: 'additional-' + i,

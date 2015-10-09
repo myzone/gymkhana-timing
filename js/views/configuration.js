@@ -8,7 +8,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/editable-table', 'components/text-cell', 'components/select-cell', 'components/date-cell', 'components/stopwatch-cell', 'components/toggle-cell', 'components/place-cell', 'components/country-flag', 'utils/commons', 'static-data/countries', 'static-data/penalty-type'], function (React, ReactBootstrap, Dropzone, R, Shuttle, ShuttleReact, moment, EditableTableView, TextCellView, SelectCellView, DateCellView, StopwatchCellView, ToggleCellView, PlaceCellView, CountryFlagView, Commons, COUNTRIES, PenaltyType) {
+define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shuttle-react', 'moment', 'components/editable-table', 'components/text-cell', 'components/select-cell', 'components/date-cell', 'components/stopwatch-cell', 'components/toggle-cell', 'components/country-flag', 'utils/commons', 'static-data/countries', 'static-data/penalty-type'], function (React, ReactBootstrap, Dropzone, R, Shuttle, ShuttleReact, moment, EditableTableView, TextCellView, SelectCellView, DateCellView, StopwatchCellView, ToggleCellView, CountryFlagView, Commons, COUNTRIES, PenaltyType) {
     var PenaltiesHeaderRenderer = (function (_React$Component) {
         _inherits(PenaltiesHeaderRenderer, _React$Component);
 
@@ -122,75 +122,44 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
         return PenaltyRenderer;
     })(Shuttle.React.Component);
 
-    var NameInput = (function (_Shuttle$React$Component2) {
-        _inherits(NameInput, _Shuttle$React$Component2);
+    var MappedInput = (function (_Shuttle$React$Component2) {
+        _inherits(MappedInput, _Shuttle$React$Component2);
 
-        function NameInput() {
-            _classCallCheck(this, NameInput);
+        function MappedInput() {
+            _classCallCheck(this, MappedInput);
 
-            _get(Object.getPrototypeOf(NameInput.prototype), 'constructor', this).apply(this, arguments);
+            _get(Object.getPrototypeOf(MappedInput.prototype), 'constructor', this).apply(this, arguments);
         }
 
-        _createClass(NameInput, [{
+        _createClass(MappedInput, [{
             key: 'render',
             value: function render() {
                 var _this2 = this;
 
-                var nameIsOk = this.validateName();
+                var _onChange = function _onChange(v) {
+                    return _this2.props.value.set(_this2.props.handle(v));
+                };
+                var value = this.state.value;
 
                 return React.createElement(ReactBootstrap.Input, {
                     type: 'text',
                     groupClassName: 'no-margin',
 
-                    bsStyle: nameIsOk ? 'success' : 'error',
+                    bsStyle: !R.isNil(value) ? 'success' : 'error',
                     hasFeedback: true,
-                    value: this.state.name,
+                    value: !R.isNil(value) ? value : '',
                     onChange: function onChange(e) {
-                        return _this2.props.name.set(e.target.value);
-                    }
-                });
-            }
-        }, {
-            key: 'validateName',
-            value: function validateName() {
-                return !R.isEmpty(this.state.name);
-            }
-        }]);
-
-        return NameInput;
-    })(Shuttle.React.Component);
-
-    var PlaceInput = (function (_Shuttle$React$Component3) {
-        _inherits(PlaceInput, _Shuttle$React$Component3);
-
-        function PlaceInput() {
-            _classCallCheck(this, PlaceInput);
-
-            _get(Object.getPrototypeOf(PlaceInput.prototype), 'constructor', this).apply(this, arguments);
-        }
-
-        _createClass(PlaceInput, [{
-            key: 'render',
-            value: function render() {
-                var _this3 = this;
-
-                return React.createElement(ReactBootstrap.Input, {
-                    type: 'text',
-                    groupClassName: 'no-margin',
-
-                    value: this.state.eventPlace,
-                    onChange: function onChange(e) {
-                        return _this3.props.eventPlace.set(e.target.value);
+                        return _onChange(e.target.value);
                     }
                 });
             }
         }]);
 
-        return PlaceInput;
+        return MappedInput;
     })(Shuttle.React.Component);
 
-    var CourseInput = (function (_Shuttle$React$Component4) {
-        _inherits(CourseInput, _Shuttle$React$Component4);
+    var CourseInput = (function (_Shuttle$React$Component3) {
+        _inherits(CourseInput, _Shuttle$React$Component3);
 
         function CourseInput() {
             _classCallCheck(this, CourseInput);
@@ -201,7 +170,7 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
         _createClass(CourseInput, [{
             key: 'render',
             value: function render() {
-                var _this4 = this;
+                var _this3 = this;
 
                 var DOM = React.DOM;
 
@@ -228,10 +197,10 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                             reader.onload = function (e) {
                                 var img = new Image();
                                 img.onload = function () {
-                                    return _this4.props.course.set(e.target.result);
+                                    return _this3.props.course.set(e.target.result);
                                 };
                                 img.onerror = function () {
-                                    return _this4.props.course.set(null);
+                                    return _this3.props.course.set(null);
                                 };
                                 img.src = e.target.result;
                             };
@@ -256,8 +225,8 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
         return CourseInput;
     })(Shuttle.React.Component);
 
-    var ConfigurationView = (function (_Shuttle$React$Component5) {
-        _inherits(ConfigurationView, _Shuttle$React$Component5);
+    var ConfigurationView = (function (_Shuttle$React$Component4) {
+        _inherits(ConfigurationView, _Shuttle$React$Component4);
 
         function ConfigurationView(props) {
             _classCallCheck(this, ConfigurationView);
@@ -268,7 +237,7 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
         _createClass(ConfigurationView, [{
             key: 'render',
             value: function render() {
-                var _this5 = this;
+                var _this4 = this;
 
                 var DOM = React.DOM;
                 var eventId = this.props.params.eventId;
@@ -278,6 +247,7 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                 var name = Shuttle.ref(configuration.name);
                 var eventDate = Shuttle.ref(configuration.eventDate);
                 var eventPlace = Shuttle.ref(configuration.eventPlace);
+                var heatCount = Shuttle.ref(configuration.heatCount);
                 var course = Shuttle.ref(configuration.course);
                 var penalties = Shuttle.ref(R.values(configuration.penalties));
                 var countries = Shuttle.ref(configuration.countries);
@@ -305,32 +275,44 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                     return country.continentName;
                 }, R.dropLast(0, COUNTRIES)));
 
-                Shuttle.combine([name, eventDate, eventPlace, course, penalties.map(R.reduce(function (result, item) {
+                Shuttle.combine([name, eventDate, eventPlace, heatCount, course, penalties.map(R.reduce(function (result, item) {
                     return R.assoc(item.get().id, item, result);
                 }, {})), countries.map(R.filter(function (i) {
                     return i;
-                }))], function (name, eventDate, eventPlace, course, penalties, countries) {
+                }))], function (name, eventDate, eventPlace, heatCount, course, penalties, countries) {
                     return R.identity({
                         name: name,
                         eventDate: eventDate,
                         eventPlace: eventPlace,
+                        heatCount: heatCount,
                         course: course,
                         penalties: penalties,
                         countries: countries
                     });
                 }).addListener(function (_, computed) {
-                    return _this5.props.configuration.set(computed);
+                    return _this4.props.configuration.set(computed);
                 });
 
-                return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/configuration' }, "Configuration"), React.createElement(ReactBootstrap.PageItem, { next: true, href: '#event/' + eventId + '/registration' }, ["Registration", ' ', React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-right' })])]), DOM.div({}, [DOM.form({ className: 'form-horizontal' }, [DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-1' }, DOM.span({}, "Name")), DOM.div({ className: 'col-sm-7' }, React.createElement(NameInput, {
-                    name: name
-                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-1' }, DOM.span({}, "Date")), DOM.div({ className: 'col-sm-7 ' }, DOM.span({ className: 'form-control' }, React.createElement(DateCellView, {
+                return DOM.div({}, [React.createElement(ReactBootstrap.Pager, {}, [React.createElement(ReactBootstrap.PageItem, { href: '#event/' + eventId + '/configuration' }, "Configuration"), React.createElement(ReactBootstrap.PageItem, { next: true, href: '#event/' + eventId + '/registration' }, ["Registration", ' ', React.createElement(ReactBootstrap.Glyphicon, { glyph: 'menu-right' })])]), DOM.div({}, [DOM.form({ className: 'form-horizontal' }, [DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-2' }, DOM.span({}, "Name")), DOM.div({ className: 'col-sm-7' }, React.createElement(MappedInput, {
+                    value: name,
+                    handle: function handle(name) {
+                        return !R.test(/^w*$/g, name) ? name : null;
+                    }
+                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-2' }, DOM.span({}, "Date")), DOM.div({ className: 'col-sm-7 ' }, DOM.span({ className: 'form-control' }, React.createElement(DateCellView, {
                     value: eventDate
-                })))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-1' }, DOM.span({}, "Place")), DOM.div({ className: 'col-sm-7 ' }, React.createElement(PlaceCellView, {
-                    value: eventPlace
-                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-1' }, DOM.span({}, "Course layout")), DOM.div({ className: 'col-sm-7' }, React.createElement(CourseInput, {
+                })))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-2' }, DOM.span({}, "Place")), DOM.div({ className: 'col-sm-7 ' }, React.createElement(MappedInput, {
+                    value: eventPlace,
+                    handle: function handle(place) {
+                        return !R.test(/^\s*$/g, place) ? place : null;
+                    }
+                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-2' }, DOM.span({}, "Heat count")), DOM.div({ className: 'col-sm-7' }, React.createElement(MappedInput, {
+                    value: heatCount,
+                    handle: function handle(heatCount) {
+                        return !isNaN(parseInt(heatCount)) ? parseInt(heatCount) : null;
+                    }
+                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-2' }, DOM.span({}, "Course layout")), DOM.div({ className: 'col-sm-7' }, React.createElement(CourseInput, {
                     course: course
-                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-1' }, DOM.span({}, "Penalties")), DOM.div({ className: 'col-sm-7' }, React.createElement(EditableTableView, {
+                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-2' }, DOM.span({}, "Penalties")), DOM.div({ className: 'col-sm-7' }, React.createElement(EditableTableView, {
                     generateNextDefault: function generateNextDefault() {
                         return Shuttle.ref({
                             id: Commons.guid(),
@@ -350,7 +332,7 @@ define(['react', 'react-bootstrap', 'react-dropzone', 'ramda', 'shuttle', 'shutt
                     headerRenderer: PenaltiesHeaderRenderer,
                     footerRenderer: PenaltiesFooterRenderer,
                     itemRenderer: PenaltyRenderer
-                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-1' }, DOM.span({}, "Countries")), DOM.div({ className: 'col-sm-7' }, R.flatten(R.values(R.mapObjIndexed(function (countrySubArrays, continentName) {
+                }))]), DOM.div({ className: 'form-group' }, [DOM.label({ className: 'control-label col-sm-2' }, DOM.span({}, "Countries")), DOM.div({ className: 'col-sm-7' }, R.flatten(R.values(R.mapObjIndexed(function (countrySubArrays, continentName) {
                     return [DOM.h4({ className: 'col-sm-7' }, continentName), DOM.div({ className: 'btn-array', style: { width: '100%' } }, [R.map(function (countrySubArray) {
                         return DOM.div({ className: 'btn-array-row' }, [R.map(function (country) {
                             return DOM.span({ className: 'btn-array-cell' }, React.createElement(ToggleCellView, {

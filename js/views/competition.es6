@@ -1,5 +1,4 @@
 define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-durations', 'shuttle', 'shuttle-react', 'components/stopwatch-cell', 'components/country-flag', 'utils/commons'], (React, ReactRouter, ReactBootstrap, R, moment, momentDurations, Shuttle, ShuttleReact, StopwatchCellView, CountryFlagView, Commons) => {
-    const HEATS_COUNT = 2;
     const PENALTY_STYLES = {
         negligible: 'default',
         significant: 'warning',
@@ -209,6 +208,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
 
         render() {
             const DOM = React.DOM;
+            const heatCount = this.props.heatCount;
             const participant = this.state.participant;
             const heats = this.state.heats;
 
@@ -221,7 +221,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                 DOM.td({className: 'important middle-aligned col-sm-1'}, participant.country ? React.createElement(CountryFlagView, {country: participant.country}) : ''),
                 DOM.td({className: 'important middle-aligned col-sm-5'}, participant.name),
                 DOM.td({className: 'middle-aligned col-sm-3'}, participant.motorcycle),
-                DOM.td({className: 'important middle-aligned col-sm-1'}, `${heats.length}/${HEATS_COUNT}`)
+                DOM.td({className: 'important middle-aligned col-sm-1'}, `${R.min(heats.length, heatCount)}/${heatCount}`)
             ]);
         }
 
@@ -301,6 +301,8 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
         render() {
             const DOM = React.DOM;
             const eventId = this.props.params.eventId;
+            const heatCount = this.state.heatCount || 0;
+
             const data = R.map(participant => {
                 const opened = R.equals(this.state.current, participant.get());
                 const heats = this.props.heats
@@ -345,7 +347,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                         result: {
                             type: 'NoTimeResult'
                         }
-                    }, result), [], R.range(0, HEATS_COUNT)))))
+                    }, result), [], R.range(0, heatCount)))))
                     .map(semiResults => {
                         const bestHeatTime = R.reduce(R.min, moment.duration(Infinity), R.map(result => result.totalTime, semiResults));
 
@@ -400,6 +402,7 @@ define(['react', 'react-router', 'react-bootstrap', 'ramda', 'moment', 'moment-d
                             participant: data.participant,
                             heats: data.heats
                                 .map(heats => R.filter(heat => heat.result.type == 'TimedResult', heats)),
+                            heatCount: heatCount,
                             eventId: eventId
                         }),
                         React.createElement(AdditionalParticipantView, {

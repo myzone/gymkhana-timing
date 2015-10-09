@@ -1,4 +1,16 @@
 define(['ramda', 'shuttle', 'moment', 'utils/commons'], (R, Shuttle, moment, Commons) => {
+    const parse = raw => {
+        try {
+            return JSON.parse(raw);
+        } catch (e) {
+            console.error('YOUR DATA IS BROKEN (dump is below)');
+            console.error(raw);
+            console.error('===================================');
+
+            throw e;
+        }
+    };
+
     const Application = {
         empty: () => {
             return Shuttle.ref({});
@@ -25,6 +37,7 @@ define(['ramda', 'shuttle', 'moment', 'utils/commons'], (R, Shuttle, moment, Com
                 name: event.configuration.name,
                 eventDate: moment(event.configuration.eventDate),
                 eventPlace: event.configuration.eventPlace,
+                heatCount: event.configuration.heatCount,
                 course: event.configuration.course,
                 penalties: R.mapObj(penalty => Shuttle.ref({
                     id: penalty.id,
@@ -53,7 +66,7 @@ define(['ramda', 'shuttle', 'moment', 'utils/commons'], (R, Shuttle, moment, Com
                     penalties: heat.result.penalties
                 }
             }), event.heats))
-        }), JSON.parse(raw))),
+        }), parse(raw))),
         validate: raw => {
             try {
                 return R.equals(JSON.parse(raw), JSON.parse(Application.marshall(Application.unmashall(raw))));
